@@ -1,11 +1,16 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener {
-    String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Trees","Trees","Trees","Trees","Plains","Plains","Plains","Plains","Wheat","Wheat","Wheat","Wheat","Desert"};
+    String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
     ArrayList<String> typeList = new ArrayList<String>();
     ArrayList<Integer> rollNumList = new ArrayList<Integer>();
@@ -34,8 +39,22 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
     }
 
+    public void paint(Graphics g){
+        for(int x=0; x<tiles.length; x++) {
+            try{
+                BufferedImage bf = ImageIO.read(new File("Tiles/"+tiles[x].getType()+".png"));
+                g.drawImage(bf, tiles[x].getPosition()[0],tiles[x].getPosition()[1], null);
+            }
+            catch (IOException ie) {
+            }
+        }
+    }
+
     public static void main(String[] args){
         CatanBoard cb = new CatanBoard();
+        cb.setBounds(100,100,500,500);
+        cb.setVisible(true);
+        cb.setTitle("Settlers of Catan");
     }
     public void mouseClicked(MouseEvent e){}
     public void mousePressed(MouseEvent e) {}
