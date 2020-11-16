@@ -12,8 +12,10 @@ import java.util.Random;
 public class CatanBoard extends JFrame implements MouseListener {
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
+    int[][] coords = {{267,87},{267+134,87},{267+2*134,87},{200,200},{334,200},{200+2*134,200},{200+3*134,200},{133,313},{133+134,313},{133+2*134,313},{133+3*134,313},{133+4*134,313},{200,426},{200+134,426},{200+134*2,426},{200+134*3,426},{267,426+113},{267+134,426+113},{267+134*2,426+113}};
     ArrayList<String> typeList = new ArrayList<String>();
     ArrayList<Integer> rollNumList = new ArrayList<Integer>();
+    ArrayList<int[]> coordList = new ArrayList<int[]>();
     Tile tiles[] = new Tile[19];
 
     public CatanBoard(){
@@ -23,10 +25,15 @@ public class CatanBoard extends JFrame implements MouseListener {
         for(int x=0; x<rollNums.length; x++)
             rollNumList.add(rollNums[x]);
 
+        for(int x=0; x<coords.length; x++)
+            coordList.add(coords[x]);
+
         for(int x=0; x<types.length; x++){
             int typeIndex = new Random().nextInt(typeList.size());
-            tiles[x] = new Tile(new int[]{},typeList.get(typeIndex),0,false);
+            int coordIndex = new Random().nextInt(coordList.size());
+            tiles[x] = new Tile(coordList.get(coordIndex),typeList.get(typeIndex),0,false);
             typeList.remove(typeIndex);
+            coordList.remove(coordIndex);
 
             if(tiles[x].getType().equals("Desert"))
                 tiles[x].setNum(7);
