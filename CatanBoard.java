@@ -98,23 +98,24 @@ public class CatanBoard extends JFrame implements MouseListener {
         //Code to Draw City
         int xLoc = e.getX();
         int yLoc = e.getY();
+        boolean breakCheck=false;
         for(int x=0; x<indexCoords.length; x++){
             if(Math.abs(indexCoords[x][0]-xLoc) < 20 && Math.abs(indexCoords[x][1]-yLoc)<20) {
                 Index checkedIndex = returnAppropIndex(indexCoords[x][0],indexCoords[x][1]);
                 for(int i=0; i<indexes.length; i++){
-                    if(!checkedIndex.isTaken()) {
+                    breakCheck=true;
+                    if(indexes[i]==checkedIndex && !indexes[i].isTaken()) {
                         chosen_x = indexCoords[x][0] - 5;
                         chosen_y = indexCoords[x][1] - 16;
                         paintCondition = true;
                         repaint();
                         indexes[i].setTaken(true);
-                        break;
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(this,"Taken");
+                        breakCheck=false;
                         break;
                     }
                 }
+                if(checkedIndex.isTaken()&& breakCheck)
+                    JOptionPane.showMessageDialog(this,"Taken");
             }
         }
     }
