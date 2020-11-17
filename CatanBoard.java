@@ -24,10 +24,10 @@ public class CatanBoard extends JFrame implements MouseListener {
     boolean paintCondition=false;
     int chosen_x = 0;
     int chosen_y = 0;
-    
+
     //Index Creation for Later Use
     ArrayList<int[]> coord = new ArrayList<int[]>();
-    int[][] indexCoords = {{264,121},{330,87},{398,126},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{661,671},{655,646},{594,683},{529,652},{461,687},{392,646},{526,684},{266,647}};
+    int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{661,671},{655,646},{594,683},{529,652},{461,687},{392,646},{526,684},{266,647},{332,686},{664,577},{731,536}};
     Index[] indexes = new Index[indexCoords.length];
 
     public CatanBoard(){
@@ -40,7 +40,7 @@ public class CatanBoard extends JFrame implements MouseListener {
 
         for(int x=0; x<coords.length; x++)
             coordList.add(coords[x]);
-        
+
         for(int x=0; x<indexes.length; x++)
             indexes[x] = new Index(indexCoords[x],false);
 
@@ -72,7 +72,7 @@ public class CatanBoard extends JFrame implements MouseListener {
             catch (IOException ie) {
                 ie.printStackTrace();
             }
-            loaded=false;
+            loaded=true;
         }
         if(paintCondition){
             try {
@@ -95,19 +95,37 @@ public class CatanBoard extends JFrame implements MouseListener {
     }
     public void mouseClicked(MouseEvent e){}
     public void mousePressed(MouseEvent e){
+        //Code to Draw City
         int xLoc = e.getX();
         int yLoc = e.getY();
         for(int x=0; x<indexCoords.length; x++){
             if(Math.abs(indexCoords[x][0]-xLoc) < 20 && Math.abs(indexCoords[x][1]-yLoc)<20) {
-                System.out.println("FUCK");
-                chosen_x = indexCoords[x][0];
-                chosen_y = indexCoords[x][1];
-                paintCondition = true;
-                repaint();
+                Index checkedIndex = returnAppropIndex(indexCoords[x][0],indexCoords[x][1]);
+                for(int i=0; i<indexes.length; i++){
+                    if(!checkedIndex.isTaken()) {
+                        chosen_x = indexCoords[x][0] - 5;
+                        chosen_y = indexCoords[x][1] - 16;
+                        paintCondition = true;
+                        repaint();
+                        indexes[i].setTaken(true);
+                        break;
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(this,"Taken");
+                        break;
+                    }
+                }
             }
         }
-
     }
+    public Index returnAppropIndex(int chosen_x, int chosen_y){
+        for(int x=0; x<indexes.length; x++)
+            if(indexes[x].getLocation()[0]==chosen_x && indexes[x].getLocation()[1]==chosen_y)
+                return indexes[x];
+
+        return null;
+    }
+
     public void mouseReleased(MouseEvent e){}
     public void mouseEntered(MouseEvent e){}
     public void mouseExited(MouseEvent e){}
