@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,11 @@ public class CatanBoard extends JFrame implements MouseListener {
     ArrayList<int[]> coord = new ArrayList<int[]>();
     int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{655,646},{594,683},{529,652},{461,687},{392,646},{526,684},{266,647},{332,686},{664,577},{731,536}};
     Index[] indexes = new Index[indexCoords.length];
+
+    //Testing Variables
+    int counter=0;
+    ArrayList<Index> testIndexes = new ArrayList<Index>();
+    Point[] testPoints = new Point[4];
 
     public CatanBoard(){
         this.addMouseListener(this);
@@ -83,6 +89,13 @@ public class CatanBoard extends JFrame implements MouseListener {
                 g.drawImage(settlement, chosen_x, chosen_y, null);
                 paintCondition = false;
             }
+            System.out.println(counter);
+            if(counter>=2) {
+                Graphics2D g2 = (Graphics2D)g;
+                g2.setStroke(new BasicStroke(4));
+                //Upper Right
+                g2.draw(new Line2D.Float((int)testPoints[0].getX()+7,(int)testPoints[0].getY()+3,(int)testPoints[1].getX()+7,(int)testPoints[1].getY()-1));
+            }
         }
         catch(IOException ie){
             ie.printStackTrace();
@@ -98,9 +111,28 @@ public class CatanBoard extends JFrame implements MouseListener {
     }
     public void mouseClicked(MouseEvent e){}
     public void mousePressed(MouseEvent e){
-        //Code to Draw City
         int xLoc = e.getX();
         int yLoc = e.getY();
+        if(counter!=2) {
+            for(int x=0; x<indexCoords.length; x++) {
+                if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
+                    Index checkedIndex = returnAppropIndex(indexCoords[x][0], indexCoords[x][1]);
+                    for (int i = 0; i < indexes.length; i++) {
+                        if(indexes[i]==checkedIndex){
+                            testIndexes.add(indexes[i]);
+                            counter++;
+                            System.out.println(checkedIndex.toString());
+                            repaint();
+                        }
+                    }
+                }
+            }
+        }
+        if(counter==2){
+            testPoints = getRectangleType(testIndexes.get(0),testIndexes.get(1));
+            repaint();
+        }
+        //Code to Draw City
         boolean breakCheck=false;
         for(int x=0; x<indexCoords.length; x++){
             if(Math.abs(indexCoords[x][0]-xLoc) < 20 && Math.abs(indexCoords[x][1]-yLoc)<20) {
@@ -134,16 +166,44 @@ public class CatanBoard extends JFrame implements MouseListener {
         //For now, distance check in if statement. In future, I bet I'll just do that during click.
         Point indexOneLoc = new Point(indexOne.getLocation()[0],indexOne.getLocation()[1]);
         Point indexTwoLoc = new Point(indexTwo.getLocation()[0],indexTwo.getLocation()[1]);
+        int oneX = (int)indexOneLoc.getX();
+        int oneY = (int)indexOneLoc.getY();
+        int twoX = (int)indexTwoLoc.getX();
+        int twoY = (int)indexTwoLoc.getY();
+        boolean oneBelow = indexOneLoc.getY()>indexTwoLoc.getY();
 
-        if(Math.abs(indexOneLoc.getX()-indexTwoLoc.getX())<10 && Math.abs(distance(indexOneLoc,indexTwoLoc)-77.5)<10)
+        if(Math.abs(oneX-twoX)<10 && Math.abs(distance(indexOneLoc,indexTwoLoc)-77.5)<10){
             //Vertical
+            if(oneY>twoY){
+                //Point 1 on bottom
+            }
 
-        if(indexOneLoc.getX()<indexTwoLoc.getX() && indexOneLoc.getY()<indexTwoLoc.getY() && distance(indexOneLoc,indexTwoLoc)-77.5<10)
-            //Left Slanted
-            
-        if(indexOneLoc.getX()<indexTwoLoc.getX() && indexOneLoc.getY()>indexTwoLoc.getY() && distance(indexOneLoc,indexTwoLoc)-77.5<10)
-            //Right Slanted
-            
+            else{
+                //Point 2 on bottom
+            }
+        }
+
+        else {
+            double delta_x = distance(indexOneLoc,indexTwoLoc)*Math.sqrt(3)/8;
+            double delta_y = distance(indexOneLoc,indexTwoLoc)/8;
+            //Values necessary for creating points for the diagonal road polygon
+            if (oneX < twoX && oneY < twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10){
+                //Slanted Down Right (Situation 1)
+            }
+
+            if (oneX < twoX && oneY > twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10) {
+                //Slanted Up Right (Situation 2)
+                return new Point[]{new Point((int)(oneX + delta_x),(int)(oneY-delta_y)),new Point((int)(twoX-delta_x),(int)(twoY+delta_y))};
+            }
+
+            if (oneX>twoX && oneY>twoY && distance(indexOneLoc,indexTwoLoc) -77.5 <10){
+                //Slanted Up Left (Analogous to Situation 1)
+            }
+
+            if (twoX < oneX && twoY > oneY && distance(indexOneLoc,indexTwoLoc) - 77.5 < 10){
+                //Slanted Down Left (Analogous to Situation 2)
+            }
+        }
         return new Point[]{};
     }
 
