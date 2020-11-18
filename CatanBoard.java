@@ -27,7 +27,7 @@ public class CatanBoard extends JFrame implements MouseListener {
 
     //Index Creation for Later Use
     ArrayList<int[]> coord = new ArrayList<int[]>();
-    int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{661,671},{655,646},{594,683},{529,652},{461,687},{392,646},{526,684},{266,647},{332,686},{664,577},{731,536}};
+    int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{655,646},{594,683},{529,652},{461,687},{392,646},{526,684},{266,647},{332,686},{664,577},{731,536}};
     Index[] indexes = new Index[indexCoords.length];
 
     public CatanBoard(){
@@ -62,34 +62,37 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
     }
 
-    public void paint(Graphics g){
-        if(!loaded)
-        for(int x=0; x<tiles.length; x++) {
-            try{
-                BufferedImage tile = ImageIO.read(new File("Tiles/"+tiles[x].getType()+".png"));
-                g.drawImage(tile, tiles[x].getPosition()[0],tiles[x].getPosition()[1], null);
+    public void paint(Graphics g) {
+        try {
+            if (!loaded) {
+                //BufferedImage oceanBack = ImageIO.read(new File("Tiles/Ocean_Background.jpg"));
+                //g.drawImage(oceanBack,0,0,null);
+                for (int x = 0; x < tiles.length; x++) {
+                    try {
+                        BufferedImage tile = ImageIO.read(new File("Tiles/" + tiles[x].getType() + ".png"));
+                        g.drawImage(tile, tiles[x].getPosition()[0], tiles[x].getPosition()[1], null);
+                    } catch (IOException ie) {
+                        ie.printStackTrace();
+                    }
+                    loaded = true;
+                }
             }
-            catch (IOException ie) {
-                ie.printStackTrace();
-            }
-            loaded=true;
-        }
-        if(paintCondition){
-            try {
+
+            if (paintCondition) {
                 BufferedImage settlement = ImageIO.read(new File("Tiles/Settlement.png"));
-                g.drawImage(settlement,chosen_x,chosen_y,null);
+                g.drawImage(settlement, chosen_x, chosen_y, null);
+                paintCondition = false;
             }
-            catch(IOException ie){
-                ie.printStackTrace();
-            }
-            paintCondition=false;
+        }
+        catch(IOException ie){
+            ie.printStackTrace();
         }
     }
 
     public static void main(String[] args){
         CatanBoard cb = new CatanBoard();
         cb.setUndecorated(true);
-        cb.setBounds(100,100,1000,1000);
+        cb.setBounds(100,100,930,800);
         cb.setVisible(true);
         cb.setTitle("Settlers of Catan");
     }
@@ -125,6 +128,27 @@ public class CatanBoard extends JFrame implements MouseListener {
                 return indexes[x];
 
         return null;
+    }
+
+    public Point[] getRectangleType(Index indexOne, Index indexTwo){
+        //For now, distance check in if statement. In future, I bet I'll just do that during click.
+        Point indexOneLoc = new Point(indexOne.getLocation()[0],indexOne.getLocation()[1]);
+        Point indexTwoLoc = new Point(indexTwo.getLocation()[0],indexTwo.getLocation()[1]);
+
+        if(Math.abs(indexOneLoc.getX()-indexTwoLoc.getX())<10 && Math.abs(distance(indexOneLoc,indexTwoLoc)-77.5)<10)
+            //Vertical
+
+        if(indexOneLoc.getX()<indexTwoLoc.getX() && indexOneLoc.getY()<indexTwoLoc.getY() && distance(indexOneLoc,indexTwoLoc)-77.5<10)
+            //Left Slanted
+            
+        if(indexOneLoc.getX()<indexTwoLoc.getX() && indexOneLoc.getY()>indexTwoLoc.getY() && distance(indexOneLoc,indexTwoLoc)-77.5<10)
+            //Right Slanted
+            
+        return new Point[]{};
+    }
+
+    public double distance(Point one, Point two){
+        return Math.sqrt(Math.pow(one.getX()-two.getX(),2) + Math.pow(one.getY()-two.getY(),2));
     }
 
     public void mouseReleased(MouseEvent e){}
