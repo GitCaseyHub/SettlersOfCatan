@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class CatanBoard extends JFrame implements MouseListener {
             coordList.add(coords[x]);
 
         for(int x=0; x<indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x],false);
+            indexes[x] = new Index(indexCoords[x],false,null);
 
         for(int x=0; x<types.length; x++){
             int typeIndex = new Random().nextInt(typeList.size());
@@ -71,8 +70,6 @@ public class CatanBoard extends JFrame implements MouseListener {
     public void paint(Graphics g) {
         try {
             if (!loaded) {
-                //BufferedImage oceanBack = ImageIO.read(new File("Tiles/Ocean_Background.jpg"));
-                //g.drawImage(oceanBack,0,0,null);
                 for (int x = 0; x < tiles.length; x++) {
                     try {
                         BufferedImage tile = ImageIO.read(new File("Tiles/" + tiles[x].getType() + ".png"));
@@ -83,18 +80,11 @@ public class CatanBoard extends JFrame implements MouseListener {
                     loaded = true;
                 }
             }
-
             if (paintCondition) {
-                BufferedImage settlement = ImageIO.read(new File("Tiles/Settlement.png"));
+                //Drawing Settlements Test
+                BufferedImage settlement = ImageIO.read(new File("Pieces/White_Settlement.png"));
                 g.drawImage(settlement, chosen_x, chosen_y, null);
                 paintCondition = false;
-            }
-            System.out.println(counter);
-            if(counter>=2) {
-                Graphics2D g2 = (Graphics2D)g;
-                g2.setStroke(new BasicStroke(4));
-                //Upper Right
-                g2.draw(new Line2D.Float((int)testPoints[0].getX()+7,(int)testPoints[0].getY()+3,(int)testPoints[1].getX()+7,(int)testPoints[1].getY()-1));
             }
         }
         catch(IOException ie){
@@ -113,6 +103,9 @@ public class CatanBoard extends JFrame implements MouseListener {
     public void mousePressed(MouseEvent e){
         int xLoc = e.getX();
         int yLoc = e.getY();
+        
+        //Gets Adjacent Resources
+
         if(counter!=2) {
             for(int x=0; x<indexCoords.length; x++) {
                 if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
@@ -128,10 +121,12 @@ public class CatanBoard extends JFrame implements MouseListener {
                 }
             }
         }
+        /* Testing Road Drawing
         if(counter==2){
             testPoints = getRectangleType(testIndexes.get(0),testIndexes.get(1));
             repaint();
-        }
+        }*/
+
         //Code to Draw City
         boolean breakCheck=false;
         for(int x=0; x<indexCoords.length; x++){
@@ -170,7 +165,6 @@ public class CatanBoard extends JFrame implements MouseListener {
         int oneY = (int)indexOneLoc.getY();
         int twoX = (int)indexTwoLoc.getX();
         int twoY = (int)indexTwoLoc.getY();
-        boolean oneBelow = indexOneLoc.getY()>indexTwoLoc.getY();
 
         if(Math.abs(oneX-twoX)<10 && Math.abs(distance(indexOneLoc,indexTwoLoc)-77.5)<10){
             //Vertical
@@ -209,6 +203,21 @@ public class CatanBoard extends JFrame implements MouseListener {
 
     public double distance(Point one, Point two){
         return Math.sqrt(Math.pow(one.getX()-two.getX(),2) + Math.pow(one.getY()-two.getY(),2));
+    }
+    
+    public ArrayList<String> getAdjacentResources(int xLoc, int yLoc){
+        ArrayList<String> adjacentResources = new ArrayList<String>();
+        for(int x=0; x<indexes.length; x++){
+            if(Math.abs(indexes[x].getLocation()[0] - xLoc)<20 && Math.abs(indexes[x].getLocation()[1] - yLoc)<20){
+                for(int a=0; a<tiles.length; a++){
+                    for(int b=0; b<6; b++){
+                        if(Math.abs(tiles[a].getVertices().get(b).getX()-xLoc)<20 && Math.abs(tiles[a].getVertices().get(b).getY()-yLoc)<20){
+                            adjacentResources.add(tiles[a].getType());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void mouseReleased(MouseEvent e){}
