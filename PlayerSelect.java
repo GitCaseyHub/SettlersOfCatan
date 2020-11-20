@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,6 +24,7 @@ public class PlayerSelect extends JFrame implements ActionListener {
     JPanel upperPanel = new JPanel(new GridLayout(1,2));
     JComboBox classBox = new JComboBox();
     JTextArea descriptionArea = new JTextArea("");
+    JScrollPane descriptionPane = new JScrollPane(descriptionArea);
     JPanel descriptPanel = new JPanel(new BorderLayout());
     JPanel lowerPanel = new JPanel(new GridLayout(1,2));
     JPanel holder = new JPanel(new BorderLayout());
@@ -33,28 +36,39 @@ public class PlayerSelect extends JFrame implements ActionListener {
         this.add(holder);
             holder.setBorder(compound);
             holder.add(upperPanel,BorderLayout.CENTER);
+                upperPanel.setBorder(compound);
             holder.add(lowerPanel,BorderLayout.NORTH);
             upperPanel.add(descriptPanel);
-            descriptPanel.add(classBox);
+            descriptPanel.add(classBox, BorderLayout.NORTH);
+            classBox.setBorder(compound);
             classBox.addActionListener(this);
-            descriptPanel.add(descriptionArea);
+            descriptPanel.add(descriptionPane,BorderLayout.CENTER);
+            descriptionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            descriptionArea.setWrapStyleWord(true);
+            descriptionArea.setBorder(compound);
+            descriptionArea.setLineWrap(true);
             upperPanel.add(imageLabel);
+            imageLabel.setBorder(compound);
             lowerPanel.add(nameField);
+            nameField.setBorder(compound);
             lowerPanel.add(colorBox);
+            colorBox.setBorder(compound);
             colorBox.addActionListener(this);
-                
-        for(int x=0; x<classTitles.length; x++)
-            classBox.add(classTitles[x]);
-        
-        for(int x=0;x<colors.length; x++)
-            colorBox.add(colors[x]);
 
-        this.setBounds(100,100,400,400);
+        for(int x=0; x<classTitles.length; x++)
+            classBox.addItem(classTitles[x]);
+
+        for(int x=0;x<colors.length; x++)
+            colorBox.addItem(colors[x]);
+
+        this.setBounds(100,100,450,290);
         this.setVisible(true);
     }
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==classBox)
+        if(e.getSource()==classBox) {
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
+            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (classBox.getSelectedItem().equals("Settler") || classBox.getSelectedItem().equals("Pirate")?".png":".jpg")));
+        }
     }
 
     public static void main(String[] args){
