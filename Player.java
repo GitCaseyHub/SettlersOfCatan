@@ -5,7 +5,7 @@ public class Player {
     int brickNum,lumberNum,grainNum,woolNum,oreNum;
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> cards;
-    
+
     public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes,ArrayList<DevelopmentCard> cards,int brickNum,int lumberNum,int grainNum,int woolNum,int oreNum){
         this.color=color;
         this.name=name;
@@ -48,7 +48,12 @@ public class Player {
     }
 
     public void changeBrick(int brickNum) {
-        this.brickNum+=brickNum;
+        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman"))
+            this.brickNum+=0;
+        else if(this.classTitle.equals("Mountaineer"))
+            this.brickNum+=2*brickNum;
+        else
+            this.brickNum+=brickNum;
     }
 
     public int getLumberNum() {
@@ -56,7 +61,12 @@ public class Player {
     }
 
     public void changeLumber(int lumberNum) {
-        this.lumberNum += lumberNum;
+        if(this.classTitle.equals("Woodsman"))
+            this.lumberNum+=4*lumberNum;
+        else if(this.classTitle.equals("Shepard"))
+            this.lumberNum+=0;
+        else
+            this.lumberNum += lumberNum;
     }
 
     public int getGrainNum() {
@@ -64,7 +74,12 @@ public class Player {
     }
 
     public void changeGrain(int grainNum) {
-        this.grainNum+= grainNum;
+        if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard"))
+            this.grainNum+=0;
+        else if(this.classTitle.equals("Farmer"))
+            this.grainNum+=2*grainNum;
+        else
+            this.grainNum+= grainNum;
     }
 
     public int getWoolNum() {
@@ -72,7 +87,14 @@ public class Player {
     }
 
     public void changeWool(int woolNum) {
-        this.woolNum+=woolNum;
+        if(this.classTitle.equals("Shepard"))
+            this.woolNum+=4*woolNum;
+        else if(this.classTitle.equals("Farmer"))
+            this.woolNum+=2*woolNum;
+        else if(this.classTitle.equals("Woodsman") || this.classTitle.equals("Mountaineer"))
+            this.woolNum+=0;
+        else
+            this.woolNum+=woolNum;
     }
 
     public int getOreNum() {
@@ -80,7 +102,12 @@ public class Player {
     }
 
     public void changeOre(int oreNum) {
-        this.oreNum+= oreNum;
+        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman"))
+            this.oreNum+=0;
+        else if(this.classTitle.equals("Mountaineer"))
+            this.oreNum+=2*oreNum;
+        else
+            this.oreNum+= oreNum;
     }
 
     public ArrayList<Index> getOwnedIndexes() {
