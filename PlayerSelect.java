@@ -36,7 +36,7 @@ public class PlayerSelect extends JFrame implements ActionListener {
         this.add(holder);
             holder.setBorder(compound);
             holder.add(upperPanel,BorderLayout.CENTER);
-                upperPanel.setBorder(compound);
+            upperPanel.setBorder(compound);
             holder.add(lowerPanel,BorderLayout.NORTH);
             upperPanel.add(descriptPanel);
             descriptPanel.add(classBox, BorderLayout.NORTH);
