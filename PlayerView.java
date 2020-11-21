@@ -1,9 +1,11 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-public class PlayerView extends JFrame {
+public class PlayerView extends JFrame implements ActionListener {
     //Fancy Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
@@ -17,50 +19,97 @@ public class PlayerView extends JFrame {
     JLabel wheatNum = new JLabel("0", 0);
     JLabel sheepNum = new JLabel("0", 0);
     JLabel woodNum = new JLabel("0", 0);
-
     JPanel borderNorth = new JPanel(new BorderLayout());
-    JPanel infoPanel = new JPanel(new GridLayout(1,2));
+    JPanel infoPanel = new JPanel(new GridLayout(1,1));
+    JPanel borderInfoPanel = new JPanel(new GridLayout(1,1));
     JLabel colorDisplayLabel = new JLabel("",0);
-    JPanel devPanel = new JPanel(new GridLayout(2,1));
-        JComboBox unplayed = new JComboBox();
-        JComboBox played = new JComboBox();
-    JPanel awardPanel = new JPanel(new GridLayout(2,1));
-        JCheckBox longestRoadBox = new JCheckBox("Longest Road");
-        JCheckBox largestArmy = new JCheckBox("Largest Army");
+    JPanel devPanel = new JPanel(new GridLayout(1,2));
+    JComboBox unplayed = new JComboBox();
+    JComboBox played = new JComboBox();
+    JPanel awardPanel = new JPanel(new GridLayout(1,2));
+    JCheckBox longestRoadBox = new JCheckBox("Longest Road");
+    JCheckBox largestArmyBox = new JCheckBox("Largest Army");
+    JPanel vpPointHolder = new JPanel();
+    JPanel borderSouth = new JPanel(new BorderLayout());
+    JLabel victoryPointLabel = new JLabel("    0    ",0);
 
     //Constructor Variables
     Player player;
 
+    //MenuBar
+    JMenuBar mb = new JMenuBar();
+    JMenu build = new JMenu("Build");
+    JMenuItem settlement = new JMenuItem("Build Settlement");
+    JMenuItem city = new JMenuItem("Upgrade Settlement to City");
+    JMenuItem road = new JMenuItem("Build Road");
+    JMenu development = new JMenu("Development");
+    JMenuItem buyCard = new JMenuItem("Buy Development Card");
+    JMenuItem playCard = new JMenuItem("Play Development Card");
+
     public PlayerView(Player player) {
+        //Relating global variables to class variables
         this.player = player;
+
+        //Menubar creation
+        this.setJMenuBar(mb);
+        mb.add(build);
+        build.add(road);
+        road.addActionListener(this);
+        build.add(settlement);
+        settlement.addActionListener(this);
+        build.add(city);
+        city.addActionListener(this);
+        mb.add(development);
+        development.add(buyCard);
+        buyCard.addActionListener(this);
+        development.add(playCard);
+        playCard.addActionListener(this);
+
+        //Creating the GUI
         this.setLayout(new BorderLayout());
         this.add(graphicHolder, BorderLayout.CENTER);
         this.add(borderNorth,BorderLayout.NORTH);
-            borderNorth.setBorder(compound);
-            borderNorth.add(infoPanel,BorderLayout.CENTER);
-            borderNorth.add(colorDisplayLabel,BorderLayout.WEST);
-            borderNorth.setBackground(Color.white);
-            System.out.println("Pieces/"+player.getColor()+"_City.png");
-                colorDisplayLabel.setBorder(compound);
-                colorDisplayLabel.setIcon(new ImageIcon("Pieces/Red_City.png"));
-            infoPanel.add(devPanel);
-                infoPanel.setBorder(compound);
-                devPanel.setBorder(new TitledBorder("Development Cards"));
-                //devPanel.setBorder(compound);
-                devPanel.add(unplayed);
-                    unplayed.setBorder(compound);
-                devPanel.add(played);
-                    played.setBorder(compound);
-            infoPanel.add(awardPanel);
-                awardPanel.setBorder(new TitledBorder("Global Awards"));
-               // awardPanel.setBorder(compound);
-                awardPanel.add(longestRoadBox);
-                    longestRoadBox.setBorder(compound);
-                    longestRoadBox.setBorderPainted(true);
-                awardPanel.add(largestArmy);
-                    largestArmy.setBorder(compound);
-                    largestArmy.setBorderPainted(true);
-        //graphicHolder.setBorder(compound);
+        borderNorth.setBorder(compound);
+        borderNorth.add(infoPanel,BorderLayout.CENTER);
+        borderNorth.add(colorDisplayLabel,BorderLayout.WEST);
+        this.add(borderSouth,BorderLayout.SOUTH);
+        borderSouth.add(vpPointHolder,BorderLayout.WEST);
+        vpPointHolder.setBorder(compound);
+        vpPointHolder.add(victoryPointLabel);
+        borderSouth.add(borderInfoPanel,BorderLayout.CENTER);
+        borderInfoPanel.setBorder(compound);
+        borderInfoPanel.add(awardPanel);
+        victoryPointLabel.setBorder(new TitledBorder("VPs"));
+        borderNorth.setBackground(Color.white);
+        colorDisplayLabel.setBorder(compound);
+        infoPanel.add(devPanel);
+        infoPanel.setBorder(compound);
+        devPanel.setBorder(new TitledBorder("Development Cards"));
+        devPanel.add(unplayed);
+        unplayed.setBorder(compound);
+        devPanel.add(played);
+        played.setBorder(compound);
+        unplayed.addItem("Hidden Development");
+        played.addItem("Revealed Development");
+
+        awardPanel.setBorder(new TitledBorder("Awards"));
+        awardPanel.add(longestRoadBox);
+        longestRoadBox.setBorderPainted(true);
+        longestRoadBox.setEnabled(false);
+        awardPanel.add(largestArmyBox);
+        largestArmyBox.setBorderPainted(true);
+        largestArmyBox.setEnabled(false);
+        longestRoadBox.setToolTipText("Awarded to the player who has the longest continuous road that exceeds 4 separate segments");
+        largestArmyBox.setToolTipText("Awarded to the player who has played the most 'Knight' DCs that exceeds 2 separate cards");
+        victoryPointLabel.setToolTipText("Your victory point total; get to 10 and you win");
+
+        //Code for when actually implemented
+        colorDisplayLabel.setIcon(new ImageIcon("Pieces/"+player.getColor()+"_City.png"));
+
+        //Code for testing
+        colorDisplayLabel.setIcon(new ImageIcon("Pieces/Blue_City.png"));
+
+        //Array manipulation stuff
         for (int x = 0; x < 5; x++) {
             graphicPanels[x] = new JPanel(new BorderLayout());
             graphicImageLabels[x] = new JLabel("", 0);
@@ -81,7 +130,7 @@ public class PlayerView extends JFrame {
         woodNum.setBorder(compound);
         this.setVisible(true);
         this.setTitle(player.getName()+" - "+player.getClassTitle());
-        this.setBounds(100, 100, 475, 205);
+        this.setBounds(100, 100, 475, 353);
         update();
     }
 
@@ -95,5 +144,12 @@ public class PlayerView extends JFrame {
         sheepNum.setText(""+player.getWoolNum());
         wheatNum.setText(""+player.getGrainNum());
         woodNum.setText(""+player.getLumberNum());
+        largestArmyBox.setSelected(player.hasLargestArmy());
+        longestRoadBox.setSelected(player.hasLongestRoad());
+
+        //4 spaces necessary to keep titledborder text visible
+        victoryPointLabel.setText("    "+player.getVictoryPointTotal()+"    ");
     }
+
+    public void actionPerformed(ActionEvent e) {}
 }
