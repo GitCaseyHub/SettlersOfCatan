@@ -2,21 +2,49 @@ import java.util.ArrayList;
 
 public class Player {
     String color,name,classTitle;
-    int brickNum,lumberNum,grainNum,woolNum,oreNum;
+    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal;
     ArrayList<Index> ownedIndexes;
-    ArrayList<DevelopmentCard> cards;
+    ArrayList<DevelopmentCard> playedCards, unPlayedCards;
 
-    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes,ArrayList<DevelopmentCard> cards,int brickNum,int lumberNum,int grainNum,int woolNum,int oreNum){
+    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal){
         this.color=color;
         this.name=name;
         this.classTitle=classTitle;
         this.ownedIndexes=ownedIndexes;
-        this.cards=cards;
+        this.unPlayedCards=unPlayedCards;
+        this.playedCards=playedCards;
         this.lumberNum=lumberNum;
         this.brickNum=brickNum;
         this.grainNum=grainNum;
         this.woolNum=woolNum;
         this.oreNum=oreNum;
+        this.victoryPointTotal=victoryPointTotal;
+    }
+
+    public Player(){}
+
+    public int getVictoryPointTotal() {
+        return victoryPointTotal;
+    }
+
+    public void changeVictoryPoints(int pointChange) {
+        this.victoryPointTotal+=pointChange;
+    }
+
+    public ArrayList<DevelopmentCard> getPlayedCards() {
+        return playedCards;
+    }
+
+    public void setPlayedCards(ArrayList<DevelopmentCard> playedCards) {
+        this.playedCards = playedCards;
+    }
+
+    public ArrayList<DevelopmentCard> getUnPlayedCards() {
+        return unPlayedCards;
+    }
+
+    public void setUnPlayedCards(ArrayList<DevelopmentCard> unPlayedCards) {
+        this.unPlayedCards = unPlayedCards;
     }
 
     public String getColor() {
@@ -116,13 +144,5 @@ public class Player {
 
     public void addIndex(Index newIndex){
         this.ownedIndexes.add(newIndex);
-    }
-
-    public ArrayList<DevelopmentCard> getCards() {
-        return cards;
-    }
-
-    public void addCards(DevelopmentCard card) {
-        this.cards.add(card);
     }
 }
