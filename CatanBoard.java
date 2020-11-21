@@ -33,7 +33,7 @@ public class CatanBoard extends JFrame implements MouseListener {
     //Testing Variables
     int counter=0;
     ArrayList<Index> testIndexes = new ArrayList<Index>();
-    Point[] testPoints = new Point[4];
+    Object[] testInfo;
 
     public CatanBoard(){
         this.addMouseListener(this);
@@ -82,9 +82,17 @@ public class CatanBoard extends JFrame implements MouseListener {
             }
             if (paintCondition) {
                 //Drawing Settlements Test
-                BufferedImage settlement = ImageIO.read(new File("Pieces/White_Settlement.png"));
+                BufferedImage settlement = ImageIO.read(new File("Pieces/White_City.png"));
                 g.drawImage(settlement, chosen_x, chosen_y, null);
                 paintCondition = false;
+            }
+
+            if(counter==2){
+                Point testPoint = (Point)testInfo[0];
+                String testString = testInfo[1].toString();
+                BufferedImage road = ImageIO.read(new File("Pieces/"+testString+"_Red_Road.png"));
+                g.drawImage(road,(int)testPoint.getX(),(int)testPoint.getY(),null);
+                counter=0;
             }
         }
         catch(IOException ie){
@@ -103,8 +111,6 @@ public class CatanBoard extends JFrame implements MouseListener {
     public void mousePressed(MouseEvent e){
         int xLoc = e.getX();
         int yLoc = e.getY();
-        
-        //Gets Adjacent Resources
 
         if(counter!=2) {
             for(int x=0; x<indexCoords.length; x++) {
@@ -121,11 +127,11 @@ public class CatanBoard extends JFrame implements MouseListener {
                 }
             }
         }
-        /* Testing Road Drawing
+       // Code to Draw Roads
         if(counter==2){
-            testPoints = getRectangleType(testIndexes.get(0),testIndexes.get(1));
+            testInfo = getRoadPositionAndType(testIndexes.get(0),testIndexes.get(1));
             repaint();
-        }*/
+        }
 
         //Code to Draw City
         boolean breakCheck=false;
@@ -157,8 +163,8 @@ public class CatanBoard extends JFrame implements MouseListener {
         return null;
     }
 
-    public Point[] getRectangleType(Index indexOne, Index indexTwo){
-        //For now, distance check in if statement. In future, I bet I'll just do that during click.
+    //Checks
+    public Object[] getRoadPositionAndType(Index indexOne, Index indexTwo){
         Point indexOneLoc = new Point(indexOne.getLocation()[0],indexOne.getLocation()[1]);
         Point indexTwoLoc = new Point(indexTwo.getLocation()[0],indexTwo.getLocation()[1]);
         int oneX = (int)indexOneLoc.getX();
@@ -167,13 +173,13 @@ public class CatanBoard extends JFrame implements MouseListener {
         int twoY = (int)indexTwoLoc.getY();
 
         if(Math.abs(oneX-twoX)<10 && Math.abs(distance(indexOneLoc,indexTwoLoc)-77.5)<10){
-            //Vertical
+            //Values for creating vertical roads
             if(oneY>twoY){
-                //Point 1 on bottom
+                return new Object[]{new Point(twoX+2,twoY+15),"Vertical"};
             }
 
             else{
-                //Point 2 on bottom
+                return new Object[]{new Point(oneX+2,oneY+15),"Vertical"};
             }
         }
 
@@ -182,29 +188,29 @@ public class CatanBoard extends JFrame implements MouseListener {
             double delta_y = distance(indexOneLoc,indexTwoLoc)/8;
             //Values necessary for creating points for the diagonal road polygon
             if (oneX < twoX && oneY < twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10){
-                //Slanted Down Right (Situation 1)
+                return new Object[]{new Point(oneX+19,oneY+10),"Up_To_Down"};
             }
 
             if (oneX < twoX && oneY > twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10) {
-                //Slanted Up Right (Situation 2)
-                return new Point[]{new Point((int)(oneX + delta_x),(int)(oneY-delta_y)),new Point((int)(twoX-delta_x),(int)(twoY+delta_y))};
+                return new Object[]{new Point(oneX+22,oneY-30),"Down_To_Up"};
             }
 
             if (oneX>twoX && oneY>twoY && distance(indexOneLoc,indexTwoLoc) -77.5 <10){
-                //Slanted Up Left (Analogous to Situation 1)
+                return new Object[]{new Point(twoX+19,twoY+10),"Up_To_Down"};
             }
 
             if (twoX < oneX && twoY > oneY && distance(indexOneLoc,indexTwoLoc) - 77.5 < 10){
-                //Slanted Down Left (Analogous to Situation 2)
+                return new Object[]{new Point(oneX-48,oneY+8),"Down_To_Up"};
             }
         }
-        return new Point[]{};
+        return new Object[]{new Point(0,0),""};
     }
 
     public double distance(Point one, Point two){
         return Math.sqrt(Math.pow(one.getX()-two.getX(),2) + Math.pow(one.getY()-two.getY(),2));
     }
-    
+
+    //Gets resources that would be obtained for an index at start of game
     public ArrayList<String> getAdjacentResources(int xLoc, int yLoc){
         ArrayList<String> adjacentResources = new ArrayList<String>();
         for(int x=0; x<indexes.length; x++){
@@ -218,6 +224,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                 }
             }
         }
+        return adjacentResources;
     }
 
     public void mouseReleased(MouseEvent e){}
