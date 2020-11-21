@@ -3,8 +3,10 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
-public class PlayerSelect extends JFrame implements ActionListener {
+public class PlayerSelect extends JFrame implements ActionListener, FocusListener {
     //Fancy Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
@@ -30,7 +32,8 @@ public class PlayerSelect extends JFrame implements ActionListener {
     JPanel holder = new JPanel(new BorderLayout());
     JLabel imageLabel = new JLabel("",SwingConstants.CENTER);
     JComboBox colorBox = new JComboBox();
-    JTextField nameField = new JTextField("",SwingConstants.CENTER);
+    JTextField nameField = new JTextField("Name Your Player",SwingConstants.CENTER);
+    Color color = new Color(100,100,100);
 
     public PlayerSelect(){
         this.add(holder);
@@ -46,14 +49,18 @@ public class PlayerSelect extends JFrame implements ActionListener {
             descriptionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             descriptionArea.setWrapStyleWord(true);
             descriptionArea.setBorder(compound);
+            descriptionArea.setEditable(false);
             descriptionArea.setLineWrap(true);
             upperPanel.add(imageLabel);
             imageLabel.setBorder(compound);
             lowerPanel.add(nameField);
             nameField.setBorder(compound);
+            nameField.addFocusListener(this);
             lowerPanel.add(colorBox);
             colorBox.setBorder(compound);
             colorBox.addActionListener(this);
+            nameField.setForeground(color);
+            descriptionArea.requestFocus();
 
         for(int x=0; x<classTitles.length; x++)
             classBox.addItem(classTitles[x]);
@@ -67,11 +74,25 @@ public class PlayerSelect extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==classBox) {
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
-            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (classBox.getSelectedItem().equals("Settler") || classBox.getSelectedItem().equals("Pirate")?".png":".jpg")));
+            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (classBox.getSelectedItem().equals("Settler") || classBox.getSelectedItem().equals("Pirate")||classBox.getSelectedItem().equals("Class")?".png":".jpg")));
         }
     }
 
     public static void main(String[] args){
         new PlayerSelect();
+    }
+
+    public void focusGained(FocusEvent e){
+        if(e.getSource() == nameField && nameField.getText().equals("Name Your Player")){
+            nameField.setText("");
+            nameField.setForeground(Color.black);
+        }
+    }
+
+    public void focusLost(FocusEvent e){
+        if(e.getSource() == nameField && nameField.getText().equals("")){
+            nameField.setText("Name Your Player");
+            nameField.setForeground(color);
+        }
     }
 }
