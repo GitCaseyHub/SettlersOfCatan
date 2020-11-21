@@ -42,23 +42,25 @@ public class DevelopmentCard{
         this.player=player;
         this.cbReference=cbReference;
         this.otherPlayers=otherPlayers;
-        
+    }
+
+    public void playCard(){
         if(type.equals("Knight"))
             performKnightAction();
-        
+
         else if(type.equals("Victory Points"))
             performVictoryPoints();
-        
+
         else if(type.equals("Road Builder"))
             performRoadBuilding();
-        
+
         else if(type.equals("Year of Plenty"))
             performYearOfPlenty();
-        
+
         else
             performMonopoly();
     }
-    
+
     public void performKnightAction(){}
     public void performVictoryPoints(){
         player.changeVictoryPoints(1);
