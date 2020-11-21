@@ -25,9 +25,12 @@ public class CatanBoard extends JFrame implements MouseListener {
     int chosen_x = 0;
     int chosen_y = 0;
 
-    //Index Creation for Later Use
+    //Booleans for conditions on when MouseListeners should activate
+    boolean isRoadBuilding=true, isSettlementBuilding=true;
+
+    //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
-    int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{655,646},{594,683},{529,652},{461,687},{392,646},{526,684},{266,647},{332,686},{664,577},{731,536}};
+    int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{655,646},{594,683},{461,687},{392,646},{526,654},{266,647},{332,686},{664,577},{731,536}};
     Index[] indexes = new Index[indexCoords.length];
 
     //Testing Variables
@@ -47,7 +50,7 @@ public class CatanBoard extends JFrame implements MouseListener {
             coordList.add(coords[x]);
 
         for(int x=0; x<indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x],false,null);
+            indexes[x] = new Index(indexCoords[x],false,null,x);
 
         for(int x=0; x<types.length; x++){
             int typeIndex = new Random().nextInt(typeList.size());
@@ -93,6 +96,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                 BufferedImage road = ImageIO.read(new File("Pieces/"+testString+"_Red_Road.png"));
                 g.drawImage(road,(int)testPoint.getX(),(int)testPoint.getY(),null);
                 counter=0;
+                testIndexes.clear();
             }
         }
         catch(IOException ie){
@@ -112,46 +116,51 @@ public class CatanBoard extends JFrame implements MouseListener {
         int xLoc = e.getX();
         int yLoc = e.getY();
 
-        if(counter!=2) {
-            for(int x=0; x<indexCoords.length; x++) {
-                if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
-                    Index checkedIndex = returnAppropIndex(indexCoords[x][0], indexCoords[x][1]);
-                    for (int i = 0; i < indexes.length; i++) {
-                        if(indexes[i]==checkedIndex){
-                            testIndexes.add(indexes[i]);
-                            counter++;
-                            System.out.println(checkedIndex.toString());
-                            repaint();
+        //Code to draw roads if boolean is in correct state
+        if(isRoadBuilding) {
+            if (counter != 2) {
+                for (int x = 0; x < indexCoords.length; x++) {
+                    if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
+                        Index checkedIndex = returnAppropIndex(indexCoords[x][0], indexCoords[x][1]);
+                        for (int i = 0; i < indexes.length; i++) {
+                            if (indexes[i] == checkedIndex) {
+                                testIndexes.add(indexes[i]);
+                                counter++;
+                                System.out.println(checkedIndex.toString());
+                                repaint();
+                            }
                         }
                     }
                 }
             }
-        }
-       // Code to Draw Roads
-        if(counter==2){
-            testInfo = getRoadPositionAndType(testIndexes.get(0),testIndexes.get(1));
-            repaint();
+
+            if (counter == 2) {
+                testInfo = getRoadPositionAndType(testIndexes.get(0), testIndexes.get(1));
+                repaint();
+            }
         }
 
-        //Code to Draw City
-        boolean breakCheck=false;
-        for(int x=0; x<indexCoords.length; x++){
-            if(Math.abs(indexCoords[x][0]-xLoc) < 20 && Math.abs(indexCoords[x][1]-yLoc)<20) {
-                Index checkedIndex = returnAppropIndex(indexCoords[x][0],indexCoords[x][1]);
-                for(int i=0; i<indexes.length; i++){
-                    breakCheck=true;
-                    if(indexes[i]==checkedIndex && !indexes[i].isTaken()) {
-                        chosen_x = indexCoords[x][0] - 5;
-                        chosen_y = indexCoords[x][1] - 16;
-                        paintCondition = true;
-                        repaint();
-                        indexes[i].setTaken(true);
-                        breakCheck=false;
-                        break;
+        //Code to draw buildings when boolean is in correct state
+        if(isSettlementBuilding) {
+            boolean breakCheck = false;
+            for (int x = 0; x < indexCoords.length; x++) {
+                if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
+                    Index checkedIndex = returnAppropIndex(indexCoords[x][0], indexCoords[x][1]);
+                    for (int i = 0; i < indexes.length; i++) {
+                        breakCheck = true;
+                        if (indexes[i] == checkedIndex && !indexes[i].isTaken()) {
+                            chosen_x = indexCoords[x][0] - 5;
+                            chosen_y = indexCoords[x][1] - 16;
+                            paintCondition = true;
+                            repaint();
+                            indexes[i].setTaken(true);
+                            breakCheck = false;
+                            break;
+                        }
                     }
+                    if (checkedIndex.isTaken() && breakCheck)
+                        JOptionPane.showMessageDialog(this, "Taken");
                 }
-                if(checkedIndex.isTaken()&& breakCheck)
-                    JOptionPane.showMessageDialog(this,"Taken");
             }
         }
     }
@@ -163,7 +172,7 @@ public class CatanBoard extends JFrame implements MouseListener {
         return null;
     }
 
-    //Checks
+    //Checks which road type to draw and where to do so
     public Object[] getRoadPositionAndType(Index indexOne, Index indexTwo){
         Point indexOneLoc = new Point(indexOne.getLocation()[0],indexOne.getLocation()[1]);
         Point indexTwoLoc = new Point(indexTwo.getLocation()[0],indexTwo.getLocation()[1]);
@@ -174,38 +183,34 @@ public class CatanBoard extends JFrame implements MouseListener {
 
         if(Math.abs(oneX-twoX)<10 && Math.abs(distance(indexOneLoc,indexTwoLoc)-77.5)<10){
             //Values for creating vertical roads
-            if(oneY>twoY){
+            if(oneY>twoY)
                 return new Object[]{new Point(twoX+2,twoY+15),"Vertical"};
-            }
 
-            else{
+            else
                 return new Object[]{new Point(oneX+2,oneY+15),"Vertical"};
-            }
         }
 
         else {
             double delta_x = distance(indexOneLoc,indexTwoLoc)*Math.sqrt(3)/8;
             double delta_y = distance(indexOneLoc,indexTwoLoc)/8;
+
             //Values necessary for creating points for the diagonal road polygon
-            if (oneX < twoX && oneY < twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10){
+            if (oneX < twoX && oneY < twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10)
                 return new Object[]{new Point(oneX+19,oneY+10),"Up_To_Down"};
-            }
 
-            if (oneX < twoX && oneY > twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10) {
+            if (oneX < twoX && oneY > twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10)
                 return new Object[]{new Point(oneX+22,oneY-30),"Down_To_Up"};
-            }
 
-            if (oneX>twoX && oneY>twoY && distance(indexOneLoc,indexTwoLoc) -77.5 <10){
+            if (oneX>twoX && oneY>twoY && distance(indexOneLoc,indexTwoLoc) -77.5 <10)
                 return new Object[]{new Point(twoX+19,twoY+10),"Up_To_Down"};
-            }
 
-            if (twoX < oneX && twoY > oneY && distance(indexOneLoc,indexTwoLoc) - 77.5 < 10){
+            if (twoX < oneX && twoY > oneY && distance(indexOneLoc,indexTwoLoc) - 77.5 < 10)
                 return new Object[]{new Point(oneX-48,oneY+8),"Down_To_Up"};
-            }
         }
         return new Object[]{new Point(0,0),""};
     }
 
+    //Finds the distance between two points in cartesian space (good-ole-pythagorean theorem)
     public double distance(Point one, Point two){
         return Math.sqrt(Math.pow(one.getX()-two.getX(),2) + Math.pow(one.getY()-two.getY(),2));
     }
