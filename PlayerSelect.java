@@ -82,10 +82,6 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
         for(int x=0;x<colors.length; x++)
             colorBox.addItem(colors[x]);
-
-        //Testing Code
-        this.setBounds(100,100,435,305);
-        this.setVisible(true);
     }
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==classBox) {
@@ -93,7 +89,6 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (classBox.getSelectedItem().equals("Settler") || classBox.getSelectedItem().equals("Pirate")||classBox.getSelectedItem().equals("Class")?".png":".jpg")));
         }
         else if(e.getSource()==confirmButton) {
-
             if (!nameField.getText().equals("Name Your Player")){
                 //Generate new player
                 if (classBox.getSelectedIndex() == 0 && colorBox.getSelectedIndex() != 0)
@@ -106,18 +101,13 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                     JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Stop wasting time and decide!", "Color & Class Error", 3);
 
                 else {
-                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), null, null, null, 0, 0, 0, 0, 0, 0, false, false, false);
+                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), null, null, null, 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
                     bgReference.addPlayer(newPlayer,referenceNumber);
                 }
             }
             else
                 JOptionPane.showMessageDialog(this,"You didn't name your character. That's the most important information that is needed!","Naming Error",3);
         }
-    }
-
-    public static void main(String[] args){
-        //Testing Code
-        new PlayerSelect(new BeginGame(),0);
     }
 
     public void focusGained(FocusEvent e){
