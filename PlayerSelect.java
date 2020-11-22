@@ -33,13 +33,15 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     JLabel imageLabel = new JLabel("",SwingConstants.CENTER);
     JComboBox colorBox = new JComboBox();
     JTextField nameField = new JTextField("Name Your Player",SwingConstants.CENTER);
+    JButton confirmButton = new JButton("    Confirm Character    ");
+    JPanel southPanel = new JPanel(new BorderLayout());
+    JLabel fillout = new JLabel("",0);
     Color color = new Color(100,100,100);
 
     public PlayerSelect(){
         this.add(holder);
-            holder.setBorder(compound);
             holder.add(upperPanel,BorderLayout.CENTER);
-            upperPanel.setBorder(compound);
+           // upperPanel.setBorder(compound);
             holder.add(lowerPanel,BorderLayout.NORTH);
             upperPanel.add(descriptPanel);
             descriptPanel.add(classBox, BorderLayout.NORTH);
@@ -47,6 +49,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             classBox.addActionListener(this);
             descriptPanel.add(descriptionPane,BorderLayout.CENTER);
             descriptionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            descriptionPane.setBorder(compound);
             descriptionArea.setWrapStyleWord(true);
             descriptionArea.setBorder(compound);
             descriptionArea.setEditable(false);
@@ -61,6 +64,12 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             colorBox.addActionListener(this);
             nameField.setForeground(color);
             descriptionArea.requestFocus();
+        this.add(southPanel, BorderLayout.SOUTH);
+            southPanel.add(confirmButton,BorderLayout.EAST);
+                confirmButton.setBorder(compound);
+                confirmButton.addActionListener(this);
+                southPanel.add(fillout,BorderLayout.CENTER);
+                    fillout.setBorder(compound);
 
         for(int x=0; x<classTitles.length; x++)
             classBox.addItem(classTitles[x]);
@@ -68,13 +77,39 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
         for(int x=0;x<colors.length; x++)
             colorBox.addItem(colors[x]);
 
-        this.setBounds(100,100,450,290);
+        this.setBounds(100,100,435,305);
         this.setVisible(true);
     }
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==classBox) {
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
             imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (classBox.getSelectedItem().equals("Settler") || classBox.getSelectedItem().equals("Pirate")||classBox.getSelectedItem().equals("Class")?".png":".jpg")));
+        }
+        else if(e.getSource()==confirmButton) {
+
+            if (!nameField.getText().equals("Name Your Player")){
+                //Generate new player
+                if (classBox.getSelectedIndex() == 0 && colorBox.getSelectedIndex() != 0)
+                    JOptionPane.showMessageDialog(this, "You can't be a default combobox title and you know that! Pick an actual class.", "Class Error", 3);
+
+                else if (classBox.getSelectedIndex() != 0 && colorBox.getSelectedIndex() == 0)
+                    JOptionPane.showMessageDialog(this, "That isn't a valid color. Pick an actual color option before I force-quit the game!", "Color Error", 3);
+
+                else if (classBox.getSelectedIndex() == 0 && colorBox.getSelectedIndex() == 0)
+                    JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Stop wasting time and decide!", "Color & Class Error", 3);
+
+                else {
+                    JOptionPane.showMessageDialog(this, "You've created your character.", "Character Creation", 1);
+                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), null, null, null, 0, 0, 0, 0, 0, 0, false, false, false);
+                    nameField.setEditable(false);
+                    classBox.setEnabled(false);
+                    confirmButton.setEnabled(false);
+                    colorBox.setEnabled(false);
+                    this.setTitle(nameField.getText() + "'s Character");
+                }
+            }
+            else
+                JOptionPane.showMessageDialog(this,"You didn't name your character. That's the most important information that is needed!","Naming Error",3);
         }
     }
 
