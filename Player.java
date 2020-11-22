@@ -2,11 +2,12 @@ import java.util.ArrayList;
 
 public class Player {
     String color,name,classTitle;
-    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal;
+    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal, referenceNumber;
+    boolean turn,longestRoad,largestArmy;
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
 
-    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal){
+    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber){
         this.color=color;
         this.name=name;
         this.classTitle=classTitle;
@@ -19,9 +20,50 @@ public class Player {
         this.woolNum=woolNum;
         this.oreNum=oreNum;
         this.victoryPointTotal=victoryPointTotal;
+        this.turn=turn;
+        this.longestRoad=longestRoad;
+        this.largestArmy=largestArmy;
+        this.referenceNumber=referenceNumber;
     }
 
+    public int getRefNumber() {
+        return referenceNumber;
+    }
+
+    public void setRefNumber(int refNumber) {
+        this.referenceNumber = referenceNumber;
+    }
+
+    //Testing Constructor
     public Player(){}
+
+    public boolean isTurn() {
+        return turn;
+    }
+
+    public void setTurn(boolean turn) {
+        this.turn = turn;
+    }
+
+    public void setBrickNum(int brickNum) {
+        this.brickNum = brickNum;
+    }
+
+    public boolean hasLongestRoad() {
+        return longestRoad;
+    }
+
+    public void setLongestRoad(boolean longestRoad) {
+        this.longestRoad = longestRoad;
+    }
+
+    public boolean hasLargestArmy() {
+        return largestArmy;
+    }
+
+    public void setLargestArmy(boolean largestArmy) {
+        this.largestArmy = largestArmy;
+    }
 
     public int getVictoryPointTotal() {
         return victoryPointTotal;
@@ -144,5 +186,9 @@ public class Player {
 
     public void addIndex(Index newIndex){
         this.ownedIndexes.add(newIndex);
+    }
+
+    public String toString(){
+        return "Player Ref Number: "+referenceNumber;
     }
 }
