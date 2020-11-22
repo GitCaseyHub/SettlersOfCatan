@@ -104,13 +104,6 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
     }
 
-    public static void main(String[] args){
-        CatanBoard cb = new CatanBoard();
-        cb.setUndecorated(true);
-        cb.setBounds(100,100,930,800);
-        cb.setVisible(true);
-        cb.setTitle("Settlers of Catan");
-    }
     public void mouseClicked(MouseEvent e){}
     public void mousePressed(MouseEvent e){
         int xLoc = e.getX();
@@ -159,7 +152,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                         }
                     }
                     if (checkedIndex.isTaken() && breakCheck)
-                        JOptionPane.showMessageDialog(this, "Taken");
+                        JOptionPane.showMessageDialog(this, "This spot is unavailable. Pick another spot.","Spot Taken",3);
                 }
             }
         }
