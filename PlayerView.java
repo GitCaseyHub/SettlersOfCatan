@@ -31,7 +31,10 @@ public class PlayerView extends JFrame implements ActionListener {
     JCheckBox largestArmyBox = new JCheckBox("Largest Army");
     JPanel vpPointHolder = new JPanel();
     JPanel borderSouth = new JPanel(new BorderLayout());
-    JLabel victoryPointLabel = new JLabel("    0    ",0);
+    JLabel victoryPointLabel = new JLabel("0",0);
+    JPanel turnBorderPanel = new JPanel();
+    JPanel turnHolder = new JPanel(new BorderLayout());
+    JCheckBox turnBox = new JCheckBox("");
 
     //Constructor Variables
     Player player;
@@ -42,7 +45,7 @@ public class PlayerView extends JFrame implements ActionListener {
     JMenuItem settlement = new JMenuItem("Build Settlement");
     JMenuItem city = new JMenuItem("Upgrade Settlement to City");
     JMenuItem road = new JMenuItem("Build Road");
-    JMenu development = new JMenu("Development");
+    JMenu development = new JMenu("Develop");
     JMenuItem buyCard = new JMenuItem("Buy Development Card");
     JMenuItem playCard = new JMenuItem("Play Development Card");
 
@@ -74,9 +77,18 @@ public class PlayerView extends JFrame implements ActionListener {
         borderNorth.add(colorDisplayLabel,BorderLayout.WEST);
         this.add(borderSouth,BorderLayout.SOUTH);
         borderSouth.add(vpPointHolder,BorderLayout.WEST);
+        borderSouth.add(turnBorderPanel, BorderLayout.EAST);
+        turnBorderPanel.setBorder(compound);
+            turnBorderPanel.add(turnHolder);
+            turnHolder.add(new JLabel("  "),BorderLayout.WEST);
+        turnHolder.add(turnBox,BorderLayout.CENTER);
+        turnHolder.add(new JLabel("  "),BorderLayout.EAST);
+            turnHolder.setBorder(new TitledBorder("Turn"));
         vpPointHolder.setBorder(compound);
         vpPointHolder.add(victoryPointLabel);
         borderSouth.add(borderInfoPanel,BorderLayout.CENTER);
+        turnBox.setEnabled(false);
+        turnBox.setToolTipText("This box is checked if it's your turn");
         borderInfoPanel.setBorder(compound);
         borderInfoPanel.add(awardPanel);
         victoryPointLabel.setBorder(new TitledBorder("VPs"));
@@ -89,8 +101,9 @@ public class PlayerView extends JFrame implements ActionListener {
         unplayed.setBorder(compound);
         devPanel.add(played);
         played.setBorder(compound);
-        unplayed.addItem("Hidden Development");
-        played.addItem("Revealed Development");
+        unplayed.addItem("Hidden Cards");
+        played.addItem("Revealed Cards");
+        victoryPointLabel.setFont(new Font(victoryPointLabel.getFont().getName(),Font.PLAIN,16));
 
         awardPanel.setBorder(new TitledBorder("Awards"));
         awardPanel.add(longestRoadBox);
@@ -104,10 +117,16 @@ public class PlayerView extends JFrame implements ActionListener {
         victoryPointLabel.setToolTipText("Your victory point total; get to 10 and you win");
 
         //Code for when actually implemented
-        colorDisplayLabel.setIcon(new ImageIcon("Pieces/"+player.getColor()+"_City.png"));
+        //colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/"+player.getColor()+"_City_Large.png"));
 
         //Code for testing
-        colorDisplayLabel.setIcon(new ImageIcon("Pieces/Blue_City.png"));
+        colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/Blue_City_Large.png"));
+
+        if(player.isTurn())
+            unplayed.setEnabled(true);
+
+        else
+            unplayed.setEnabled(false);
 
         //Array manipulation stuff
         for (int x = 0; x < 5; x++) {
@@ -146,9 +165,13 @@ public class PlayerView extends JFrame implements ActionListener {
         woodNum.setText(""+player.getLumberNum());
         largestArmyBox.setSelected(player.hasLargestArmy());
         longestRoadBox.setSelected(player.hasLongestRoad());
+        victoryPointLabel.setText("   "+player.getVictoryPointTotal()+"   ");
 
-        //4 spaces necessary to keep titledborder text visible
-        victoryPointLabel.setText("    "+player.getVictoryPointTotal()+"    ");
+        if(player.isTurn())
+            unplayed.setEnabled(true);
+
+        else
+            unplayed.setEnabled(false);
     }
 
     public void actionPerformed(ActionEvent e) {}
