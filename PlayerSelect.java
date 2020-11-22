@@ -38,10 +38,16 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     JLabel fillout = new JLabel("",0);
     Color color = new Color(100,100,100);
 
-    public PlayerSelect(){
+    //Global Variables
+    BeginGame bgReference;
+    int referenceNumber;
+
+    public PlayerSelect(BeginGame bgReference, int referenceNumber){
+        this.bgReference=bgReference;
+        this.referenceNumber=referenceNumber;
+
         this.add(holder);
             holder.add(upperPanel,BorderLayout.CENTER);
-           // upperPanel.setBorder(compound);
             holder.add(lowerPanel,BorderLayout.NORTH);
             upperPanel.add(descriptPanel);
             descriptPanel.add(classBox, BorderLayout.NORTH);
@@ -77,6 +83,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
         for(int x=0;x<colors.length; x++)
             colorBox.addItem(colors[x]);
 
+        //Testing Code
         this.setBounds(100,100,435,305);
         this.setVisible(true);
     }
@@ -99,13 +106,8 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                     JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Stop wasting time and decide!", "Color & Class Error", 3);
 
                 else {
-                    JOptionPane.showMessageDialog(this, "You've created your character.", "Character Creation", 1);
                     Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), null, null, null, 0, 0, 0, 0, 0, 0, false, false, false);
-                    nameField.setEditable(false);
-                    classBox.setEnabled(false);
-                    confirmButton.setEnabled(false);
-                    colorBox.setEnabled(false);
-                    this.setTitle(nameField.getText() + "'s Character");
+                    bgReference.addPlayer(newPlayer,referenceNumber);
                 }
             }
             else
@@ -114,7 +116,8 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     }
 
     public static void main(String[] args){
-        new PlayerSelect();
+        //Testing Code
+        new PlayerSelect(new BeginGame(),0);
     }
 
     public void focusGained(FocusEvent e){
