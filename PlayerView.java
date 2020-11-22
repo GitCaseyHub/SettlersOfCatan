@@ -38,6 +38,7 @@ public class PlayerView extends JFrame implements ActionListener {
 
     //Constructor Variables
     Player player;
+    CatanBoard reference;
 
     //MenuBar
     JMenuBar mb = new JMenuBar();
@@ -48,10 +49,15 @@ public class PlayerView extends JFrame implements ActionListener {
     JMenu development = new JMenu("Develop");
     JMenuItem buyCard = new JMenuItem("Buy Development Card");
     JMenuItem playCard = new JMenuItem("Play Development Card");
+    JMenu options = new JMenu("Options");
+    JMenuItem exchange = new JMenuItem("Trade Resources");
+    JMenuItem rollDice = new JMenuItem("Roll Dice");
+    JMenuItem endTurn = new JMenuItem("End Turn");
 
-    public PlayerView(Player player) {
+    public PlayerView(Player player, CatanBoard reference) {
         //Relating global variables to class variables
         this.player = player;
+        this.reference=reference;
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -67,6 +73,13 @@ public class PlayerView extends JFrame implements ActionListener {
         buyCard.addActionListener(this);
         development.add(playCard);
         playCard.addActionListener(this);
+        mb.add(options);
+        options.add(exchange);
+        exchange.addActionListener(this);
+        options.add(endTurn);
+        endTurn.addActionListener(this);
+        options.add(rollDice);
+        options.addActionListener(this);
 
         //Creating the GUI
         this.setLayout(new BorderLayout());
@@ -116,11 +129,11 @@ public class PlayerView extends JFrame implements ActionListener {
         largestArmyBox.setToolTipText("Awarded to the player who has played the most 'Knight' DCs that exceeds 2 separate cards");
         victoryPointLabel.setToolTipText("Your victory point total; get to 10 and you win");
 
-        //Code for when actually implemented
-        //colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/"+player.getColor()+"_City_Large.png"));
+        //Code for implementation
+        colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/"+player.getColor()+"_City_Large.png"));
 
         //Code for testing
-        colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/Blue_City_Large.png"));
+        //colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/Blue_City_Large.png"));
 
         if(player.isTurn())
             unplayed.setEnabled(true);
@@ -147,14 +160,7 @@ public class PlayerView extends JFrame implements ActionListener {
         wheatNum.setBorder(compound);
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
         woodNum.setBorder(compound);
-        this.setVisible(true);
-        this.setTitle(player.getName()+" - "+player.getClassTitle());
-        this.setBounds(100, 100, 475, 353);
         update();
-    }
-
-    public static void main(String[] args) {
-        new PlayerView(new Player());
     }
 
     public void update(){
@@ -167,12 +173,30 @@ public class PlayerView extends JFrame implements ActionListener {
         longestRoadBox.setSelected(player.hasLongestRoad());
         victoryPointLabel.setText("   "+player.getVictoryPointTotal()+"   ");
 
-        if(player.isTurn())
-            unplayed.setEnabled(true);
-
-        else
-            unplayed.setEnabled(false);
+        unplayed.setEnabled(player.isTurn());
+        build.setEnabled(player.isTurn());
+        development.setEnabled(player.isTurn());
+        longestRoadBox.setSelected(player.hasLongestRoad());
+        largestArmyBox.setSelected(player.hasLargestArmy());
+        options.setEnabled(player.isTurn());
+        turnBox.setSelected(player.isTurn());
     }
 
-    public void actionPerformed(ActionEvent e) {}
+    public void suspendActions(){
+    }
+
+    public void actionPerformed(ActionEvent e){
+        if(e.getSource()==settlement){
+            //reference.isSettlementBuilding=true;
+        }
+        else if(e.getSource()==city){}
+        else if(e.getSource()==road){
+            //reference.isRoadBuilding=true;
+        }
+        else if(e.getSource()==buyCard){}
+        else if(e.getSource()==playCard){}
+        else if(e.getSource()==exchange){}
+        else if(e.getSource()==endTurn){}
+        else if(e.getSource()==rollDice){}
+    }
 }
