@@ -4,11 +4,21 @@ public class Index {
     int[] location;
     boolean taken;
     ArrayList<Index> connections = new ArrayList<Index>();
+    int indexID;
 
-    public Index(int[] location,boolean taken,ArrayList<Index> connections){
+    public int getIndexID() {
+        return indexID;
+    }
+
+    public void setIndexID(int indexID) {
+        this.indexID = indexID;
+    }
+
+    public Index(int[] location, boolean taken, ArrayList<Index> connections, int indexID){
         this.location = location;
         this.taken=taken;
         this.connections=connections;
+        this.indexID=indexID;
     }
 
     public int[] getLocation() {
