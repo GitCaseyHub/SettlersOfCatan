@@ -247,7 +247,7 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
 
         //Code to draw buildings when boolean is in correct state
-        if(isSettlementBuilding){
+        if (isSettlementBuilding){
             checkedIndexes.clear();
             boolean breakCheck = false;
             for (int x = 0; x < indexCoords.length; x++) {
