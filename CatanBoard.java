@@ -37,10 +37,12 @@ public class CatanBoard extends JFrame implements MouseListener {
     boolean doingStartup=false;
     boolean found=false;
 
+
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
     int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{655,646},{594,683},{461,687},{392,646},{526,654},{266,647},{332,686},{664,577},{731,536}};
     Index[] indexes = new Index[indexCoords.length];
+    Index checked;
 
     //Port Creation
     Point[][] portPoints = new Point[][]{new Point[]{new Point(264,122),new Point(330,87), new Point(286,89)},
@@ -246,8 +248,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                         if (indexes[i] == checkedIndex && !indexes[i].isTaken()) {
                             chosen_x = indexCoords[x][0] - 5;
                             chosen_y = indexCoords[x][1] - 16;
-                            settlementPaintCondition = true;
-                            indexes[i].setTaken(true);
+                            checked=indexes[i];
                             breakCheck = false;
                             break;
                         }
@@ -255,8 +256,13 @@ public class CatanBoard extends JFrame implements MouseListener {
                     if (checkedIndex.isTaken() && breakCheck)
                         JOptionPane.showMessageDialog(this, "This spot is unavailable. Pick another spot.","Spot Taken",3);
 
+                    else if(!buildable(checkedIndex))
+                        JOptionPane.showMessageDialog(this,"You are within one road-length of another settlement/city. Please choose again.","Spot Proximity Too Close",3);
+
                     else {
                         isSettlementBuilding = false;
+                        settlementPaintCondition=true;
+                        checked.setTaken(true);
                         repaint();
                     }
                 }
@@ -354,7 +360,16 @@ public class CatanBoard extends JFrame implements MouseListener {
 
         return null;
     }
-    
+
+    public boolean buildable(Index newSpot){
+        for(int x=0; x<indexes.length; x++)
+            if((indexes[x].isTaken() && distance(new Point(indexes[x].getLocation()[0],indexes[x].getLocation()[1]),new Point(newSpot.getLocation()[0],newSpot.getLocation()[1]))<85) &&
+                    (Math.abs(indexes[x].getLocation()[0]-newSpot.getLocation()[0])>=5 && Math.abs(indexes[x].getLocation()[1]-newSpot.getLocation()[1])>=5))
+                return false;
+        return true;
+    }
+
+
     public void performStartingOperations(){
         int startingPlayer = new Random().nextInt(playerCreation.length);
         doingStartup=true;
