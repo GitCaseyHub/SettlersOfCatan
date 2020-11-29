@@ -363,8 +363,8 @@ public class CatanBoard extends JFrame implements MouseListener {
 
     public boolean buildable(Index newSpot){
         for(int x=0; x<indexes.length; x++)
-            if((indexes[x].isTaken() && distance(new Point(indexes[x].getLocation()[0],indexes[x].getLocation()[1]),new Point(newSpot.getLocation()[0],newSpot.getLocation()[1]))<85) &&
-                    (Math.abs(indexes[x].getLocation()[0]-newSpot.getLocation()[0])>=5 && Math.abs(indexes[x].getLocation()[1]-newSpot.getLocation()[1])>=5))
+            if((indexes[x].isTaken() && distance(new Point(indexes[x].getLocation()[0],indexes[x].getLocation()[1]),new Point(newSpot.getLocation()[0],newSpot.getLocation()[1]))<80) &&
+                    (Math.abs(indexes[x].getLocation()[0]-newSpot.getLocation()[0])!=0 && Math.abs(indexes[x].getLocation()[1]-newSpot.getLocation()[1])!=0))
                 return false;
         return true;
     }
