@@ -87,7 +87,7 @@ public class CatanBoard extends JFrame implements MouseListener {
             coordList.add(coords[x]);
 
         for(int x=0; x<indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x],false,x);
+            indexes[x] = new Index(indexCoords[x],false,x,null);
 
         for(int x=0; x<types.length; x++){
             int typeIndex = new Random().nextInt(typeList.size());
@@ -171,8 +171,10 @@ public class CatanBoard extends JFrame implements MouseListener {
                     if(duplicates.size()==0) {
                         doingStartup = false;
                         catanPlayerList.get(0).setTurn(true);
+                        getPlayerStatusMenu(catanPlayerList.get(0)).update(catanPlayerList.get(0));
                         isDoneSettlementBuilding=true;
                         JOptionPane.showMessageDialog(this, "The game is ready to officially start. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play", 1);
+                        givePlayersStartingResources();
                     }
             }
 
@@ -226,7 +228,14 @@ public class CatanBoard extends JFrame implements MouseListener {
                             roadCondition=0;
                             checkedIndexes.clear();
                             found=true;
+                            break;
                         }
+                    }
+                    if(checkedIndexes.get(0).getOwner()!=getCurrentPlayer() && checkedIndexes.get(1).getOwner()!=getCurrentPlayer()){
+                        JOptionPane.showMessageDialog(this,"You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.","Road Error",3);
+                        roadCondition=0;
+                        checkedIndexes.clear();
+                        found=true;
                     }
                     if(!found){
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
@@ -239,6 +248,7 @@ public class CatanBoard extends JFrame implements MouseListener {
 
         //Code to draw buildings when boolean is in correct state
         if(isSettlementBuilding){
+            checkedIndexes.clear();
             boolean breakCheck = false;
             for (int x = 0; x < indexCoords.length; x++) {
                 if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
@@ -263,6 +273,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                         isSettlementBuilding = false;
                         settlementPaintCondition=true;
                         checked.setTaken(true);
+                        checked.setOwner(getCurrentPlayer());
                         repaint();
                     }
                 }
@@ -435,6 +446,47 @@ public class CatanBoard extends JFrame implements MouseListener {
         for(int x=list.size()-1; x>-1; x--)
             reversed.add(list.get(x));
         return reversed;
+    }
+
+    public void givePlayersStartingResources() {
+        for (int x = 0; x < catanPlayerList.size(); x++) {
+            ArrayList<Index> ownedIndexes = getOwnedIndexes(catanPlayerList.get(x));
+            Player currentPlayer = catanPlayerList.get(x);
+            PlayerView priorView = getPlayerStatusMenu(currentPlayer);
+            for(int y=0; y<ownedIndexes.size(); y++) {
+                ArrayList<String> startResources = getAdjacentResources(ownedIndexes.get(y).getLocation()[0], ownedIndexes.get(y).getLocation()[1]);
+                for (int z = 0; z < startResources.size(); z++) {
+                    if (startResources.get(z).equals("Grain"))
+                        currentPlayer.changeGrain(1);
+                    else if (startResources.get(z).equals("Brick"))
+                        currentPlayer.changeBrick(1);
+                    else if (startResources.get(z).equals("Forest"))
+                        currentPlayer.changeLumber(1);
+                    else if (startResources.get(z).equals("Plains"))
+                        currentPlayer.changeGrain(1);
+                    else if (startResources.get(z).equals("Mountain"))
+                        currentPlayer.changeOre(1);
+                }
+            }
+            priorView.update(currentPlayer);
+        }
+    }
+
+    public PlayerView getPlayerStatusMenu(Player player){
+        for(int x=0; x<statusViewer.length; x++)
+            if(statusViewer[x].player==player)
+                return statusViewer[x];
+
+        return null;
+    }
+
+    public ArrayList<Index> getOwnedIndexes(Player player){
+        ArrayList<Index> ownedIndexes = new ArrayList<Index>();
+        for(int x=0; x<indexes.length; x++)
+            if(indexes[x].getOwner()==player)
+                ownedIndexes.add(indexes[x]);
+
+        return ownedIndexes;
     }
 
     public void mouseReleased(MouseEvent e){}
