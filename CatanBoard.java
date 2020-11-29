@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener {
-    //Need to randomize ports (and find port images/their locations)
-
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
@@ -27,12 +25,14 @@ public class CatanBoard extends JFrame implements MouseListener {
 
     //Paint/Repaint Conditions
     boolean loaded=false;
-    boolean paintCondition=false;
+    boolean settlementPaintCondition=false;
     int chosen_x = 0;
     int chosen_y = 0;
 
     //Booleans for conditions on when MouseListeners should activate
-    boolean isRoadBuilding=true, isSettlementBuilding=true;
+    boolean isRoadBuilding=false, isSettlementBuilding=false;
+    boolean isDoneRoadBuilding=false, isDoneSettlementBuilding=false;
+    boolean doingStartup=false;
 
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
@@ -52,13 +52,25 @@ public class CatanBoard extends JFrame implements MouseListener {
     String[] portTypes = {"Generic","Generic","Generic","Generic","Wool","Wheat","Ore","Brick","Wood"};
     Port[] ports = new Port[9];
 
-    //Testing Variables
-    int counter=0;
-    ArrayList<Index> testIndexes = new ArrayList<Index>();
-    Object[] testInfo;
+    //Building Variables
+    int roadCondition=0;
+    ArrayList<Index> checkedIndexes = new ArrayList<Index>();
+    Object[] roadInfo;
+    
+    //Constructor Variables
+    PlayerView[] statusViewer;
+    ArrayList<Player> catanPlayerList;
+    Point[] statusGenerationalPoints;
+    PlayerSelect[] playerCreation;
+    ArrayList<Player> duplicates = new ArrayList<Player>();
 
-    public CatanBoard(){
+    public CatanBoard(ArrayList<Player> catanPlayerList,PlayerView[] statusViewer, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation){
         this.addMouseListener(this);
+        this.statusViewer=statusViewer;
+        this.catanPlayerList=catanPlayerList;
+        this.statusGenerationalPoints=statusGenerationalPoints;
+        this.playerCreation=playerCreation;
+        
         for(int x=0; x<types.length; x++)
             typeList.add(types[x]);
 
@@ -113,35 +125,56 @@ public class CatanBoard extends JFrame implements MouseListener {
 
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(3));
-                g2.setColor(new Color(0,0,153));
+                g2.setColor(new Color(10,30,150));
                 for(int x=0; x<outLinePoints.length; x++)
                     g2.drawLine((int)outLinePoints[x].getX(),(int)outLinePoints[x].getY(),(int)outLinePoints[(x+1)%outLinePoints.length].getX(), (int)outLinePoints[(x+1)%outLinePoints.length].getY());
 
                 loaded=true;
             }
-            if (paintCondition) {
+            if (settlementPaintCondition) {
                 //Drawing Settlements Test
-                BufferedImage settlement = ImageIO.read(new File("Pieces/White_City.png"));
+                BufferedImage settlement = ImageIO.read(new File("Pieces/"+getCurrentPlayer().getColor()+"_Settlement.png"));
                 g.drawImage(settlement, chosen_x, chosen_y, null);
-                paintCondition = false;
+                settlementPaintCondition = false;
+                isDoneSettlementBuilding=true;
+                if(doingStartup)
+                    isRoadBuilding=true;
             }
 
-            if(counter==2){
-                Point testPoint = (Point)testInfo[0];
-                String testString = testInfo[1].toString();
-                BufferedImage road = ImageIO.read(new File("Pieces/"+testString+"_Red_Road.png"));
+            if(roadCondition==2){
+                Point testPoint = (Point)roadInfo[0];
+                BufferedImage road = ImageIO.read(new File("Pieces/"+roadInfo[1]+"_"+getCurrentPlayer().getColor()+"_Road.png"));
                 g.drawImage(road,(int)testPoint.getX(),(int)testPoint.getY(),null);
-                counter=0;
-                testIndexes.clear();
+                roadCondition=0;
+                checkedIndexes.clear();
+                isDoneRoadBuilding=true;
+                isRoadBuilding=false;
+
+                if(doingStartup)
+                    if(duplicates.size()>0) {
+                        duplicates.get(0).setTurn(false);
+                        duplicates.remove(0);
+
+                        if (duplicates.size() > 0){
+                            duplicates.get(0).setTurn(true);
+                            JOptionPane.showMessageDialog(this, "Now, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building", 1);
+                            isSettlementBuilding = true;
+                        }
+                    }
+
+                    if(duplicates.size()==0) {
+                        doingStartup = false;
+                        catanPlayerList.get(0).setTurn(true);
+                        isDoneSettlementBuilding=true;
+                        JOptionPane.showMessageDialog(this, "The game is ready to officially start. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play", 1);
+                    }
+
             }
 
 
             for(int x=0; x<portPoints.length; x++) {
                 g.fillRect((int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), 10, 10);
                 g.fillRect((int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), 10, 10);
-                
-                //Draws a spot for where the port image will be drawn
-                //g.drawRect((int) portPoints[x][2].getX(), (int) portPoints[x][2].getY(),10,10);
             }
         }
         catch(IOException ie){
@@ -149,37 +182,26 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
     }
 
-    //Main method for easier testing
-    /*
-    public static void main(String[] args){
-        CatanBoard cb = new CatanBoard();
-        cb.setBounds(100,100,930,800);
-        cb.setVisible(true);
-    }
-    */
-
     public void mouseClicked(MouseEvent e){}
     public void mousePressed(MouseEvent e){
         int xLoc = e.getX();
         int yLoc = e.getY();
 
-        //Convenient way to find specific coordinates
-        /*
+        /* Convenient way to find specific coordinates
         System.out.println("X: "+xLoc);
         System.out.println("Y: "+yLoc);
         */
 
         //Code to draw roads if boolean is in correct state
         if(isRoadBuilding) {
-            if (counter != 2) {
+            if (roadCondition != 2) {
                 for (int x = 0; x < indexCoords.length; x++) {
                     if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
                         Index checkedIndex = returnAppropIndex(indexCoords[x][0], indexCoords[x][1]);
                         for (int i = 0; i < indexes.length; i++) {
                             if (indexes[i] == checkedIndex) {
-                                testIndexes.add(indexes[i]);
-                                counter++;
-                                System.out.println(checkedIndex.toString());
+                                checkedIndexes.add(indexes[i]);
+                                roadCondition++;
                                 repaint();
                             }
                         }
@@ -187,14 +209,16 @@ public class CatanBoard extends JFrame implements MouseListener {
                 }
             }
 
-            if (counter == 2) {
-                testInfo = getRoadPositionAndType(testIndexes.get(0), testIndexes.get(1));
+            if (roadCondition == 2) {
+                roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
+                //checkedIndexes.get(0).addConnection(checkedIndexes.get(1));
+                //checkedIndexes.get(1).addConnection(checkedIndexes.get(0));
                 repaint();
             }
         }
 
         //Code to draw buildings when boolean is in correct state
-        if(isSettlementBuilding) {
+        if(isSettlementBuilding){
             boolean breakCheck = false;
             for (int x = 0; x < indexCoords.length; x++) {
                 if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
@@ -204,8 +228,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                         if (indexes[i] == checkedIndex && !indexes[i].isTaken()) {
                             chosen_x = indexCoords[x][0] - 5;
                             chosen_y = indexCoords[x][1] - 16;
-                            paintCondition = true;
-                            repaint();
+                            settlementPaintCondition = true;
                             indexes[i].setTaken(true);
                             breakCheck = false;
                             break;
@@ -213,10 +236,24 @@ public class CatanBoard extends JFrame implements MouseListener {
                     }
                     if (checkedIndex.isTaken() && breakCheck)
                         JOptionPane.showMessageDialog(this, "This spot is unavailable. Pick another spot.","Spot Taken",3);
+
+                    else {
+                        //JOptionPane.showMessageDialog(this, "You've created a settlement.", "Settlement Construction", 1);
+                        isSettlementBuilding = false;
+                        repaint();
+                    }
                 }
             }
         }
     }
+
+    public void listPrint(ArrayList<Player> players){
+        for(int x=0; x<players.size(); x++)
+            System.out.println(players.get(x).getName());
+
+        System.out.println("");
+    }
+
     public void constructPorts(){
         ArrayList<Point[]> portPointList = new ArrayList<Point[]>();
         ArrayList<String> portTypesList = new ArrayList<String>();
@@ -261,9 +298,6 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
 
         else {
-            double delta_x = distance(indexOneLoc,indexTwoLoc)*Math.sqrt(3)/8;
-            double delta_y = distance(indexOneLoc,indexTwoLoc)/8;
-
             //Values necessary for creating points for the diagonal road polygon
             if (oneX < twoX && oneY < twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10)
                 return new Object[]{new Point(oneX+19,oneY+10),"Up_To_Down"};
@@ -300,6 +334,82 @@ public class CatanBoard extends JFrame implements MouseListener {
             }
         }
         return adjacentResources;
+    }
+
+    //Returns the current player (obviously)
+    public Player getCurrentPlayer(){
+        for(int x=0; x<catanPlayerList.size(); x++)
+            if(catanPlayerList.get(x).isTurn())
+                return catanPlayerList.get(x);
+
+        return null;
+    }
+    
+    public void performStartingOperations(){
+        int startingPlayer = new Random().nextInt(playerCreation.length);
+        doingStartup=true;
+        for (int x = 0; x < catanPlayerList.size(); x++) {
+            if (catanPlayerList.get(x).getRefNumber() == startingPlayer) {
+                catanPlayerList.get(x).setTurn(true);
+            }
+        }
+
+        //Creating status screen for each player
+        statusViewer = new PlayerView[catanPlayerList.size()];
+        for (int x = 0; x < catanPlayerList.size(); x++){
+            statusViewer[x] = new PlayerView(catanPlayerList.get(x), this);
+            statusViewer[x].setBounds((int)statusGenerationalPoints[x].getX(),(int)statusGenerationalPoints[x].getY(),475,353);
+            statusViewer[x].setVisible(true);
+            statusViewer[x].setTitle(catanPlayerList.get(x).getName()+" - "+catanPlayerList.get(x).getClassTitle());
+        }
+
+        //Construct starting pick order
+        ArrayList<Integer>startPickOrder = new ArrayList<Integer>();
+        ArrayList<Integer> turnOrder=new ArrayList<Integer>();
+        for(int x=0; x<catanPlayerList.size(); x++) {
+            startPickOrder.add((startingPlayer+x)% catanPlayerList.size());
+        }
+        turnOrder = startPickOrder;
+        String turnOrderString = "The turn order is as follows: ";
+        for(int x=0; x<turnOrder.size(); x++)
+            for(int y=0; y<catanPlayerList.size(); y++)
+                if(catanPlayerList.get(y).getRefNumber() == turnOrder.get(x))
+                    turnOrderString+=catanPlayerList.get(y).getName()+((x!=turnOrder.size()-1)?", ":". ");
+
+        startPickOrder.addAll(reverse(startPickOrder));
+        String buildingOrder="With that in mind, the starting order placement will be: ";
+        ArrayList<String> turnNameList = new ArrayList<String>();
+
+        for(int x=0; x<startPickOrder.size(); x++)
+            for(int y=0; y<catanPlayerList.size(); y++)
+                if(catanPlayerList.get(y).getRefNumber() == turnOrder.get(x)) {
+                    buildingOrder += catanPlayerList.get(y).getName() + ((x != turnOrder.size() - 1) ? ", " : ".");
+                    turnNameList.add(catanPlayerList.get(y).getName());
+                }
+        JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Generating Game", 1);
+        JOptionPane.showMessageDialog(this,turnOrderString+ buildingOrder,"Turn and Building Order",1);
+
+        for(int y=0; y<statusViewer.length; y++) {
+            statusViewer[y].options.setEnabled(false);
+            statusViewer[y].build.setEnabled(false);
+            statusViewer[y].development.setEnabled(false);
+        }
+
+        for(int y=0; y<turnNameList.size(); y++)
+            for(int x=0; x<catanPlayerList.size(); x++)
+                if(turnNameList.get(y).equals(catanPlayerList.get(x).getName()))
+                    duplicates.add(catanPlayerList.get(x));
+
+        JOptionPane.showMessageDialog(this,"So, "+duplicates.get(0).getName()+", select an index to build on, and then a direction you'd like to build a road.","Road and Settlement Building",1);
+        this.isSettlementBuilding=true;
+        duplicates.get(0).setTurn(true);
+    }
+
+    public ArrayList<Integer> reverse(ArrayList<Integer> list){
+        ArrayList<Integer> reversed = new ArrayList<Integer>();
+        for(int x=list.size()-1; x>-1; x--)
+            reversed.add(list.get(x));
+        return reversed;
     }
 
     public void mouseReleased(MouseEvent e){}
