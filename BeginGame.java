@@ -5,11 +5,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class BeginGame extends JFrame implements ActionListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
-    JButton generateChars = new JButton("Generate Characters");
+    JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
     JCheckBox activePorts = new JCheckBox("Active Ports");
     JCheckBox multipleRobbers =new JCheckBox("Multiple Robbers");
@@ -18,14 +17,13 @@ public class BeginGame extends JFrame implements ActionListener {
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
     Point[] generationPoints = new Point[]{new Point(550,100),new Point(550,455), new Point(1035,100), new Point(1035,455)};
-    Point[] statusGenerationPoints = new Point[]{new Point(1080,100),new Point(1080,553), new Point(1555,100), new Point(1605,553)};
+    Point[] statusGenerationPoints = new Point[]{new Point(1080,100),new Point(1080,503), new Point(1555,100), new Point(1605,503)};
     PlayerSelect[] playerCreation;
     PlayerView[] statusViewer;
 
     ArrayList<Player> catanPlayerList = new ArrayList<Player>();
     ArrayList<Integer> startPickOrder;
     ArrayList<Integer> turnOrder;
-    CatanBoard cbMain = new CatanBoard();
 
     public BeginGame(){
         for(int x=0; x<comboOptions.length; x++)
@@ -55,7 +53,7 @@ public class BeginGame extends JFrame implements ActionListener {
                 generateChars.addActionListener(this);
                 startGame.addActionListener(this);
 
-            this.setBounds(100,100,400,145);
+            this.setBounds(100,100,400,142);
             this.setVisible(true);
             this.setTitle("Options and Generation");
     }
@@ -79,57 +77,27 @@ public class BeginGame extends JFrame implements ActionListener {
         }
 
         else if(e.getSource()==startGame) {
-            JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Generating Game", 1);
-            int startingPlayer = new Random().nextInt(playerCreation.length);
-            for (int x = 0; x < catanPlayerList.size(); x++) {
-                if (catanPlayerList.get(x).getRefNumber() == startingPlayer) {
-                    catanPlayerList.get(x).setTurn(true);
-                }
-            }
-
-            //Creating status screen for each player
-            statusViewer = new PlayerView[catanPlayerList.size()];
-            for (int x = 0; x < catanPlayerList.size(); x++){
-                statusViewer[x] = new PlayerView(catanPlayerList.get(x), cbMain);
-                statusViewer[x].setBounds((int)statusGenerationPoints[x].getX(),(int)statusGenerationPoints[x].getY(),475,353);
-                statusViewer[x].setVisible(true);
-                statusViewer[x].setTitle(catanPlayerList.get(x).getName()+" - "+catanPlayerList.get(x).getClassTitle());
-            }
-
-            //Construct starting pick order
-            startPickOrder = new ArrayList<Integer>();
-            turnOrder=new ArrayList<Integer>();
-            for(int x=0; x<catanPlayerList.size(); x++) {
-                startPickOrder.add((startingPlayer+x)% catanPlayerList.size());
-            }
-            turnOrder = startPickOrder;
-            startPickOrder.addAll(reverse(startPickOrder));
             this.setVisible(false);
+            CatanBoard cbMain = new CatanBoard(catanPlayerList, statusViewer, statusGenerationPoints, playerCreation);
+            cbMain.setBounds(100, 100, 930, 800);
+            cbMain.dispose();
             cbMain.setUndecorated(true);
-            cbMain.setBounds(100,100,930,800);
             cbMain.setTitle("Settlers of Catan®");
             cbMain.setVisible(true);
+            cbMain.performStartingOperations();
         }
     }
 
-    public static void main(String[] nipTownUSA){new BeginGame();}
-
-    public ArrayList<Integer> reverse(ArrayList<Integer> list){
-        ArrayList<Integer> reversed = new ArrayList<Integer>();
-        for(int x=list.size()-1; x>-1; x--)
-            reversed.add(list.get(x));
-        return reversed;
-    }
+    public static void main(String[] args){new BeginGame();}
 
     public void addPlayer(Player addedPlayer,int referenceNumber){
         if(catanPlayerList.size()==0){
-            JOptionPane.showMessageDialog(this, "You've created your character.", "Character Creation", 1);
             PlayerSelect referenceView = playerCreation[referenceNumber];
             referenceView.nameField.setEditable(false);
             referenceView.classBox.setEnabled(false);
             referenceView.confirmButton.setEnabled(false);
             referenceView.colorBox.setEnabled(false);
-            this.setTitle(referenceView.nameField.getText() + "'s Character");
+            referenceView.setTitle(referenceView.nameField.getText() + "'s Character");
             catanPlayerList.add(addedPlayer);
             for(int y=0; y<playerCreation.length; y++)
                 if(y!=referenceNumber)
@@ -143,7 +111,6 @@ public class BeginGame extends JFrame implements ActionListener {
 
                 else {
                     PlayerSelect referenceView = playerCreation[referenceNumber];
-                    JOptionPane.showMessageDialog(this, "You've created your character.", "Character Creation", 1);
                     referenceView.nameField.setEditable(false);
                     referenceView.classBox.setEnabled(false);
                     referenceView.confirmButton.setEnabled(false);
