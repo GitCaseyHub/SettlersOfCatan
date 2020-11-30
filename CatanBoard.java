@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener {
-    //Line 228: Road conflict and road building simultaneous
-
+    //Issue with drawing first road should it be of distance greater than 1 tile away (very specific; what the fuck is happening here)
+    //PlayerView frames will not update
+    
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
@@ -20,6 +21,7 @@ public class CatanBoard extends JFrame implements MouseListener {
     ArrayList<Integer> rollNumList = new ArrayList<Integer>();
     ArrayList<int[]> coordList = new ArrayList<int[]>();
     Tile tiles[] = new Tile[19];
+    PlayerView[] statusViewer;
 
     //Water Tiles
     Point[] waterPoints = new Point[]{new Point(201,-30), new Point(334,-30), new Point(467,-30), new Point(600,-30), new Point(133,84), new Point(66,198), new Point(0,312), new Point(67,429), new Point(133,543), new Point(333,656), new Point(466,656), new Point(600,656), new Point(201,656), new Point(668,84), new Point(734,198), new Point(800,312), new Point(668, 543), new Point(734,429)};
@@ -36,7 +38,6 @@ public class CatanBoard extends JFrame implements MouseListener {
     boolean isDoneRoadBuilding=false, isDoneSettlementBuilding=false;
     boolean doingStartup=false;
     boolean found=false;
-
 
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
@@ -64,15 +65,13 @@ public class CatanBoard extends JFrame implements MouseListener {
     ArrayList<int[]> indexConnections = new ArrayList<int[]>();
     
     //Constructor Variables
-    PlayerView[] statusViewer;
     ArrayList<Player> catanPlayerList;
     Point[] statusGenerationalPoints;
     PlayerSelect[] playerCreation;
     ArrayList<Player> duplicates = new ArrayList<Player>();
 
-    public CatanBoard(ArrayList<Player> catanPlayerList,PlayerView[] statusViewer, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation){
+    public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation){
         this.addMouseListener(this);
-        this.statusViewer=statusViewer;
         this.catanPlayerList=catanPlayerList;
         this.statusGenerationalPoints=statusGenerationalPoints;
         this.playerCreation=playerCreation;
@@ -171,7 +170,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                     if(duplicates.size()==0) {
                         doingStartup = false;
                         catanPlayerList.get(0).setTurn(true);
-                        getPlayerStatusMenu(catanPlayerList.get(0)).update(catanPlayerList.get(0));
+                        getPlayerStatusMenu(catanPlayerList.get(0)).update();
                         isDoneSettlementBuilding=true;
                         JOptionPane.showMessageDialog(this, "The game is ready to officially start. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play", 1);
                         givePlayersStartingResources();
@@ -215,13 +214,29 @@ public class CatanBoard extends JFrame implements MouseListener {
             }
 
             if (roadCondition == 2) {
-                if(indexConnections.size()==0) {
-                    roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
-                    indexConnections.add(new int[]{checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID()});
-                    repaint();
+                found=false;
+                if(indexConnections.size()==0){
+                    if(checkedIndexes.get(0).getOwner()!=getCurrentPlayer() && checkedIndexes.get(1).getOwner()!=getCurrentPlayer()){
+                        JOptionPane.showMessageDialog(this,"You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.","Road Error",3);
+                        roadCondition=0;
+                        checkedIndexes.clear();
+                        found=true;
+                    }
+                    else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))>100){
+                        JOptionPane.showMessageDialog(this,"Your road can only extend one space. Choose road indices that are next to one another.","Road Error",3);
+                        roadCondition=0;
+                        checkedIndexes.clear();
+                        found=true;
+                    }
+
+                    else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))<90) {
+                        System.out.println("IM HERE");
+                        roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
+                        indexConnections.add(new int[]{checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID()});
+                        repaint();
+                    }
                 }
                 else{
-                    found=false;
                     for(int x=0; x<indexConnections.size(); x++){
                         if((indexConnections.get(x)[0]==checkedIndexes.get(0).getIndexID() && indexConnections.get(x)[1]==checkedIndexes.get(1).getIndexID()) ||(indexConnections.get(x)[0]==checkedIndexes.get(1).getIndexID() && indexConnections.get(x)[1]==checkedIndexes.get(0).getIndexID())){
                             JOptionPane.showMessageDialog(this,"There is already a road here. Choose two different indexes that do not contain a road between them.","Road Error",3);
@@ -237,7 +252,13 @@ public class CatanBoard extends JFrame implements MouseListener {
                         checkedIndexes.clear();
                         found=true;
                     }
-                    if(!found){
+                    else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))>100){
+                        JOptionPane.showMessageDialog(this,"Your road can only extend one space. Choose road indices that are next to one another.","Road Error",3);
+                        roadCondition=0;
+                        checkedIndexes.clear();
+                        found=true;
+                    }
+                    else if(!found){
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
                         indexConnections.add(new int[]{checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID()});
                         repaint();
@@ -247,7 +268,7 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
 
         //Code to draw buildings when boolean is in correct state
-        if (isSettlementBuilding){
+        if(isSettlementBuilding){
             checkedIndexes.clear();
             boolean breakCheck = false;
             for (int x = 0; x < indexCoords.length; x++) {
@@ -451,24 +472,26 @@ public class CatanBoard extends JFrame implements MouseListener {
     public void givePlayersStartingResources() {
         for (int x = 0; x < catanPlayerList.size(); x++) {
             ArrayList<Index> ownedIndexes = getOwnedIndexes(catanPlayerList.get(x));
-            Player currentPlayer = catanPlayerList.get(x);
-            PlayerView priorView = getPlayerStatusMenu(currentPlayer);
             for(int y=0; y<ownedIndexes.size(); y++) {
                 ArrayList<String> startResources = getAdjacentResources(ownedIndexes.get(y).getLocation()[0], ownedIndexes.get(y).getLocation()[1]);
                 for (int z = 0; z < startResources.size(); z++) {
                     if (startResources.get(z).equals("Grain"))
-                        currentPlayer.changeGrain(1);
+                        catanPlayerList.get(x).changeGrain(1);
                     else if (startResources.get(z).equals("Brick"))
-                        currentPlayer.changeBrick(1);
+                        catanPlayerList.get(x).changeBrick(1);
                     else if (startResources.get(z).equals("Forest"))
-                        currentPlayer.changeLumber(1);
+                        catanPlayerList.get(x).changeLumber(1);
                     else if (startResources.get(z).equals("Plains"))
-                        currentPlayer.changeGrain(1);
+                        catanPlayerList.get(x).changeGrain(1);
                     else if (startResources.get(z).equals("Mountain"))
-                        currentPlayer.changeOre(1);
+                        catanPlayerList.get(x).changeOre(1);
                 }
             }
-            priorView.update(currentPlayer);
+            getPlayerStatusMenu(catanPlayerList.get(x)).update();
+        }
+        for(int x=0; x<statusViewer.length; x++){
+            statusViewer[x].player=catanPlayerList.get(x);
+            statusViewer[x].update();
         }
     }
 
