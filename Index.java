@@ -2,11 +2,20 @@ public class Index {
     int[] location;
     boolean taken;
     int indexID;
+    Player owner;
 
-    public Index(int[] location, boolean taken, int indexID){
+    public Index(int[] location, boolean taken, int indexID, Player owner){
         this.location = location;
         this.taken=taken;
         this.indexID=indexID;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 
     public int getIndexID() {
