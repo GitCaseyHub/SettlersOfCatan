@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener {
+    //Road building cannot currently build a road attached to another road. Need to find logic to do that.
+
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
@@ -19,6 +21,7 @@ public class CatanBoard extends JFrame implements MouseListener {
     ArrayList<int[]> coordList = new ArrayList<int[]>();
     Tile tiles[] = new Tile[19];
     PlayerView[] statusViewer;
+    ArrayList<String> turnNameList;
 
     //Water Tiles
     Point[] waterPoints = new Point[]{new Point(201,-30), new Point(334,-30), new Point(467,-30), new Point(600,-30), new Point(133,84), new Point(66,198), new Point(0,312), new Point(67,429), new Point(133,543), new Point(333,656), new Point(466,656), new Point(600,656), new Point(201,656), new Point(668,84), new Point(734,198), new Point(800,312), new Point(668, 543), new Point(734,429)};
@@ -35,6 +38,7 @@ public class CatanBoard extends JFrame implements MouseListener {
     boolean isDoneRoadBuilding=false, isDoneSettlementBuilding=false;
     boolean doingStartup=false;
     boolean found=false;
+    int count=0;
 
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
@@ -59,7 +63,7 @@ public class CatanBoard extends JFrame implements MouseListener {
     int roadCondition=0;
     ArrayList<Index> checkedIndexes = new ArrayList<Index>();
     Object[] roadInfo;
-    ArrayList<int[]> indexConnections = new ArrayList<int[]>();
+    ArrayList<Road> indexConnections = new ArrayList<Road>();
     
     //Constructor Variables
     ArrayList<Player> catanPlayerList;
@@ -83,7 +87,7 @@ public class CatanBoard extends JFrame implements MouseListener {
             coordList.add(coords[x]);
 
         for(int x=0; x<indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x],false,x,null);
+            indexes[x] = new Index(indexCoords[x],false,x,new Player());
 
         for(int x=0; x<types.length; x++){
             int typeIndex = new Random().nextInt(typeList.size());
@@ -152,26 +156,32 @@ public class CatanBoard extends JFrame implements MouseListener {
                 isDoneRoadBuilding=true;
                 isRoadBuilding=false;
 
-                if(doingStartup)
-                    if(duplicates.size()>0) {
+                if(doingStartup) {
+                    if (duplicates.size() > 0) {
                         duplicates.get(0).setTurn(false);
                         duplicates.remove(0);
 
-                        if (duplicates.size() > 0){
+                        if (duplicates.size() > 0) {
                             duplicates.get(0).setTurn(true);
                             JOptionPane.showMessageDialog(this, "Now, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building", 1);
                             isSettlementBuilding = true;
                         }
                     }
 
-                    if(duplicates.size()==0) {
+                    if (duplicates.size() == 0) {
                         doingStartup = false;
-                        catanPlayerList.get(0).setTurn(true);
+                        for(int x=0; x<catanPlayerList.size(); x++)
+                            if(catanPlayerList.get(x).getName().equals(turnNameList.get(0)))
+                                catanPlayerList.get(x).setTurn(true);
+
                         getPlayerStatusMenu(catanPlayerList.get(0)).update();
-                        isDoneSettlementBuilding=true;
-                        JOptionPane.showMessageDialog(this, "The game is ready to officially start. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play", 1);
+                        isDoneSettlementBuilding = true;
+                        JOptionPane.showMessageDialog(this, "The game is ready to officially start. Based on your first settlement placements, you will be given the appropriate resources. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play", 1);
                         givePlayersStartingResources();
                     }
+                }
+                else
+                    JOptionPane.showMessageDialog(this,"You've built a new road.","Road Building",1);
             }
 
             for(int x=0; x<portPoints.length; x++) {
@@ -228,13 +238,13 @@ public class CatanBoard extends JFrame implements MouseListener {
 
                     else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))<90) {
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
-                        indexConnections.add(new int[]{checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID()});
+                        indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(),getCurrentPlayer()));
                         repaint();
                     }
                 }
                 else{
                     for(int x=0; x<indexConnections.size(); x++){
-                        if((indexConnections.get(x)[0]==checkedIndexes.get(0).getIndexID() && indexConnections.get(x)[1]==checkedIndexes.get(1).getIndexID()) ||(indexConnections.get(x)[0]==checkedIndexes.get(1).getIndexID() && indexConnections.get(x)[1]==checkedIndexes.get(0).getIndexID())){
+                        if((indexConnections.get(x).getIndexA()==checkedIndexes.get(0).getIndexID() && indexConnections.get(x).getIndexB()==checkedIndexes.get(1).getIndexID()) ||(indexConnections.get(x).getIndexA()==checkedIndexes.get(1).getIndexID() && indexConnections.get(x).getIndexB()==checkedIndexes.get(0).getIndexID())){
                             JOptionPane.showMessageDialog(this,"There is already a road here. Choose two different indexes that do not contain a road between them.","Road Error",3);
                             roadCondition=0;
                             checkedIndexes.clear();
@@ -242,13 +252,51 @@ public class CatanBoard extends JFrame implements MouseListener {
                             break;
                         }
                     }
-                    if(checkedIndexes.get(0).getOwner()!=getCurrentPlayer() && checkedIndexes.get(1).getOwner()!=getCurrentPlayer()){
+
+                    //Road Building Still Buggy
+                    for(int x=0; x<indexConnections.size(); x++) {
+                        if (indexConnections.get(x).getIndexA() == checkedIndexes.get(0).getIndexID()) {
+                            System.out.println("1");
+                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
+                                System.out.println("a");
+                                count++;
+                            }
+                        } else if (indexConnections.get(x).getIndexA() == checkedIndexes.get(1).getIndexID()) {
+                            System.out.println("2");
+                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
+                                System.out.println("b");
+                                count++;
+                            }
+                        } else if (indexConnections.get(x).getIndexB() == checkedIndexes.get(0).getIndexID()) {
+                            System.out.println("3");
+                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
+                                System.out.println("c");
+                                count++;
+                            }
+                        } else if (indexConnections.get(x).getIndexB() == checkedIndexes.get(1).getIndexID()) {
+                            System.out.println("4");
+                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
+                                System.out.println("d");
+                                count++;
+                            }
+                        }
+                    }
+
+                    if(!doingStartup && count==0) {
+                        JOptionPane.showMessageDialog(this, "If you want to build a road, attach it to another road you own or another settlement/city you own.", "Road Building Error", 3);
+                        roadCondition = 0;
+                        checkedIndexes.clear();
+                        found = true;
+                    }
+
+                    else if(checkedIndexes.get(0).getOwner()!=getCurrentPlayer() && checkedIndexes.get(1).getOwner()!=getCurrentPlayer() && count==0){
                         JOptionPane.showMessageDialog(this,"You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.","Road Error",3);
                         roadCondition=0;
                         checkedIndexes.clear();
                         found=true;
                     }
-                    else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))>100){
+
+                    else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))>100 && !found){
                         JOptionPane.showMessageDialog(this,"Your road can only extend one space. Choose road indices that are next to one another.","Road Error",3);
                         roadCondition=0;
                         checkedIndexes.clear();
@@ -256,7 +304,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                     }
                     else if(!found){
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
-                        indexConnections.add(new int[]{checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID()});
+                        indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(),getCurrentPlayer()));
                         repaint();
                     }
                 }
@@ -313,6 +361,17 @@ public class CatanBoard extends JFrame implements MouseListener {
             portPointList.remove(portPointList.get(pointIndex));
             portTypesList.remove(portTypesList.get(stringIndex));
         }
+    }
+
+
+
+    public ArrayList<Integer> getIndexIDs() {
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        for (int x = 0; x < indexConnections.size(); x++){
+            ids.add(indexConnections.get(x).getIndexA());
+            ids.add(indexConnections.get(x).getIndexB());
+        }
+        return ids;
     }
 
     public Index returnAppropIndex(int chosen_x, int chosen_y){
@@ -432,7 +491,7 @@ public class CatanBoard extends JFrame implements MouseListener {
 
         startPickOrder.addAll(reverse(startPickOrder));
         String buildingOrder="With that in mind, the starting order placement will be: ";
-        ArrayList<String> turnNameList = new ArrayList<String>();
+        turnNameList = new ArrayList<String>();
 
         for(int x=0; x<startPickOrder.size(); x++)
             for(int y=0; y<catanPlayerList.size(); y++)
