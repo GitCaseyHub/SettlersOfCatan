@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener {
-    //Issue with drawing first road should it be of distance greater than 1 tile away (very specific; what the fuck is happening here)
-    //PlayerView frames will not update
-    
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
@@ -415,6 +412,7 @@ public class CatanBoard extends JFrame implements MouseListener {
         for (int x = 0; x < catanPlayerList.size(); x++){
             statusViewer[x] = new PlayerView(catanPlayerList.get(x), this);
             statusViewer[x].setBounds((int)statusGenerationalPoints[x].getX(),(int)statusGenerationalPoints[x].getY(),475,353);
+            statusViewer[x].pack();
             statusViewer[x].setVisible(true);
             statusViewer[x].setTitle(catanPlayerList.get(x).getName()+" - "+catanPlayerList.get(x).getClassTitle());
         }
@@ -481,16 +479,12 @@ public class CatanBoard extends JFrame implements MouseListener {
                     else if (startResources.get(z).equals("Forest"))
                         catanPlayerList.get(x).changeLumber(1);
                     else if (startResources.get(z).equals("Plains"))
-                        catanPlayerList.get(x).changeGrain(1);
+                        catanPlayerList.get(x).changeWool(1);
                     else if (startResources.get(z).equals("Mountain"))
                         catanPlayerList.get(x).changeOre(1);
                 }
             }
             getPlayerStatusMenu(catanPlayerList.get(x)).update();
-        }
-        for(int x=0; x<statusViewer.length; x++){
-            statusViewer[x].player=catanPlayerList.get(x);
-            statusViewer[x].update();
         }
     }
 
