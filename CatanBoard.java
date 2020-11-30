@@ -230,7 +230,6 @@ public class CatanBoard extends JFrame implements MouseListener {
                     }
 
                     else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))<90) {
-                        System.out.println("IM HERE");
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
                         indexConnections.add(new int[]{checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID()});
                         repaint();
