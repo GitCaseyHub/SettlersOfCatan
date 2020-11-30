@@ -1,8 +1,10 @@
+import java.util.ArrayList;
+
 public class DevelopmentCard{
     String type="";
     Player player;
     CatanBoard cbReference;
-    Player[] otherPlayers;
+    ArrayList<Player> otherPlayers;
 
     public String getType() {
         return type;
@@ -28,15 +30,11 @@ public class DevelopmentCard{
         this.cbReference = cbReference;
     }
 
-    public Player[] getOtherPlayers() {
+    public ArrayList<Player> getOtherPlayers() {
         return otherPlayers;
     }
 
-    public void setOtherPlayers(Player[] otherPlayers) {
-        this.otherPlayers = otherPlayers;
-    }
-
-    public DevelopmentCard(String type, Player player, Player[] otherPlayers, CatanBoard cbReference){
+    public DevelopmentCard(String type, Player player, ArrayList<Player> otherPlayers, CatanBoard cbReference){
         //Types of Cards: Knight, Victory Points, Road Builder, Year of Plenty, Monopoly
         this.type=type;
         this.player=player;
