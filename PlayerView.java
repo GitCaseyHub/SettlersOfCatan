@@ -51,8 +51,14 @@ public class PlayerView extends JFrame implements ActionListener {
     JMenuItem playCard = new JMenuItem("Play Development Card");
     JMenu options = new JMenu("Options");
     JMenuItem exchange = new JMenuItem("Trade Resources");
+    JMenuItem buildingCard = new JMenuItem("Building Helper Card");
     JMenuItem rollDice = new JMenuItem("Roll Dice");
     JMenuItem endTurn = new JMenuItem("End Turn");
+
+
+    //Building Costs Frame
+    JFrame costFrame = new JFrame();
+    JLabel imageCostLabel = new JLabel("",0);
 
     public PlayerView(Player player, CatanBoard reference) {
         //Relating global variables to class variables
@@ -76,10 +82,12 @@ public class PlayerView extends JFrame implements ActionListener {
         mb.add(options);
         options.add(exchange);
         exchange.addActionListener(this);
+        options.add(rollDice);
+        rollDice.addActionListener(this);
+        options.add(buildingCard);
+        buildingCard.addActionListener(this);
         options.add(endTurn);
         endTurn.addActionListener(this);
-        options.add(rollDice);
-        options.addActionListener(this);
 
         //Creating the GUI
         this.setLayout(new BorderLayout());
@@ -135,11 +143,7 @@ public class PlayerView extends JFrame implements ActionListener {
         //Code for testing
         //colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/Blue_City_Large.png"));
 
-        if(player.isTurn())
-            unplayed.setEnabled(true);
-
-        else
-            unplayed.setEnabled(false);
+        unplayed.setEnabled(player.isTurn());
 
         //Array manipulation stuff
         for (int x = 0; x < 5; x++) {
@@ -161,6 +165,7 @@ public class PlayerView extends JFrame implements ActionListener {
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
         woodNum.setBorder(compound);
         update();
+        initializeCostFrame();
     }
 
     public void update(){
@@ -180,23 +185,30 @@ public class PlayerView extends JFrame implements ActionListener {
         largestArmyBox.setSelected(player.hasLargestArmy());
         options.setEnabled(player.isTurn());
         turnBox.setSelected(player.isTurn());
+        this.setSize(this.getWidth()+1,this.getHeight());
+        this.setSize(this.getWidth()-1,this.getHeight());
     }
 
-    public void suspendActions(){
+    public void initializeCostFrame(){
+        costFrame.add(imageCostLabel);
+        imageCostLabel.setIcon(new ImageIcon("Resources/Building_Costs.png"));
+
+        //costFrame bounds need to be adjusted
+        costFrame.setBounds((int)this.getBounds().getX(),(int)this.getBounds().getY(),291,357);
+        costFrame.setUndecorated(true);
+
     }
 
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==settlement){
-            //reference.isSettlementBuilding=true;
-        }
+        if(e.getSource()==settlement){}
         else if(e.getSource()==city){}
-        else if(e.getSource()==road){
-            //reference.isRoadBuilding=true;
-        }
+        else if(e.getSource()==road){}
         else if(e.getSource()==buyCard){}
         else if(e.getSource()==playCard){}
         else if(e.getSource()==exchange){}
         else if(e.getSource()==endTurn){}
         else if(e.getSource()==rollDice){}
+        else if(e.getSource()==buildingCard){
+            costFrame.setVisible(!costFrame.isVisible());}
     }
 }
