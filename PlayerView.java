@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -55,6 +57,8 @@ public class PlayerView extends JFrame implements ActionListener {
     JMenuItem rollDice = new JMenuItem("Roll Dice");
     JMenuItem endTurn = new JMenuItem("End Turn");
 
+    //Development Card Prep
+    String[] devCardTypes = {"Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Year of Plenty","Year of Plenty","Victory Points","Victory Points","Victory Points","Victory Points","Victory Points","Monopoly","Monopoly","Road Builder","Road Builder"};
 
     //Building Costs Frame
     JFrame costFrame = new JFrame();
@@ -185,6 +189,8 @@ public class PlayerView extends JFrame implements ActionListener {
         largestArmyBox.setSelected(player.hasLargestArmy());
         options.setEnabled(player.isTurn());
         turnBox.setSelected(player.isTurn());
+
+        //Workaround for revalidate() / invalidate() validate()
         this.setSize(this.getWidth()+1,this.getHeight());
         this.setSize(this.getWidth()-1,this.getHeight());
     }
@@ -196,19 +202,79 @@ public class PlayerView extends JFrame implements ActionListener {
         //costFrame bounds need to be adjusted
         costFrame.setBounds((int)this.getBounds().getX(),(int)this.getBounds().getY(),291,357);
         costFrame.setUndecorated(true);
+    }
 
+    public ArrayList<Player> getOtherPlayers(){
+        ArrayList<Player> others = new ArrayList<Player>();
+        for(int x=0; x<reference.catanPlayerList.size(); x++)
+            if(reference.catanPlayerList.get(x)!=player)
+                others.add(reference.catanPlayerList.get(x));
+
+        return others;
     }
 
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==settlement){}
+        if(e.getSource()==settlement){
+            int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Creation",JOptionPane.YES_NO_OPTION);
+            if(settlementInput==0){
+                if(player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1){
+                    reference.isSettlementBuilding=true;
+                    this.options.setEnabled(false);
+                    player.brickNum-=1;
+                    player.lumberNum-=1;
+                    player.woolNum-=1;
+                    player.grainNum-=1;
+                    update();
+                }
+                else
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to build a new settlement.","Settlement Building Error",3);
+            }
+        }
+
         else if(e.getSource()==city){}
-        else if(e.getSource()==road){}
-        else if(e.getSource()==buyCard){}
+
+        else if(e.getSource()==road){
+            int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Creation",JOptionPane.YES_NO_OPTION);
+            if(roadInput==0){
+                if(player.getBrickNum()>=1 && player.getLumberNum()>=1){
+                    reference.isRoadBuilding=true;
+                    this.options.setEnabled(false);
+                    player.brickNum-=1;
+                    player.lumberNum-=1;
+                    update();
+                }
+                else
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to build a road.","Road Building Error",3);
+            }
+        }
+
+        else if(e.getSource()==buyCard){
+            DevelopmentCard newDc = new DevelopmentCard(devCardTypes[new Random().nextInt(25)],player,getOtherPlayers(),reference);
+            int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION);
+            if(devInput==0){
+                if(player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1){
+                    JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card",1);
+                    player.addDevelopmentCardToUnplayed(newDc);
+                    unplayed.addItem(newDc.getType());
+                    player.woolNum-=1;
+                    player.oreNum-=1;
+                    player.grainNum-=1;
+                    update();
+                }
+                else
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to purchase a development card.","Cannot Purchase Development Card",3);
+            }
+        }
+
         else if(e.getSource()==playCard){}
         else if(e.getSource()==exchange){}
         else if(e.getSource()==endTurn){}
         else if(e.getSource()==rollDice){}
+
         else if(e.getSource()==buildingCard){
-            costFrame.setVisible(!costFrame.isVisible());}
+            costFrame.setVisible(!costFrame.isVisible());
+        }
+
+        update();
     }
 }
