@@ -215,9 +215,11 @@ public class PlayerView extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==settlement){
-            int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Creation",JOptionPane.YES_NO_OPTION);
+            int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Building",JOptionPane.YES_NO_OPTION);
             if(settlementInput==0){
                 if(player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1){
+                    this.player.changeVictoryPoints(1);
+                    JOptionPane.showMessageDialog(this,"Select the index you'd like to build a new settlement on.","Settlement Building",1);
                     reference.isSettlementBuilding=true;
                     this.options.setEnabled(false);
                     player.brickNum-=1;
@@ -234,9 +236,10 @@ public class PlayerView extends JFrame implements ActionListener {
         else if(e.getSource()==city){}
 
         else if(e.getSource()==road){
-            int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Creation",JOptionPane.YES_NO_OPTION);
+            int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION);
             if(roadInput==0){
                 if(player.getBrickNum()>=1 && player.getLumberNum()>=1){
+                    JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building",1);
                     reference.isRoadBuilding=true;
                     this.options.setEnabled(false);
                     player.brickNum-=1;
@@ -289,7 +292,6 @@ public class PlayerView extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn",1);
             this.player.setTurn(false);
             this.turnBox.setSelected(false);
-            reference.updateAllStatusMenus();
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
@@ -304,7 +306,6 @@ public class PlayerView extends JFrame implements ActionListener {
         else if(e.getSource()==buildingCard){
             costFrame.setVisible(!costFrame.isVisible());
         }
-
-        update();
+        reference.updateAllStatusMenus();
     }
 }
