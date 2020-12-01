@@ -237,6 +237,13 @@ public class CatanBoard extends JFrame implements MouseListener {
                         found=true;
                     }
 
+                    else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))==0){
+                        JOptionPane.showMessageDialog(this,"You cannot choose the same index twice. Your road needs to connect two indices.","Same Index Error",3);
+                        roadCondition=0;
+                        checkedIndexes.clear();
+                        found=true;
+                    }
+
                     else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))<90) {
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
                         indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(),getCurrentPlayer()));
@@ -282,6 +289,12 @@ public class CatanBoard extends JFrame implements MouseListener {
 
                     else if(checkedIndexes.get(0).getOwner()!=getCurrentPlayer() && checkedIndexes.get(1).getOwner()!=getCurrentPlayer() && count==0){
                         JOptionPane.showMessageDialog(this,"You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.","Road Error",3);
+                        roadCondition=0;
+                        checkedIndexes.clear();
+                        found=true;
+                    }
+                    else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))==0){
+                        JOptionPane.showMessageDialog(this,"You cannot choose the same index twice. Your road needs to connect two indices.","Same Index Error",3);
                         roadCondition=0;
                         checkedIndexes.clear();
                         found=true;
