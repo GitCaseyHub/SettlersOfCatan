@@ -42,6 +42,9 @@ public class PlayerView extends JFrame implements ActionListener {
     Player player;
     CatanBoard reference;
 
+    //MenuBar manipulation
+    boolean hasRolled=false;
+
     //MenuBar
     JMenuBar mb = new JMenuBar();
     JMenu build = new JMenu("Build");
@@ -168,7 +171,6 @@ public class PlayerView extends JFrame implements ActionListener {
         wheatNum.setBorder(compound);
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
         woodNum.setBorder(compound);
-        update();
         initializeCostFrame();
     }
 
@@ -195,25 +197,34 @@ public class PlayerView extends JFrame implements ActionListener {
         this.setSize(this.getWidth()-1,this.getHeight());
 
         if(player.isTurn())
-            startTurn();
+            if(hasRolled)
+                afterRoll();
+            else
+                startTurn();
     }
 
     public void startTurn() {
-        options.setEnabled(true);
-        build.setEnabled(false);
-        development.setEnabled(false);
+        settlement.setEnabled(false);
+        city.setEnabled(false);
+        road.setEnabled(false);
+        buildingCard.setEnabled(false);
+        buyCard.setEnabled(false);
+        playCard.setEnabled(false);
         exchange.setEnabled(false);
         endTurn.setEnabled(false);
     }
 
     public void afterRoll() {
-        build.setEnabled(true);
-        development.setEnabled(true);
+        settlement.setEnabled(true);
+        city.setEnabled(true);
+        road.setEnabled(true);
+        buyCard.setEnabled(true);
+        playCard.setEnabled(true);
         exchange.setEnabled(true);
         endTurn.setEnabled(true);
         rollDice.setEnabled(false);
+        buildingCard.setEnabled(true);
     }
-
 
     public void initializeCostFrame(){
         costFrame.add(imageCostLabel);
@@ -237,15 +248,15 @@ public class PlayerView extends JFrame implements ActionListener {
         if(e.getSource()==settlement){
             int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Building",JOptionPane.YES_NO_OPTION);
             if(settlementInput==0){
-                if(player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1){
+                if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     this.player.changeVictoryPoints(1);
                     JOptionPane.showMessageDialog(this,"Select the index you'd like to build a new settlement on.","Settlement Building",1);
                     reference.isSettlementBuilding=true;
                     this.options.setEnabled(false);
-                    player.brickNum-=1;
-                    player.lumberNum-=1;
-                    player.woolNum-=1;
-                    player.grainNum-=1;
+                    player.changeBrick(-1);
+                    player.changeGrain(-1);
+                    player.changeLumber(-1);
+                    player.changeWool(-1);
                     update();
                 }
                 else
@@ -258,12 +269,12 @@ public class PlayerView extends JFrame implements ActionListener {
         else if(e.getSource()==road){
             int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION);
             if(roadInput==0){
-                if(player.getBrickNum()>=1 && player.getLumberNum()>=1){
+                if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))) {
                     JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building",1);
                     reference.isRoadBuilding=true;
                     this.options.setEnabled(false);
-                    player.brickNum-=1;
-                    player.lumberNum-=1;
+                    player.changeBrick(-1);
+                    player.changeLumber(-1);
                     update();
                 }
                 else
@@ -275,13 +286,13 @@ public class PlayerView extends JFrame implements ActionListener {
             DevelopmentCard newDc = new DevelopmentCard(devCardTypes[new Random().nextInt(25)],player,getOtherPlayers(),reference);
             int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION);
             if(devInput==0){
-                if(player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1){
+                if((player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getOreNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card",1);
                     player.addDevelopmentCardToUnplayed(newDc);
                     unplayed.addItem(newDc.getType());
-                    player.woolNum-=1;
-                    player.oreNum-=1;
-                    player.grainNum-=1;
+                    player.changeWool(-1);
+                    player.changeOre(-1);
+                    player.changeGrain(-1);
                     update();
                 }
                 else
@@ -312,6 +323,7 @@ public class PlayerView extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn",1);
             this.player.setTurn(false);
             this.turnBox.setSelected(false);
+            hasRolled=false;
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
@@ -321,8 +333,8 @@ public class PlayerView extends JFrame implements ActionListener {
 
             else
                 reference.giveOutResources(diceRoll);
-
-            afterRoll();
+            hasRolled=true;
+            update();
         }
 
         else if(e.getSource()==buildingCard){
