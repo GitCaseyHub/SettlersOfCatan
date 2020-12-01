@@ -1,10 +1,30 @@
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class DevelopmentCard{
-    String type="";
+public class DevelopmentCard implements ActionListener {
+    String type = "";
     Player player;
     CatanBoard cbReference;
     ArrayList<Player> otherPlayers;
+
+    //Year of Plenty
+    JFrame choiceFrame = new JFrame();
+    Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
+    JPanel[] graphicPanels = new JPanel[5];
+    JPanel graphicHolder = new JPanel(new GridLayout(1, 5));
+    String[] graphicStrings = {"Brick", "Ore", "Sheep", "Wheat", "Wood"};
+    JLabel[] graphicImageLabels = new JLabel[5];
+    JCheckBox brickCheck = new JCheckBox();
+    JCheckBox oreCheck = new JCheckBox();
+    JCheckBox wheatCheck = new JCheckBox();
+    JCheckBox sheepCheck = new JCheckBox();
+    JCheckBox woodCheck = new JCheckBox();
+    JButton confirmButton = new JButton("Confirm Choices");
+    int counter = 0;
 
     public String getType() {
         return type;
@@ -34,36 +54,171 @@ public class DevelopmentCard{
         return otherPlayers;
     }
 
-    public DevelopmentCard(String type, Player player, ArrayList<Player> otherPlayers, CatanBoard cbReference){
+    public DevelopmentCard(String type, Player player, ArrayList<Player> otherPlayers, CatanBoard cbReference) {
         //Types of Cards: Knight, Victory Points, Road Builder, Year of Plenty, Monopoly
-        this.type=type;
-        this.player=player;
-        this.cbReference=cbReference;
-        this.otherPlayers=otherPlayers;
+        this.type = type;
+        this.player = player;
+        this.cbReference = cbReference;
+        this.otherPlayers = otherPlayers;
     }
 
-    public void playCard(){
-        if(type.equals("Knight"))
+    public void playCard() {
+        if (type.equals("Knight"))
             performKnightAction();
 
-        else if(type.equals("Victory Points"))
+        else if (type.equals("Victory Points")) {
+            JOptionPane.showMessageDialog(null, "You are awarded one victory point. This will now be reflected in your status screen.", "Victory Point Action", 1);
             performVictoryPoints();
-
-        else if(type.equals("Road Builder"))
+        } else if (type.equals("Road Builder"))
             performRoadBuilding();
 
-        else if(type.equals("Year of Plenty"))
+        else if (type.equals("Year of Plenty")) {
+            JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action", 1);
             performYearOfPlenty();
-
-        else
+        } else
             performMonopoly();
     }
 
-    public void performKnightAction(){}
-    public void performVictoryPoints(){
+    public void performKnightAction() {
+    }
+
+    public void performVictoryPoints() {
         player.changeVictoryPoints(1);
     }
-    public void performRoadBuilding(){}
-    public void performYearOfPlenty(){}
-    public void performMonopoly(){}
+
+    public void performRoadBuilding() {
+    }
+
+    public void performYearOfPlenty() {
+        counter = 0;
+        choiceFrame.setVisible(true);
+    }
+
+    public void performMonopoly() {
+    }
+
+    public void readyYearOfPlentyFrame() {
+        //Array manipulation stuff
+        for (int x = 0; x < 5; x++) {
+            graphicPanels[x] = new JPanel(new BorderLayout());
+            graphicImageLabels[x] = new JLabel("", 0);
+            graphicImageLabels[x].setIcon(new ImageIcon("Resources/" + graphicStrings[x] + "_Image.png"));
+            graphicPanels[x].add(graphicImageLabels[x], BorderLayout.CENTER);
+            graphicImageLabels[x].setBorder(compound);
+            graphicHolder.add(graphicPanels[x]);
+        }
+
+        //Adding Checkboxes
+        graphicPanels[0].add(brickCheck, BorderLayout.SOUTH);
+        brickCheck.setBorder(compound);
+        brickCheck.setHorizontalAlignment(SwingConstants.CENTER);
+        brickCheck.addActionListener(this);
+        brickCheck.setBorderPainted(true);
+
+        graphicPanels[1].add(oreCheck, BorderLayout.SOUTH);
+        oreCheck.setBorder(compound);
+        oreCheck.setHorizontalAlignment(SwingConstants.CENTER);
+        oreCheck.addActionListener(this);
+        oreCheck.setBorderPainted(true);
+
+        graphicPanels[2].add(wheatCheck, BorderLayout.SOUTH);
+        wheatCheck.setBorder(compound);
+        wheatCheck.setHorizontalAlignment(SwingConstants.CENTER);
+        wheatCheck.addActionListener(this);
+        wheatCheck.setBorderPainted(true);
+
+        graphicPanels[3].add(sheepCheck, BorderLayout.SOUTH);
+        sheepCheck.setBorder(compound);
+        sheepCheck.setHorizontalAlignment(SwingConstants.CENTER);
+        sheepCheck.addActionListener(this);
+        sheepCheck.setBorderPainted(true);
+
+        graphicPanels[4].add(woodCheck, BorderLayout.SOUTH);
+        woodCheck.setBorder(compound);
+        woodCheck.setHorizontalAlignment(SwingConstants.CENTER);
+        woodCheck.addActionListener(this);
+        woodCheck.setBorderPainted(true);
+
+        choiceFrame.add(graphicHolder);
+        choiceFrame.setTitle("Year of Plenty Activation");
+        choiceFrame.setBounds(100, 100, 475, 200);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == oreCheck) {
+            counter += (oreCheck.isSelected()) ? 1 : -1;
+
+            if (counter == 2)
+                disableAppropriateCheckBoxes();
+            else
+                changeAllCheckBoxes(true);
+        } else if (e.getSource() == sheepCheck) {
+            counter += (sheepCheck.isSelected()) ? 1 : -1;
+
+            if (counter == 2)
+                disableAppropriateCheckBoxes();
+            else
+                changeAllCheckBoxes(true);
+        } else if (e.getSource() == brickCheck) {
+            counter += (brickCheck.isSelected()) ? 1 : -1;
+
+            if (counter == 2)
+                disableAppropriateCheckBoxes();
+            else
+                changeAllCheckBoxes(true);
+        } else if (e.getSource() == woodCheck) {
+            counter += (woodCheck.isSelected()) ? 1 : -1;
+
+            if (counter == 2)
+                disableAppropriateCheckBoxes();
+            else
+                changeAllCheckBoxes(true);
+        } else if (e.getSource() == wheatCheck) {
+            counter += (wheatCheck.isSelected()) ? 1 : -1;
+
+            if (counter == 2)
+                disableAppropriateCheckBoxes();
+            else
+                changeAllCheckBoxes(true);
+        }
+
+        if (counter == 2) {
+            int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            if (confirmation == 0) {
+                JOptionPane.showMessageDialog(null, "Okay. You will be given your chosen resources.", "Resources Chosen", 1);
+                player.changeBrick((brickCheck.isSelected() ? 1 : 0));
+                player.changeWool((sheepCheck.isSelected() ? 1 : 0));
+                player.changeGrain((wheatCheck.isSelected() ? 1 : 0));
+                player.changeLumber((woodCheck.isSelected() ? 1 : 0));
+                player.changeOre((oreCheck.isSelected() ? 1 : 0));
+                choiceFrame.setVisible(false);
+                deselectAll();
+            } else
+                JOptionPane.showMessageDialog(null, "Okay. Reselect the resources you want.", "Cancellation", 1);
+        }
+    }
+
+    public void disableAppropriateCheckBoxes() {
+        oreCheck.setEnabled(oreCheck.isSelected());
+        sheepCheck.setEnabled(sheepCheck.isSelected());
+        brickCheck.setEnabled(brickCheck.isSelected());
+        woodCheck.setEnabled(woodCheck.isSelected());
+        wheatCheck.setEnabled(wheatCheck.isSelected());
+    }
+
+    public void changeAllCheckBoxes(boolean state) {
+        oreCheck.setEnabled(state);
+        sheepCheck.setEnabled(state);
+        brickCheck.setEnabled(state);
+        woodCheck.setEnabled(state);
+        wheatCheck.setEnabled(state);
+    }
+
+    public void deselectAll() {
+        oreCheck.setSelected(false);
+        sheepCheck.setSelected(false);
+        brickCheck.setSelected(false);
+        wheatCheck.setSelected(false);
+        woodCheck.setSelected(false);
+    }
 }
