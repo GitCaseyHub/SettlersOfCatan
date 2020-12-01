@@ -268,8 +268,25 @@ public class PlayerView extends JFrame implements ActionListener {
 
         else if(e.getSource()==playCard){}
         else if(e.getSource()==exchange){}
-        else if(e.getSource()==endTurn){}
-        else if(e.getSource()==rollDice){}
+        else if(e.getSource()==endTurn){
+            ArrayList<Player> turnOrder = reference.turnOrder(reference.turnNameList);
+            for(int x=0; x<turnOrder.size(); x++)
+                if(turnOrder.get(x).getName().equals(this.player.getName()))
+                    turnOrder.get((x + 1) % turnOrder.size()).setTurn(true);
+
+            this.player.setTurn(false);
+            this.turnBox.setSelected(false);
+            reference.updateAllStatusMenus();
+        }
+        else if(e.getSource()==rollDice){
+            int diceRoll = new Random().nextInt(10)+2;
+            JOptionPane.showMessageDialog(reference,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn",1);
+            if(diceRoll==7)
+                reference.isMovingRobber=true;
+
+            else
+                reference.giveOutResources(diceRoll);
+        }
 
         else if(e.getSource()==buildingCard){
             costFrame.setVisible(!costFrame.isVisible());
