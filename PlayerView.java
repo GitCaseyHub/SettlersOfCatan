@@ -269,11 +269,24 @@ public class PlayerView extends JFrame implements ActionListener {
         else if(e.getSource()==playCard){}
         else if(e.getSource()==exchange){}
         else if(e.getSource()==endTurn){
-            ArrayList<Player> turnOrder = reference.turnOrder(reference.turnNameList);
+            ArrayList<Player> turnOrder = new ArrayList<Player>();
+            String name="";
+
+            for(int x=0; x<reference.catanPlayerList.size(); x++)
+                turnOrder.add(reference.turnOrder(reference.turnNameList).get(x));
+
             for(int x=0; x<turnOrder.size(); x++)
                 if(turnOrder.get(x).getName().equals(this.player.getName()))
-                    turnOrder.get((x + 1) % turnOrder.size()).setTurn(true);
+                    try {
+                        turnOrder.get((x + 1) % turnOrder.size()).setTurn(true);
+                        name=turnOrder.get((x+1)%turnOrder.size()).getName();
+                    }
+                    catch(IndexOutOfBoundsException f){
+                        turnOrder.get(0).setTurn(true);
+                        name=turnOrder.get(0).getName();
+                    }
 
+            JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn",1);
             this.player.setTurn(false);
             this.turnBox.setSelected(false);
             reference.updateAllStatusMenus();
