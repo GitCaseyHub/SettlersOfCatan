@@ -125,6 +125,11 @@ public class CatanBoard extends JFrame implements MouseListener {
                 }
                 */
 
+                for(int x=0; x<tiles.length; x++){
+                    BufferedImage dice = ImageIO.read(new File("Rolls/"+tiles[x].getNum()+".png"));
+                    g.drawImage(dice,(int)tiles[x].getPosition()[0]+42,(int)tiles[x].getPosition()[1]+25,null);
+                }
+
                 BufferedImage water = ImageIO.read(new File("Tiles/Water_Tile.png"));
                 for(int x=0; x<waterPoints.length; x++)
                     g.drawImage(water,(int)waterPoints[x].getX(),(int)waterPoints[x].getY(),null);
