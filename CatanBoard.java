@@ -36,8 +36,9 @@ public class CatanBoard extends JFrame implements MouseListener {
     //Booleans for conditions on when MouseListeners should activate
     boolean isRoadBuilding=false, isSettlementBuilding=false;
     boolean isDoneRoadBuilding=false, isDoneSettlementBuilding=false;
-    boolean doingStartup=false;
-    boolean found=false;
+    boolean doingStartup=false, found=false;
+    boolean isMovingRobber=false, isDoneMovingRobber=false;
+
     int count=0;
 
     //Index Creation
@@ -87,7 +88,7 @@ public class CatanBoard extends JFrame implements MouseListener {
             coordList.add(coords[x]);
 
         for(int x=0; x<indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x],false,x,new Player());
+            indexes[x] = new Index(indexCoords[x],false,x,new Player(),false,false);
 
         for(int x=0; x<types.length; x++){
             int typeIndex = new Random().nextInt(typeList.size());
@@ -252,36 +253,26 @@ public class CatanBoard extends JFrame implements MouseListener {
                             break;
                         }
                     }
-
-                    //Road Building Still Buggy
+                    count=0;
                     for(int x=0; x<indexConnections.size(); x++) {
-                        if (indexConnections.get(x).getIndexA() == checkedIndexes.get(0).getIndexID()) {
-                            System.out.println("1");
-                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
-                                System.out.println("a");
-                                count++;
-                            }
-                        } else if (indexConnections.get(x).getIndexA() == checkedIndexes.get(1).getIndexID()) {
-                            System.out.println("2");
-                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
-                                System.out.println("b");
-                                count++;
-                            }
-                        } else if (indexConnections.get(x).getIndexB() == checkedIndexes.get(0).getIndexID()) {
-                            System.out.println("3");
-                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
-                                System.out.println("c");
-                                count++;
-                            }
-                        } else if (indexConnections.get(x).getIndexB() == checkedIndexes.get(1).getIndexID()) {
-                            System.out.println("4");
-                            if (indexConnections.get(x).getOwner() == getCurrentPlayer()) {
-                                System.out.println("d");
-                                count++;
-                            }
+                        if(!doingStartup) {
+                            if (indexConnections.get(x).getIndexA() == checkedIndexes.get(0).getIndexID())
+                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                                    count++;
+
+                            if (indexConnections.get(x).getIndexA() == checkedIndexes.get(1).getIndexID())
+                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                                    count++;
+
+                            if (indexConnections.get(x).getIndexB() == checkedIndexes.get(0).getIndexID())
+                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                                    count++;
+
+                            if (indexConnections.get(x).getIndexB() == checkedIndexes.get(1).getIndexID())
+                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                                    count++;
                         }
                     }
-
                     if(!doingStartup && count==0) {
                         JOptionPane.showMessageDialog(this, "If you want to build a road, attach it to another road you own or another settlement/city you own.", "Road Building Error", 3);
                         roadCondition = 0;
@@ -339,10 +330,15 @@ public class CatanBoard extends JFrame implements MouseListener {
                         settlementPaintCondition=true;
                         checked.setTaken(true);
                         checked.setOwner(getCurrentPlayer());
+                        checked.setSettlement(true);
                         repaint();
                     }
                 }
             }
+        }
+
+        if(isMovingRobber){
+            isDoneMovingRobber=true;
         }
     }
 
@@ -380,6 +376,16 @@ public class CatanBoard extends JFrame implements MouseListener {
                 return indexes[x];
 
         return null;
+    }
+
+    public ArrayList<Player> turnOrder(ArrayList<String> nameList){
+        ArrayList<Player> players=new ArrayList<Player>();
+        for(int x=0; x<nameList.size(); x++)
+            for(int y=0; y<catanPlayerList.size(); y++)
+                if(nameList.get(x).equals(catanPlayerList.get(y).getName()))
+                    players.add(catanPlayerList.get(y));
+
+        return players;
     }
 
     //Checks which road type to draw and where to do so
@@ -455,7 +461,6 @@ public class CatanBoard extends JFrame implements MouseListener {
                 return false;
         return true;
     }
-
 
     public void performStartingOperations(){
         int startingPlayer = new Random().nextInt(playerCreation.length);
@@ -562,6 +567,33 @@ public class CatanBoard extends JFrame implements MouseListener {
                 ownedIndexes.add(indexes[x]);
 
         return ownedIndexes;
+    }
+
+    public void updateAllStatusMenus(){
+        for(int x=0; x<statusViewer.length; x++)
+            statusViewer[x].update();
+    }
+
+    //This method is an abomination
+    public void giveOutResources(int roll){
+        for(int x=0; x<tiles.length; x++)
+            if(tiles[x].getNum()==roll)
+                for(int y=0; y<6; y++)
+                    for(int z=0; z<indexes.length; z++)
+                        if(Math.abs(tiles[x].getVertices().get(y).getX()-indexes[z].getLocation()[0])<35 && Math.abs(tiles[x].getVertices().get(y).getY()-indexes[z].getLocation()[1])<35)
+                            for(int a=0; a<catanPlayerList.size(); a++)
+                                if (indexes[z].getOwner() == catanPlayerList.get(a)) {
+                                    if (tiles[x].getType().equals("Grain"))
+                                        catanPlayerList.get(a).changeGrain((indexes[z].isSettlement() ? 1 : 2));
+                                    else if (tiles[x].getType().equals("Brick"))
+                                        catanPlayerList.get(a).changeBrick((indexes[z].isSettlement() ? 1 : 2));
+                                    else if (tiles[x].getType().equals("Forest"))
+                                        catanPlayerList.get(a).changeLumber((indexes[z].isSettlement() ? 1 : 2));
+                                    else if (tiles[x].getType().equals("Plains"))
+                                        catanPlayerList.get(a).changeWool((indexes[z].isSettlement() ? 1 : 2));
+                                    else if (tiles[x].getType().equals("Mountain"))
+                                        catanPlayerList.get(a).changeOre((indexes[z].isSettlement() ? 1 : 2));
+                                }
     }
 
     public void mouseReleased(MouseEvent e){}
