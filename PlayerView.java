@@ -193,7 +193,27 @@ public class PlayerView extends JFrame implements ActionListener {
         //Workaround for revalidate() / invalidate() validate()
         this.setSize(this.getWidth()+1,this.getHeight());
         this.setSize(this.getWidth()-1,this.getHeight());
+
+        if(player.isTurn())
+            startTurn();
     }
+
+    public void startTurn() {
+        options.setEnabled(true);
+        build.setEnabled(false);
+        development.setEnabled(false);
+        exchange.setEnabled(false);
+        endTurn.setEnabled(false);
+    }
+
+    public void afterRoll() {
+        build.setEnabled(true);
+        development.setEnabled(true);
+        exchange.setEnabled(true);
+        endTurn.setEnabled(true);
+        rollDice.setEnabled(false);
+    }
+
 
     public void initializeCostFrame(){
         costFrame.add(imageCostLabel);
@@ -301,6 +321,8 @@ public class PlayerView extends JFrame implements ActionListener {
 
             else
                 reference.giveOutResources(diceRoll);
+
+            afterRoll();
         }
 
         else if(e.getSource()==buildingCard){
