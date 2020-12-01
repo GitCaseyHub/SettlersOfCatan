@@ -48,15 +48,15 @@ public class CatanBoard extends JFrame implements MouseListener {
     Index checked;
 
     //Port Creation
-    Point[][] portPoints = new Point[][]{new Point[]{new Point(264,122),new Point(330,87), new Point(286,89)},
-                                         new Point[]{new Point(461,87),new Point(533,121), new Point(516,90)},
-                                         new Point[]{new Point(663,200),new Point(729,237), new Point(707,199)},
-                                         new Point[]{new Point(797,346),new Point(798,425), new Point(826,392)},
-                                         new Point[]{new Point(731,536),new Point(664,577), new Point(713,578)},
-                                         new Point[]{new Point(526,654),new Point(461,687), new Point(512,689)},
-                                         new Point[]{new Point(332,686),new Point(266,647), new Point(288,694)},
-                                         new Point[]{new Point(200,536),new Point(198,459), new Point(185,493)},
-                                         new Point[]{new Point(198,235),new Point(197,312), new Point(179,278)}};
+    Point[][] portPoints = new Point[][]{new Point[]{new Point(264,122),new Point(330,87), new Point(219,18)},
+                                         new Point[]{new Point(461,87),new Point(533,121), new Point(486,18)},
+                                         new Point[]{new Point(663,200),new Point(729,237), new Point(681,132)},
+                                         new Point[]{new Point(797,346),new Point(798,425), new Point(810,351)},
+                                         new Point[]{new Point(731,536),new Point(664,577), new Point(681,556)},
+                                         new Point[]{new Point(526,654),new Point(461,687), new Point(486,685)},
+                                         new Point[]{new Point(332,686),new Point(266,647), new Point(219,685)},
+                                         new Point[]{new Point(200,536),new Point(198,459), new Point(88,468)},
+                                         new Point[]{new Point(198,235),new Point(197,312), new Point(88,244)}};
     String[] portTypes = {"Generic","Generic","Generic","Generic","Wool","Wheat","Ore","Brick","Wood"};
     Port[] ports = new Port[9];
 
@@ -117,13 +117,6 @@ public class CatanBoard extends JFrame implements MouseListener {
                     BufferedImage tile = ImageIO.read(new File("Tiles/" + tiles[x].getType() + ".png"));
                     g.drawImage(tile, tiles[x].getPosition()[0], tiles[x].getPosition()[1], null);
                 }
-                //When Ports Are Ready, Uncomment This
-                /*
-                for(int x=0; x<ports.length; x++){
-                    BufferedImage port = ImageIO.read(new File("Resources/Port/"+ports[x].getType()+"_Port.png"));
-                    g.drawImage(port,(int)ports[x].getLocations()[2].getX(),(int)ports[x].getLocations()[2].getY(),null);
-                }
-                */
 
                 for(int x=0; x<tiles.length; x++){
                     BufferedImage dice = ImageIO.read(new File("Rolls/"+tiles[x].getNum()+".png"));
@@ -134,12 +127,16 @@ public class CatanBoard extends JFrame implements MouseListener {
                 for(int x=0; x<waterPoints.length; x++)
                     g.drawImage(water,(int)waterPoints[x].getX(),(int)waterPoints[x].getY(),null);
 
-
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(3));
                 g2.setColor(new Color(10,30,150));
                 for(int x=0; x<outLinePoints.length; x++)
                     g2.drawLine((int)outLinePoints[x].getX(),(int)outLinePoints[x].getY(),(int)outLinePoints[(x+1)%outLinePoints.length].getX(), (int)outLinePoints[(x+1)%outLinePoints.length].getY());
+
+                for(int x=0; x<ports.length; x++){
+                    BufferedImage port = ImageIO.read(new File("Resources/Port/"+ports[x].getType()+"_Port_Ship.png"));
+                    g.drawImage(port,(int)ports[x].getLocations()[2].getX(),(int)ports[x].getLocations()[2].getY(),null);
+                }
 
                 loaded=true;
             }
@@ -209,7 +206,7 @@ public class CatanBoard extends JFrame implements MouseListener {
 
         /* Convenient way to find specific coordinates
         System.out.println("X: "+xLoc);
-        System.out.println("Y: "+yLoc);
+        System.out.println("Y: "+yLoc);        
         */
 
         //Code to draw roads if boolean is in correct state
@@ -524,7 +521,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                     buildingOrder += catanPlayerList.get(y).getName() + ((x != turnOrder.size() - 1) ? ", " : ".");
                     turnNameList.add(catanPlayerList.get(y).getName());
                 }
-        JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Generating Game", 1);
+        JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Beginning Game", 1);
         JOptionPane.showMessageDialog(this,turnOrderString+ buildingOrder,"Turn and Building Order",1);
 
         for(int y=0; y<statusViewer.length; y++) {
