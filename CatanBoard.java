@@ -147,6 +147,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                 //Drawing Settlements Test
                 BufferedImage settlement = ImageIO.read(new File("Pieces/"+getCurrentPlayer().getColor()+"_Settlement.png"));
                 g.drawImage(settlement, chosen_x, chosen_y, null);
+                getCurrentPlayer().changeVictoryPoints(1);
                 settlementPaintCondition = false;
                 isDoneSettlementBuilding=true;
                 if(doingStartup)
@@ -198,6 +199,7 @@ public class CatanBoard extends JFrame implements MouseListener {
         catch(IOException ie){
             ie.printStackTrace();
         }
+        updateAllStatusMenus();
     }
 
     public void mouseClicked(MouseEvent e){}
