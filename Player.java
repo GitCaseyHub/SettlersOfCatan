@@ -61,6 +61,22 @@ public class Player {
         return largestArmy;
     }
 
+    public void setLumberNum(int lumberNum) {
+        this.lumberNum = lumberNum;
+    }
+
+    public void setGrainNum(int grainNum) {
+        this.grainNum = grainNum;
+    }
+
+    public void setWoolNum(int woolNum) {
+        this.woolNum = woolNum;
+    }
+
+    public void setOreNum(int oreNum) {
+        this.oreNum = oreNum;
+    }
+
     public void setLargestArmy(boolean largestArmy) {
         this.largestArmy = largestArmy;
     }
@@ -77,16 +93,20 @@ public class Player {
         return playedCards;
     }
 
-    public void setPlayedCards(ArrayList<DevelopmentCard> playedCards) {
-        this.playedCards = playedCards;
-    }
-
-    public ArrayList<DevelopmentCard> getUnPlayedCards() {
+    public ArrayList<DevelopmentCard> getUnPlayedCards(){
         return unPlayedCards;
     }
 
-    public void setUnPlayedCards(ArrayList<DevelopmentCard> unPlayedCards) {
-        this.unPlayedCards = unPlayedCards;
+    public void addDevelopmentCardToPlayed(DevelopmentCard dc){
+        this.playedCards.add(dc);
+    }
+
+    public void addDevelopmentCardToUnplayed(DevelopmentCard dc){
+        this.unPlayedCards.add(dc);
+    }
+
+    public void removeDevelopmentCardFromUnplayed(DevelopmentCard dc){
+        this.unPlayedCards.remove(dc);
     }
 
     public String getColor() {
@@ -178,6 +198,23 @@ public class Player {
             this.oreNum+=2*oreNum;
         else
             this.oreNum+= oreNum;
+    }
+
+    //Specifically for Monopoly Development Card
+    public void monoOre(int num){
+        this.oreNum+=num;
+    }
+    public void monoWheat(int num){
+        this.grainNum+=num;
+    }
+    public void monoBrick(int num){
+        this.brickNum+=num;
+    }
+    public void monoWool(int num){
+        this.woolNum+=num;
+    }
+    public void monoLumber(int num){
+        this.lumberNum+=num;
     }
 
     public ArrayList<Index> getOwnedIndexes() {
