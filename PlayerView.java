@@ -300,7 +300,27 @@ public class PlayerView extends JFrame implements ActionListener {
             }
         }
 
-        else if(e.getSource()==playCard){}
+        else if(e.getSource()==playCard){
+            if(unplayed.getSelectedIndex()==0)
+                JOptionPane.showMessageDialog(this,"You must select a card name from your 'Hidden Cards' list. The name you have selected will be the card that is played.","Unplayable Card",3);
+
+            else if(unplayed.getSelectedIndex()!=0){
+                for(int x=0; x<player.getUnPlayedCards().size(); x++)
+                    if(unplayed.getSelectedItem().toString().equals(player.getUnPlayedCards().get(x).getType())) {
+                        reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                        reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                        reference.getPlayerStatusMenu(player).development.setEnabled(false);
+                        JOptionPane.showMessageDialog(this,"You are playing a '"+unplayed.getSelectedItem().toString()+" Card'. Its effects are now being activated.","Development Card Played",1);
+                        player.getUnPlayedCards().get(x).playCard();
+                        player.addDevelopmentCardToPlayed(player.getUnPlayedCards().get(x));
+                        unplayed.removeItem(player.getUnPlayedCards().get(x).getType());
+                        played.addItem(player.getUnPlayedCards().get(x).getType());
+                        player.removeDevelopmentCardFromUnplayed(player.getUnPlayedCards().get(x));
+                        reference.updateAllStatusMenus();
+                        break;
+                    }
+            }
+        }
         else if(e.getSource()==exchange){}
         else if(e.getSource()==endTurn){
             ArrayList<Player> turnOrder = new ArrayList<Player>();
