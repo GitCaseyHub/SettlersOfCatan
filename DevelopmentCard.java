@@ -75,8 +75,10 @@ public class DevelopmentCard implements ActionListener {
             performVictoryPoints();
         }
 
-        else if (type.equals("Road Builder"))
+        else if (type.equals("Road Builder")) {
+            JOptionPane.showMessageDialog(null,"You will now select two sets of indices to build roads on.","Road Building Action",1);
             performRoadBuilding();
+        }
 
         else if (type.equals("Year of Plenty")) {
             JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action", 1);
@@ -84,6 +86,7 @@ public class DevelopmentCard implements ActionListener {
         }
 
         else {
+            JOptionPane.showMessageDialog(null,"Select one of the following five resources. You will be given all of that resource from each player. Your class will not affect the amount given.","Monopoly Action",1);
             performMonopoly();
         }
     }
@@ -96,6 +99,9 @@ public class DevelopmentCard implements ActionListener {
     }
 
     public void performRoadBuilding() {
+        cbReference.roadDevCard=true;
+        cbReference.finishedRoadCard=false;
+        cbReference.isRoadBuilding=true;
     }
 
     public void performYearOfPlenty() {
