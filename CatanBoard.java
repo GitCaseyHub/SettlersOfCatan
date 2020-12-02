@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener {
-    //Road building cannot currently build a road attached to another road. Need to find logic to do that.
-
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
@@ -206,7 +204,7 @@ public class CatanBoard extends JFrame implements MouseListener {
 
         /* Convenient way to find specific coordinates
         System.out.println("X: "+xLoc);
-        System.out.println("Y: "+yLoc);        
+        System.out.println("Y: "+yLoc);
         */
 
         //Code to draw roads if boolean is in correct state
