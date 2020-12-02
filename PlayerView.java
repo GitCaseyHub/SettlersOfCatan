@@ -185,12 +185,15 @@ public class PlayerView extends JFrame implements ActionListener {
         victoryPointLabel.setText("   "+player.getVictoryPointTotal()+"   ");
 
         unplayed.setEnabled(player.isTurn());
-        build.setEnabled(player.isTurn());
-        development.setEnabled(player.isTurn());
         longestRoadBox.setSelected(player.hasLongestRoad());
         largestArmyBox.setSelected(player.hasLargestArmy());
-        options.setEnabled(player.isTurn());
         turnBox.setSelected(player.isTurn());
+
+        if(reference.doingStartup){
+            build.setEnabled(player.isTurn());
+            development.setEnabled(player.isTurn());
+            options.setEnabled(player.isTurn());
+        }
 
         //Workaround for revalidate() / invalidate() validate()
         this.setSize(this.getWidth()+1,this.getHeight());
@@ -317,6 +320,7 @@ public class PlayerView extends JFrame implements ActionListener {
                         played.addItem(player.getUnPlayedCards().get(x).getType());
                         player.removeDevelopmentCardFromUnplayed(player.getUnPlayedCards().get(x));
                         reference.updateAllStatusMenus();
+                        unplayed.setSelectedIndex(0);
                         break;
                     }
             }
