@@ -11,7 +11,7 @@ public class DevelopmentCard implements ActionListener {
     CatanBoard cbReference;
     ArrayList<Player> otherPlayers;
 
-    //Year of Plenty
+    //Year of Plenty & Monopoly
     JFrame choiceFrame = new JFrame();
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
     JPanel[] graphicPanels = new JPanel[5];
@@ -25,6 +25,8 @@ public class DevelopmentCard implements ActionListener {
     JCheckBox woodCheck = new JCheckBox();
     JButton confirmButton = new JButton("Confirm Choices");
     int counter = 0;
+    boolean yearOfPlenty=false;
+    boolean monopoly=false;
 
     public String getType() {
         return type;
@@ -60,6 +62,8 @@ public class DevelopmentCard implements ActionListener {
         this.player = player;
         this.cbReference = cbReference;
         this.otherPlayers = otherPlayers;
+
+        readyYearOfPlentyFrame();
     }
 
     public void playCard() {
@@ -69,14 +73,19 @@ public class DevelopmentCard implements ActionListener {
         else if (type.equals("Victory Points")) {
             JOptionPane.showMessageDialog(null, "You are awarded one victory point. This will now be reflected in your status screen.", "Victory Point Action", 1);
             performVictoryPoints();
-        } else if (type.equals("Road Builder"))
+        }
+
+        else if (type.equals("Road Builder"))
             performRoadBuilding();
 
         else if (type.equals("Year of Plenty")) {
             JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action", 1);
             performYearOfPlenty();
-        } else
+        }
+
+        else {
             performMonopoly();
+        }
     }
 
     public void performKnightAction() {
@@ -91,10 +100,14 @@ public class DevelopmentCard implements ActionListener {
 
     public void performYearOfPlenty() {
         counter = 0;
+        yearOfPlenty=true;
         choiceFrame.setVisible(true);
     }
 
     public void performMonopoly() {
+        counter=0;
+        monopoly=true;
+        choiceFrame.setVisible(true);
     }
 
     public void readyYearOfPlentyFrame() {
@@ -121,13 +134,13 @@ public class DevelopmentCard implements ActionListener {
         oreCheck.addActionListener(this);
         oreCheck.setBorderPainted(true);
 
-        graphicPanels[2].add(wheatCheck, BorderLayout.SOUTH);
+        graphicPanels[3].add(wheatCheck, BorderLayout.SOUTH);
         wheatCheck.setBorder(compound);
         wheatCheck.setHorizontalAlignment(SwingConstants.CENTER);
         wheatCheck.addActionListener(this);
         wheatCheck.setBorderPainted(true);
 
-        graphicPanels[3].add(sheepCheck, BorderLayout.SOUTH);
+        graphicPanels[2].add(sheepCheck, BorderLayout.SOUTH);
         sheepCheck.setBorder(compound);
         sheepCheck.setHorizontalAlignment(SwingConstants.CENTER);
         sheepCheck.addActionListener(this);
@@ -147,42 +160,46 @@ public class DevelopmentCard implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == oreCheck) {
             counter += (oreCheck.isSelected()) ? 1 : -1;
-
-            if (counter == 2)
+            if ((counter == 2 && yearOfPlenty) || (counter==1 && monopoly))
                 disableAppropriateCheckBoxes();
+
             else
                 changeAllCheckBoxes(true);
-        } else if (e.getSource() == sheepCheck) {
+        }
+        else if (e.getSource() == sheepCheck) {
             counter += (sheepCheck.isSelected()) ? 1 : -1;
-
-            if (counter == 2)
+            if ((counter == 2 && yearOfPlenty) || (counter==1 && monopoly))
                 disableAppropriateCheckBoxes();
+
             else
                 changeAllCheckBoxes(true);
-        } else if (e.getSource() == brickCheck) {
+        }
+        else if (e.getSource() == brickCheck) {
             counter += (brickCheck.isSelected()) ? 1 : -1;
-
-            if (counter == 2)
+            if ((counter == 2 && yearOfPlenty) || (counter==1 && monopoly))
                 disableAppropriateCheckBoxes();
+
             else
                 changeAllCheckBoxes(true);
-        } else if (e.getSource() == woodCheck) {
+        }
+        else if (e.getSource() == woodCheck) {
             counter += (woodCheck.isSelected()) ? 1 : -1;
-
-            if (counter == 2)
+            if ((counter == 2 && yearOfPlenty) || (counter==1 && monopoly))
                 disableAppropriateCheckBoxes();
+
             else
                 changeAllCheckBoxes(true);
-        } else if (e.getSource() == wheatCheck) {
+        }
+        else if (e.getSource() == wheatCheck) {
             counter += (wheatCheck.isSelected()) ? 1 : -1;
-
-            if (counter == 2)
+            if ((counter == 2 && yearOfPlenty) || (counter==1 && monopoly))
                 disableAppropriateCheckBoxes();
+
             else
                 changeAllCheckBoxes(true);
         }
 
-        if (counter == 2) {
+        if (counter == 2 && yearOfPlenty) {
             int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION);
             if (confirmation == 0) {
                 JOptionPane.showMessageDialog(null, "Okay. You will be given your chosen resources.", "Resources Chosen", 1);
@@ -191,10 +208,54 @@ public class DevelopmentCard implements ActionListener {
                 player.changeGrain((wheatCheck.isSelected() ? 1 : 0));
                 player.changeLumber((woodCheck.isSelected() ? 1 : 0));
                 player.changeOre((oreCheck.isSelected() ? 1 : 0));
+                cbReference.getPlayerStatusMenu(player).update();
                 choiceFrame.setVisible(false);
                 deselectAll();
+                cbReference.getPlayerStatusMenu(player).options.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).build.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
+                yearOfPlenty=false;
             } else
                 JOptionPane.showMessageDialog(null, "Okay. Reselect the resources you want.", "Cancellation", 1);
+        }
+
+        if(counter==1 && monopoly){
+            int confirm = JOptionPane.showConfirmDialog(null,"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION);
+            if(confirm==0) {
+                JOptionPane.showMessageDialog(null, "Okay. You will be given all resources of that type from other players.", "Monopoly Action", 1);
+                for (int x = 0; x < otherPlayers.size(); x++) {
+                    if (brickCheck.isSelected()) {
+                        player.monoBrick(otherPlayers.get(x).getBrickNum());
+                        otherPlayers.get(x).setBrickNum(0);
+                    }
+                    else if (sheepCheck.isSelected()) {
+                        player.monoWool(otherPlayers.get(x).getWoolNum());
+                        otherPlayers.get(x).setWoolNum(0);
+                    }
+                    else if (oreCheck.isSelected()) {
+                        player.monoOre(otherPlayers.get(x).getOreNum());
+                        otherPlayers.get(x).setOreNum(0);
+                    }
+                    else if (woodCheck.isSelected()) {
+                        player.monoLumber(otherPlayers.get(x).getLumberNum());
+                        otherPlayers.get(x).setLumberNum(0);
+                    }
+                    else if (wheatCheck.isSelected()) {
+                        player.monoWheat(otherPlayers.get(x).getGrainNum());
+                        otherPlayers.get(x).setGrainNum(0);
+                    }
+                    cbReference.getPlayerStatusMenu(player).update();
+                    cbReference.getPlayerStatusMenu(otherPlayers.get(x)).update();
+                }
+                choiceFrame.setVisible(false);
+                deselectAll();
+                cbReference.getPlayerStatusMenu(player).options.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).build.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
+                monopoly = false;
+            }
+            else
+                JOptionPane.showMessageDialog(null, "Okay. Reselect the resource you want.", "Cancellation", 1);
         }
     }
 
