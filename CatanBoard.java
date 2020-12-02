@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener {
+    //Settlements need a bit more logic on where they can be placed
+
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
@@ -36,6 +38,7 @@ public class CatanBoard extends JFrame implements MouseListener {
     boolean isDoneRoadBuilding=false, isDoneSettlementBuilding=false;
     boolean doingStartup=false, found=false;
     boolean isMovingRobber=false, isDoneMovingRobber=false;
+    boolean roadDevCard=false, finishedRoadCard = false;
 
     int count=0;
 
@@ -182,8 +185,24 @@ public class CatanBoard extends JFrame implements MouseListener {
                         givePlayersStartingResources();
                     }
                 }
-                else
-                    JOptionPane.showMessageDialog(this,"You've built a new road.","Road Building",1);
+                else {
+                    if(!roadDevCard && !finishedRoadCard)
+                        JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building", 1);
+
+                    else if (roadDevCard){
+                        JOptionPane.showMessageDialog(this,"You've built a new road. Now, create your second road.","Road Building",1);
+                        isRoadBuilding=true;
+                        roadDevCard=false;
+                        finishedRoadCard=true;
+                    }
+                    else if(finishedRoadCard){
+                        JOptionPane.showMessageDialog(this,"You've created your two roads.","Finished Action",1);
+                        getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
+                        getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+                        getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+                        finishedRoadCard=false;
+                    }
+                }
             }
 
             for(int x=0; x<portPoints.length; x++) {
