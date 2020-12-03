@@ -19,7 +19,6 @@ public class BeginGame extends JFrame implements ActionListener {
     Point[] generationPoints = new Point[]{new Point(550,100),new Point(550,455), new Point(1035,100), new Point(1035,455)};
     Point[] statusGenerationPoints = new Point[]{new Point(1080,100),new Point(1080,503), new Point(1555,100), new Point(1605,503)};
     PlayerSelect[] playerCreation;
-    PlayerView[] statusViewer;
 
     ArrayList<Player> catanPlayerList = new ArrayList<Player>();
     ArrayList<Integer> startPickOrder;
@@ -78,7 +77,7 @@ public class BeginGame extends JFrame implements ActionListener {
 
         else if(e.getSource()==startGame) {
             this.setVisible(false);
-            CatanBoard cbMain = new CatanBoard(catanPlayerList, statusViewer, statusGenerationPoints, playerCreation);
+            CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation);
             cbMain.setBounds(100, 100, 930, 800);
             cbMain.dispose();
             cbMain.setUndecorated(true);
@@ -103,25 +102,26 @@ public class BeginGame extends JFrame implements ActionListener {
                 if(y!=referenceNumber)
                     playerCreation[y].colorBox.removeItem(referenceView.colorBox.getSelectedItem());
         }
-
         else{
-            for(int x=0; x<catanPlayerList.size(); x++) {
-                if (catanPlayerList.get(x).getName().equals(addedPlayer.getName()))
+            boolean fuckCounter=false;
+            for(int x=0; x<catanPlayerList.size(); x++)
+                if (catanPlayerList.get(x).getName().equals(addedPlayer.getName())) {
                     JOptionPane.showMessageDialog(this, "Another player has already registered that name. Choose another name.", "Name Error", 3);
-
-                else {
-                    PlayerSelect referenceView = playerCreation[referenceNumber];
-                    referenceView.nameField.setEditable(false);
-                    referenceView.classBox.setEnabled(false);
-                    referenceView.confirmButton.setEnabled(false);
-                    referenceView.colorBox.setEnabled(false);
-                    this.setTitle(referenceView.nameField.getText() + "'s Character");
-                    catanPlayerList.add(addedPlayer);
-                    for (int y = 0; y < playerCreation.length; y++)
-                        if (y != referenceNumber)
-                            playerCreation[y].colorBox.removeItem(referenceView.colorBox.getSelectedItem());
-                    x=catanPlayerList.size();
+                    fuckCounter = true;
+                    break;
                 }
+
+            if(!fuckCounter){
+                PlayerSelect referenceView = playerCreation[referenceNumber];
+                referenceView.nameField.setEditable(false);
+                referenceView.classBox.setEnabled(false);
+                referenceView.confirmButton.setEnabled(false);
+                referenceView.colorBox.setEnabled(false);
+                this.setTitle(referenceView.nameField.getText() + "'s Character");
+                catanPlayerList.add(addedPlayer);
+                for (int y = 0; y < playerCreation.length; y++)
+                    if (y != referenceNumber)
+                        playerCreation[y].colorBox.removeItem(referenceView.colorBox.getSelectedItem());
             }
         }
 
@@ -132,6 +132,4 @@ public class BeginGame extends JFrame implements ActionListener {
             startGame.setEnabled(true);
         }
     }
-
-    public void passTurn(){}
 }
