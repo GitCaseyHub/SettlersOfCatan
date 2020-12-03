@@ -352,8 +352,12 @@ public class PlayerView extends JFrame implements ActionListener {
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
             JOptionPane.showMessageDialog(reference,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn",1);
-            if(diceRoll==7)
-                reference.isMovingRobber=true;
+            if(diceRoll==7) {
+                reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                reference.getPlayerStatusMenu(player).development.setEnabled(false);
+                reference.isMovingRobber = true;
+            }
 
             else
                 reference.giveOutResources(diceRoll);
