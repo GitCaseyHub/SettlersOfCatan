@@ -39,6 +39,7 @@ public class CatanBoard extends JFrame implements MouseListener{
     boolean doingStartup=false, found=false;
     boolean isMovingRobber=false, isDoneMovingRobber=false;
     boolean roadDevCard=false, finishedRoadCard = false;
+    boolean isCityUpgrading=false;
     boolean redrawEverything=false;
 
     int count=0;
@@ -153,7 +154,6 @@ public class CatanBoard extends JFrame implements MouseListener{
                         g.drawImage(robber,tiles[x].getPosition()[0]+57,tiles[x].getPosition()[1]+80,null);
                     }
 
-
                 loaded=true;
             }
             if(isDoneMovingRobber){
@@ -167,7 +167,6 @@ public class CatanBoard extends JFrame implements MouseListener{
 
                if(checkCounter!=0)
                     JOptionPane.showMessageDialog(this,"The robber has been moved.","Robber Moved",1);
-
 
                 ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
                 if(availablePlayers.size()!=0) {
@@ -355,6 +354,12 @@ public class CatanBoard extends JFrame implements MouseListener{
         catch(IOException ie){
             ie.printStackTrace();
         }
+
+        if(!doingStartup) {
+            getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
+            getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+            getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+        }
         updateAllStatusMenus();
     }
 
@@ -506,6 +511,7 @@ public class CatanBoard extends JFrame implements MouseListener{
                         settlementPaintCondition=true;
                         checked.setTaken(true);
                         checked.setOwner(getCurrentPlayer());
+                        getCurrentPlayer().addIndex(checked);
                         checked.setSettlement(true);
                         repaint();
                     }
@@ -534,6 +540,29 @@ public class CatanBoard extends JFrame implements MouseListener{
                 }
             if (checkCounter == 0)
                 JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning", 3);
+        }
+
+        if(isCityUpgrading) {
+            int cityCounter = 0;
+            for (int x = 0; x < getCurrentPlayer().getOwnedIndexes().size(); x++) {
+                if (Math.abs(xLoc - getCurrentPlayer().getOwnedIndexes().get(x).getLocation()[0]) < 25 && Math.abs(yLoc - getCurrentPlayer().getOwnedIndexes().get(x).getLocation()[1]) < 25) {
+                    if (getCurrentPlayer().getOwnedIndexes().get(x).isSettlement()) {
+                        cityCounter += 1;
+                        getCurrentPlayer().getOwnedIndexes().get(x).setSettlement(false);
+                        getCurrentPlayer().getOwnedIndexes().get(x).setCity(true);
+                        break;
+                    }
+                }
+            }
+            if (cityCounter == 1) {
+                isCityUpgrading = false;
+                redrawEverything=true;
+                getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
+                getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+                getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+                repaint();
+                JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1);
+            }
         }
     }
 
@@ -646,7 +675,7 @@ public class CatanBoard extends JFrame implements MouseListener{
         return adjacentResources;
     }
 
-    //Returns the current player (obviously)
+    //Returns the player whose turn is currently taking place
     public Player getCurrentPlayer(){
         for(int x=0; x<catanPlayerList.size(); x++)
             if(catanPlayerList.get(x).isTurn())
