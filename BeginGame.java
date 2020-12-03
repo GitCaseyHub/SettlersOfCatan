@@ -11,7 +11,7 @@ public class BeginGame extends JFrame implements ActionListener {
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
     JCheckBox activePorts = new JCheckBox("Active Ports");
-    JCheckBox multipleRobbers =new JCheckBox("Multiple Robbers");
+    JCheckBox classicVersion =new JCheckBox("Classic Catan");
     JComboBox<String> players = new JComboBox<String>();
     JPanel options = new JPanel(new GridLayout(1,3));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
@@ -24,6 +24,8 @@ public class BeginGame extends JFrame implements ActionListener {
     ArrayList<Integer> startPickOrder;
     ArrayList<Integer> turnOrder;
 
+    boolean usablePorts=false;
+
     public BeginGame(){
         for(int x=0; x<comboOptions.length; x++)
             players.addItem(comboOptions[x]);
@@ -34,11 +36,13 @@ public class BeginGame extends JFrame implements ActionListener {
             options.add(players);
                 players.setBorder(compound);
             options.add(activePorts);
-            options.add(multipleRobbers);
+            options.add(classicVersion);
                 activePorts.setBorderPainted(true);
                 activePorts.setBorder(compound);
-                multipleRobbers.setBorder(compound);
-                multipleRobbers.setBorderPainted(true);
+                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game.");
+                classicVersion.setBorder(compound);
+                classicVersion.setBorderPainted(true);
+                classicVersion.setToolTipText("Select this checkbox if you want to remove classes from the game.");
         this.add(charGenerate,BorderLayout.SOUTH);
             charGenerate.setBorder(new TitledBorder("Game Generation"));
             charGenerate.add(generateChars);
@@ -66,18 +70,28 @@ public class BeginGame extends JFrame implements ActionListener {
             players.setEnabled(false);
             playerCreation = new PlayerSelect[players.getSelectedIndex()+1];
 
-            for(int x=0; x<players.getSelectedIndex()+1; x++){
-                playerCreation[x] = new PlayerSelect(this,x);
+            for(int x=0; x<players.getSelectedIndex()+1; x++) {
+                playerCreation[x] = new PlayerSelect(this, x);
                 playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
                 playerCreation[x].setVisible(true);
                 playerCreation[x].setTitle("Player Select Screen");
+
+                if (classicVersion.isSelected()){
+                    playerCreation[x].classBox.setSelectedIndex(1);
+                    playerCreation[x].classBox.setEnabled(false);
+                }
             }
+            classicVersion.setEnabled(false);
+            activePorts.setEnabled(false);
             playerCreation[0].nameField.requestFocus();
         }
 
         else if(e.getSource()==startGame) {
             this.setVisible(false);
-            CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation);
+            if(activePorts.isSelected())
+                usablePorts=true;
+
+            CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
             cbMain.setBounds(100, 100, 930, 800);
             cbMain.dispose();
             cbMain.setUndecorated(true);
