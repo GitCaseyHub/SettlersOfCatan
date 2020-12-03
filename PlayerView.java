@@ -207,6 +207,9 @@ public class PlayerView extends JFrame implements ActionListener {
     }
 
     public void startTurn() {
+        reference.getPlayerStatusMenu(player).options.setEnabled(true);
+        reference.getPlayerStatusMenu(player).build.setEnabled(true);
+        reference.getPlayerStatusMenu(player).development.setEnabled(true);
         settlement.setEnabled(false);
         city.setEnabled(false);
         road.setEnabled(false);
@@ -214,6 +217,7 @@ public class PlayerView extends JFrame implements ActionListener {
         buyCard.setEnabled(false);
         playCard.setEnabled(false);
         exchange.setEnabled(false);
+        rollDice.setEnabled(true);
         endTurn.setEnabled(false);
     }
 
@@ -255,7 +259,9 @@ public class PlayerView extends JFrame implements ActionListener {
                     this.player.changeVictoryPoints(1);
                     JOptionPane.showMessageDialog(this,"Select the index you'd like to build a new settlement on.","Settlement Building",1);
                     reference.isSettlementBuilding=true;
-                    this.options.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).development.setEnabled(false);
                     player.changeBrick(-1);
                     player.changeGrain(-1);
                     player.changeLumber(-1);
@@ -267,7 +273,29 @@ public class PlayerView extends JFrame implements ActionListener {
             }
         }
 
-        else if(e.getSource()==city){}
+        else if(e.getSource()==city){
+            int cityInput = JOptionPane.showConfirmDialog(this,"Would you like to upgrade one of your settlements into a city?","Settlement Upgrade",JOptionPane.YES_NO_OPTION);
+            if(cityInput==0){
+                if((player.getGrainNum()>=2 && player.getOreNum()>=3 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getGrainNum()>=4 && player.getOreNum()>=6 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
+                    if(playerHasSettlements()) {
+                        this.player.changeVictoryPoints(1);
+                        JOptionPane.showMessageDialog(null, "Select the settlement you'd like to upgrade.", "City Building", 1);
+                        reference.isCityUpgrading = true;
+                        reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                        reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                        reference.getPlayerStatusMenu(player).development.setEnabled(false);
+                        player.changeOre(-3);
+                        player.changeGrain(-2);
+                        update();
+                    }
+                    else
+                        JOptionPane.showMessageDialog(null,"You have no settlements left to upgrade into cities.","Failure To Find Settlement",3);
+                }
+                else
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to upgrade a settlement.","City Building Error",3);
+
+            }
+        }
 
         else if(e.getSource()==road){
             int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION);
@@ -275,7 +303,9 @@ public class PlayerView extends JFrame implements ActionListener {
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))) {
                     JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building",1);
                     reference.isRoadBuilding=true;
-                    this.options.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).development.setEnabled(false);
                     player.changeBrick(-1);
                     player.changeLumber(-1);
                     update();
@@ -286,7 +316,7 @@ public class PlayerView extends JFrame implements ActionListener {
         }
 
         else if(e.getSource()==buyCard){
-            DevelopmentCard newDc = new DevelopmentCard(devCardTypes[new Random().nextInt(25)],player,getOtherPlayers(),reference);
+            DevelopmentCard newDc = new DevelopmentCard(devCardTypes[new Random().nextInt(25)],player,getOtherPlayers(),reference,true);
             int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION);
             if(devInput==0){
                 if((player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getOreNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
@@ -310,22 +340,46 @@ public class PlayerView extends JFrame implements ActionListener {
             else if(unplayed.getSelectedIndex()!=0){
                 for(int x=0; x<player.getUnPlayedCards().size(); x++)
                     if(unplayed.getSelectedItem().toString().equals(player.getUnPlayedCards().get(x).getType())) {
-                        reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                        JOptionPane.showMessageDialog(this,"You are playing a '"+unplayed.getSelectedItem().toString()+" Card'. Its effects are now being activated.","Development Card Played",1);
-                        player.getUnPlayedCards().get(x).playCard();
-                        player.addDevelopmentCardToPlayed(player.getUnPlayedCards().get(x));
-                        unplayed.removeItem(player.getUnPlayedCards().get(x).getType());
-                        played.addItem(player.getUnPlayedCards().get(x).getType());
-                        player.removeDevelopmentCardFromUnplayed(player.getUnPlayedCards().get(x));
-                        reference.updateAllStatusMenus();
-                        unplayed.setSelectedIndex(0);
-                        break;
+                        if(multiples(player.getUnPlayedCards().get(x).getType())){
+                            reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                            reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                            reference.getPlayerStatusMenu(player).development.setEnabled(false);
+                            JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
+                            player.getUnPlayedCards().get(x).playCard();
+                            player.addDevelopmentCardToPlayed(player.getUnPlayedCards().get(x));
+                            unplayed.removeItem(player.getUnPlayedCards().get(x).getType());
+                            played.addItem(player.getUnPlayedCards().get(x).getType());
+                            player.removeDevelopmentCardFromUnplayed(player.getUnPlayedCards().get(x));
+                            reference.updateAllStatusMenus();
+                            unplayed.setSelectedIndex(0);
+                            playCard.setEnabled(false);
+                            break;
+                        }
+                        else {
+                            if (player.getUnPlayedCards().get(x).isBoughtThisTurn())
+                                JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", 3);
+
+                            else {
+                                reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                                reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                                reference.getPlayerStatusMenu(player).development.setEnabled(false);
+                                JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
+                                player.getUnPlayedCards().get(x).playCard();
+                                player.addDevelopmentCardToPlayed(player.getUnPlayedCards().get(x));
+                                unplayed.removeItem(player.getUnPlayedCards().get(x).getType());
+                                played.addItem(player.getUnPlayedCards().get(x).getType());
+                                player.removeDevelopmentCardFromUnplayed(player.getUnPlayedCards().get(x));
+                                reference.updateAllStatusMenus();
+                                unplayed.setSelectedIndex(0);
+                                playCard.setEnabled(false);
+                                break;
+                            }
+                        }
                     }
             }
         }
         else if(e.getSource()==exchange){}
+
         else if(e.getSource()==endTurn){
             ArrayList<Player> turnOrder = new ArrayList<Player>();
             String name="";
@@ -347,7 +401,15 @@ public class PlayerView extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn",1);
             this.player.setTurn(false);
             this.turnBox.setSelected(false);
+            reference.getPlayerStatusMenu(player).options.setEnabled(false);
+            reference.getPlayerStatusMenu(player).build.setEnabled(false);
+            reference.getPlayerStatusMenu(player).development.setEnabled(false);
             hasRolled=false;
+
+            for(int x=0; x<player.getUnPlayedCards().size(); x++)
+                player.getUnPlayedCards().get(x).setBoughtThisTurn(false);
+
+            update();
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
@@ -369,5 +431,23 @@ public class PlayerView extends JFrame implements ActionListener {
             costFrame.setVisible(!costFrame.isVisible());
         }
         reference.updateAllStatusMenus();
+    }
+
+    public boolean playerHasSettlements(){
+        int counter=0;
+        for(int x=0; x<player.getOwnedIndexes().size(); x++)
+            if(player.getOwnedIndexes().get(x).isSettlement())
+                counter++;
+
+        return counter!=0;
+    }
+
+    public boolean multiples(String type){
+        int counter=0;
+        for(int x=0; x<player.getUnPlayedCards().size(); x++)
+            if(player.getUnPlayedCards().get(x).getType().equals(type))
+                counter++;
+
+        return counter>1;
     }
 }
