@@ -39,6 +39,7 @@ public class CatanBoard extends JFrame implements MouseListener {
     boolean doingStartup=false, found=false;
     boolean isMovingRobber=false, isDoneMovingRobber=false;
     boolean roadDevCard=false, finishedRoadCard = false;
+    boolean redrawEverything=false;
 
     int count=0;
 
@@ -60,6 +61,9 @@ public class CatanBoard extends JFrame implements MouseListener {
                                          new Point[]{new Point(198,235),new Point(197,312), new Point(88,244)}};
     String[] portTypes = {"Generic","Generic","Generic","Generic","Wool","Wheat","Ore","Brick","Wood"};
     Port[] ports = new Port[9];
+
+    //Robber Objects
+    Tile robberTile;
 
     //Building Variables
     int roadCondition=0;
@@ -98,8 +102,10 @@ public class CatanBoard extends JFrame implements MouseListener {
             typeList.remove(typeIndex);
             coordList.remove(coordIndex);
 
-            if(tiles[x].getType().equals("Desert"))
+            if(tiles[x].getType().equals("Desert")) {
                 tiles[x].setNum(7);
+                tiles[x].setHasRobber(true);
+            }
 
             else{
                 int rollIndex = new Random().nextInt(rollNumList.size());
@@ -139,7 +145,26 @@ public class CatanBoard extends JFrame implements MouseListener {
                     g.drawImage(port,(int)ports[x].getLocations()[2].getX(),(int)ports[x].getLocations()[2].getY(),null);
                 }
 
+                for(int x=0; x<tiles.length; x++)
+                    if(tiles[x].isHasRobber()){
+                        BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
+                        g.drawImage(robber,tiles[x].getPosition()[0]+57,tiles[x].getPosition()[1]+80,null);
+                    }
+
+
                 loaded=true;
+            }
+            if(isDoneMovingRobber){
+                ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
+
+                BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
+                for(int x=0; x<tiles.length; x++)
+                    if(tiles[x].isHasRobber()){
+                        g.drawImage(robber,tiles[x].getPosition()[0]+57,tiles[x].getPosition()[1]+80,null);
+                        isDoneMovingRobber=false;
+                        break;
+                    }
+                redrawEverything=true;
             }
             if (settlementPaintCondition) {
                 //Drawing Settlements Test
@@ -205,6 +230,49 @@ public class CatanBoard extends JFrame implements MouseListener {
                 }
             }
 
+            if(redrawEverything){
+                //Redraws Tiles
+                for (int x = 0; x < tiles.length; x++) {
+                    BufferedImage tile = ImageIO.read(new File("Tiles/" + tiles[x].getType() + ".png"));
+                    g.drawImage(tile, tiles[x].getPosition()[0], tiles[x].getPosition()[1], null);
+                }
+
+                //Redraws Roll Tiles
+                for(int x=0; x<tiles.length; x++){
+                    BufferedImage dice = ImageIO.read(new File("Rolls/"+tiles[x].getNum()+".png"));
+                    g.drawImage(dice,(int)tiles[x].getPosition()[0]+42,(int)tiles[x].getPosition()[1]+25,null);
+                }
+
+                //Draws Robber
+                for(int x=0; x<tiles.length; x++)
+                    if(tiles[x].isHasRobber()){
+                        BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
+                        g.drawImage(robber,tiles[x].getPosition()[0]+57,tiles[x].getPosition()[1]+80,null);
+                    }
+
+                //Draws Cities/Settlements
+                for(int x=0; x<indexes.length; x++){
+                    if(indexes[x].isTaken()){
+                        if(indexes[x].isSettlement()){
+                            BufferedImage settlement = ImageIO.read(new File("Pieces/"+indexes[x].getOwner().getColor()+"_Settlement.png"));
+                            g.drawImage(settlement,indexes[x].getLocation()[0]-5, indexes[x].getLocation()[1]-16,null);
+                        }
+                        else if(indexes[x].isCity()) {
+                            BufferedImage city = ImageIO.read(new File("Pieces/"+indexes[x].getOwner().getColor()+"_City.png"));
+                            g.drawImage(city,indexes[x].getLocation()[0]-5, indexes[x].getLocation()[1]-16,null);
+                        }
+                    }
+                }
+
+                //Redraw Roads
+                for(int x=0; x<indexConnections.size(); x++){
+                    BufferedImage road = ImageIO.read(new File("Pieces/"+indexConnections.get(x).getRoadType()+"_"+indexConnections.get(x).getOwner().getColor()+"_Road.png"));
+                    g.drawImage(road,(int)indexConnections.get(x).getPosition().getX(),(int)indexConnections.get(x).getPosition().getY(),null);
+                }
+                redrawEverything=false;
+            }
+
+            //Port Indexes
             for(int x=0; x<portPoints.length; x++) {
                 g.fillRect((int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), 10, 10);
                 g.fillRect((int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), 10, 10);
@@ -267,7 +335,7 @@ public class CatanBoard extends JFrame implements MouseListener {
 
                     else if(distance(new Point(checkedIndexes.get(0).getLocation()[0],checkedIndexes.get(0).getLocation()[1]),new Point(checkedIndexes.get(1).getLocation()[0],checkedIndexes.get(1).getLocation()[1]))<90) {
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
-                        indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(),getCurrentPlayer()));
+                        indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(),getCurrentPlayer(),new Point((int)((Point)roadInfo[0]).getX(),(int)((Point)roadInfo[0]).getY()),roadInfo[1].toString()));
                         repaint();
                     }
                 }
@@ -329,7 +397,7 @@ public class CatanBoard extends JFrame implements MouseListener {
                     }
                     else if(!found){
                         roadInfo = getRoadPositionAndType(checkedIndexes.get(0), checkedIndexes.get(1));
-                        indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(),getCurrentPlayer()));
+                        indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(),getCurrentPlayer(),new Point((int)((Point)roadInfo[0]).getX(),(int)((Point)roadInfo[0]).getY()),roadInfo[1].toString()));
                         repaint();
                     }
                 }
@@ -372,7 +440,29 @@ public class CatanBoard extends JFrame implements MouseListener {
         }
 
         if(isMovingRobber){
-            isDoneMovingRobber=true;
+            int checkCounter=0;
+            for(int x=0; x<tiles.length; x++)
+                if(tiles[x].isHasRobber())
+                    tiles[x].setHasRobber(false);
+
+            for(int x=0; x<tiles.length; x++)
+                if(tiles[x].getRobberRect().intersects(new Rectangle(xLoc,yLoc,5,5))){
+                    tiles[x].setHasRobber(true);
+                    isDoneMovingRobber=true;
+                    isMovingRobber=false;
+                    robberTile=tiles[x];
+                    repaint();
+                    checkCounter++;
+                    getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
+                    getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+                    getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+                    break;
+                }
+
+            if(checkCounter==0)
+                JOptionPane.showMessageDialog(this,"Click in the center of the tile you'd like to move the robber to.","Incorrect Robber Positioning",3);
+            else
+                JOptionPane.showMessageDialog(this,"The robber has been moved.","Robber Moved",1);
         }
     }
 
@@ -392,8 +482,6 @@ public class CatanBoard extends JFrame implements MouseListener {
             portTypesList.remove(portTypesList.get(stringIndex));
         }
     }
-
-
 
     public ArrayList<Integer> getIndexIDs() {
         ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -562,6 +650,18 @@ public class CatanBoard extends JFrame implements MouseListener {
         for(int x=list.size()-1; x>-1; x--)
             reversed.add(list.get(x));
         return reversed;
+    }
+
+    public ArrayList<Player> getPlayersOnTile(Tile t){
+        ArrayList<Player> players = new ArrayList<Player>();
+        for(int x=0; x<t.getVertices().size(); x++){
+            for(int y=0; y<indexes.length; y++){
+                if(Math.abs(t.getVertices().get(x).getX() - indexes[y].getLocation()[0]) < 30 && Math.abs(t.getVertices().get(x).getY() - indexes[y].getLocation()[1])<30)
+                    if(indexes[y].getOwner()!=getCurrentPlayer() && !players.contains(indexes[y].getOwner()) && indexes[y].getOwner()!=null)
+                        players.add(indexes[y].getOwner());
+            }
+        }
+        return players;
     }
 
     public void givePlayersStartingResources() {
