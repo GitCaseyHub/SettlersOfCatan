@@ -27,6 +27,15 @@ public class DevelopmentCard implements ActionListener {
     int counter = 0;
     boolean yearOfPlenty=false;
     boolean monopoly=false;
+    boolean boughtThisTurn;
+
+    public boolean isBoughtThisTurn() {
+        return boughtThisTurn;
+    }
+
+    public void setBoughtThisTurn(boolean boughtThisTurn) {
+        this.boughtThisTurn = boughtThisTurn;
+    }
 
     public String getType() {
         return type;
@@ -56,12 +65,13 @@ public class DevelopmentCard implements ActionListener {
         return otherPlayers;
     }
 
-    public DevelopmentCard(String type, Player player, ArrayList<Player> otherPlayers, CatanBoard cbReference) {
+    public DevelopmentCard(String type, Player player, ArrayList<Player> otherPlayers, CatanBoard cbReference, boolean boughtThisTurn) {
         //Types of Cards: Knight, Victory Points, Road Builder, Year of Plenty, Monopoly
         this.type = type;
         this.player = player;
         this.cbReference = cbReference;
         this.otherPlayers = otherPlayers;
+        this.boughtThisTurn=boughtThisTurn;
 
         readyYearOfPlentyFrame();
     }
