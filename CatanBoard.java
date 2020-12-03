@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CatanBoard extends JFrame implements MouseListener {
+public class CatanBoard extends JFrame implements MouseListener{
     //Settlements need a bit more logic on where they can be placed
 
     //Objects for Board Generation
@@ -64,6 +64,8 @@ public class CatanBoard extends JFrame implements MouseListener {
 
     //Robber Objects
     Tile robberTile;
+    JCheckBox[] possibleTargets;
+    int checkCounter=0;
 
     //Building Variables
     int roadCondition=0;
@@ -155,8 +157,6 @@ public class CatanBoard extends JFrame implements MouseListener {
                 loaded=true;
             }
             if(isDoneMovingRobber){
-                ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
-
                 BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
                 for(int x=0; x<tiles.length; x++)
                     if(tiles[x].isHasRobber()){
@@ -164,7 +164,81 @@ public class CatanBoard extends JFrame implements MouseListener {
                         isDoneMovingRobber=false;
                         break;
                     }
+
+               if(checkCounter!=0)
+                    JOptionPane.showMessageDialog(this,"The robber has been moved.","Robber Moved",1);
+
+
+                ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
+                if(availablePlayers.size()!=0) {
+                    possibleTargets = new JCheckBox[availablePlayers.size()];
+                    for(int x=0; x<availablePlayers.size(); x++)
+                        possibleTargets[x] = new JCheckBox(availablePlayers.get(x).getName());
+
+                    String message = "Which player would you like to steal a resource from?";
+                    String playerName="";
+                    Object[] params = {message, possibleTargets};
+                    int selectCounter=0;
+                    while(selectCounter==0 || (selectCounter==possibleTargets.length && possibleTargets.length!=1)){
+                        selectCounter=0;
+                        JOptionPane.showMessageDialog(this, params, "Robber Action", JOptionPane.INFORMATION_MESSAGE);
+
+                        for(int x=0; x<possibleTargets.length; x++)
+                            if(possibleTargets[x].isSelected())
+                                selectCounter++;
+
+                        if(selectCounter==0)
+                            JOptionPane.showMessageDialog(this,"You have to steal from someone. You cannot elect out of this.","Try Again",3);
+
+                        if(selectCounter==possibleTargets.length && possibleTargets.length!=1) {
+                            for (int x = 0; x < possibleTargets.length; x++)
+                                possibleTargets[x].setSelected(false);
+
+                            JOptionPane.showMessageDialog(this, "You may only steal from one player.", "Try Again", 3);
+                        }
+                    }
+
+                    for(int x=0; x<possibleTargets.length; x++)
+                        if(possibleTargets[x].isSelected()) {
+                            playerName = possibleTargets[x].getText();
+                            break;
+                        }
+
+                    for(int x=0; x<possibleTargets.length; x++)
+                        possibleTargets[x].setSelected(false);
+
+                    Player playerToStealFrom = getPlayerViaName(playerName);
+                    String stolenResource = giveRandomResource(playerToStealFrom);
+                    if(stolenResource.equals(""))
+                        JOptionPane.showMessageDialog(this,"Unfortunately, "+playerToStealFrom.getName()+" has no resources. So, you've stolen nothing.","Robber Failure",3);
+
+                    else{
+                        if(stolenResource.equals("Sheep")) {
+                            getCurrentPlayer().monoWool(1);
+                            playerToStealFrom.monoWool(-1);
+                        }
+                        if(stolenResource.equals("Ore")) {
+                            getCurrentPlayer().monoOre(1);
+                            playerToStealFrom.monoOre(-1);
+                        }
+                        if(stolenResource.equals("Brick")) {
+                            getCurrentPlayer().monoBrick(1);
+                            playerToStealFrom.monoBrick(-1);
+                        }
+                        if(stolenResource.equals("Lumber")) {
+                            getCurrentPlayer().monoLumber(1);
+                            playerToStealFrom.monoLumber(-1);
+                        }
+                        if(stolenResource.equals("Wheat")) {
+                            getCurrentPlayer().monoWheat(1);
+                            playerToStealFrom.monoWheat(-1);
+                        }
+                        JOptionPane.showMessageDialog(this,"You've stolen "+stolenResource+" from "+playerToStealFrom.getName()+".","Robber Success",1);
+                        updateAllStatusMenus();
+                    }
+                }
                 redrawEverything=true;
+                isDoneMovingRobber=false;
             }
             if (settlementPaintCondition) {
                 //Drawing Settlements Test
@@ -439,18 +513,18 @@ public class CatanBoard extends JFrame implements MouseListener {
             }
         }
 
-        if(isMovingRobber){
-            int checkCounter=0;
-            for(int x=0; x<tiles.length; x++)
-                if(tiles[x].isHasRobber())
+        if(isMovingRobber) {
+            checkCounter = 0;
+            for (int x = 0; x < tiles.length; x++)
+                if (tiles[x].isHasRobber())
                     tiles[x].setHasRobber(false);
 
-            for(int x=0; x<tiles.length; x++)
-                if(tiles[x].getRobberRect().intersects(new Rectangle(xLoc,yLoc,5,5))){
+            for (int x = 0; x < tiles.length; x++)
+                if (tiles[x].getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
                     tiles[x].setHasRobber(true);
-                    isDoneMovingRobber=true;
-                    isMovingRobber=false;
-                    robberTile=tiles[x];
+                    isDoneMovingRobber = true;
+                    isMovingRobber = false;
+                    robberTile = tiles[x];
                     repaint();
                     checkCounter++;
                     getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
@@ -458,11 +532,8 @@ public class CatanBoard extends JFrame implements MouseListener {
                     getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
                     break;
                 }
-
-            if(checkCounter==0)
-                JOptionPane.showMessageDialog(this,"Click in the center of the tile you'd like to move the robber to.","Incorrect Robber Positioning",3);
-            else
-                JOptionPane.showMessageDialog(this,"The robber has been moved.","Robber Moved",1);
+            if (checkCounter == 0)
+                JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning", 3);
         }
     }
 
@@ -496,6 +567,14 @@ public class CatanBoard extends JFrame implements MouseListener {
         for(int x=0; x<indexes.length; x++)
             if(indexes[x].getLocation()[0]==chosen_x && indexes[x].getLocation()[1]==chosen_y)
                 return indexes[x];
+
+        return null;
+    }
+
+    public Player getPlayerViaName(String name){
+        for(int x=0; x<catanPlayerList.size(); x++)
+            if(catanPlayerList.get(x).getName().equals(name))
+                return catanPlayerList.get(x);
 
         return null;
     }
@@ -728,6 +807,26 @@ public class CatanBoard extends JFrame implements MouseListener {
                                     else if (tiles[x].getType().equals("Mountain"))
                                         catanPlayerList.get(a).changeOre((indexes[z].isSettlement() ? 1 : 2));
                                 }
+    }
+
+    public String giveRandomResource(Player player){
+        ArrayList<String> resources = new ArrayList<String>();
+        if(player.getLumberNum()>0)
+            resources.add("Lumber");
+        if(player.getBrickNum()>0)
+            resources.add("Brick");
+        if(player.getGrainNum()>0)
+            resources.add("Wheat");
+        if(player.getWoolNum()>0)
+            resources.add("Sheep");
+        if(player.getOreNum()>0)
+            resources.add("Ore");
+
+        if(resources.size()!=0)
+            return resources.get(new Random().nextInt(resources.size()));
+
+        else
+            return "";
     }
 
     public void mouseReleased(MouseEvent e){}
