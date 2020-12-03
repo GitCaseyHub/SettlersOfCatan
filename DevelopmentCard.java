@@ -92,6 +92,8 @@ public class DevelopmentCard implements ActionListener {
     }
 
     public void performKnightAction() {
+        JOptionPane.showMessageDialog(null,"Move the robber to a tile. Note that you may keep the robber in the same position by click on the tile it is already located on.","Knight Card Action",1);
+        cbReference.isMovingRobber=true;
     }
 
     public void performVictoryPoints() {
