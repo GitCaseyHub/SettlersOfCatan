@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener{
-    //Settlements need a bit more logic on where they can be placed
+    //Longest Road needs to deal with forking issue; causes it to think there is an additional road there. I think that I need to do this by forcing the program to check at only one index
 
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
@@ -44,6 +44,10 @@ public class CatanBoard extends JFrame implements MouseListener{
     boolean usablePorts=false;
 
     int count=0;
+
+    //Awards
+    int currentLongestRoad=4;
+    Player longestRoadPlayer;
 
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
@@ -279,6 +283,22 @@ public class CatanBoard extends JFrame implements MouseListener{
                 isDoneRoadBuilding=true;
                 isRoadBuilding=false;
 
+                if(longestRoad(getCurrentPlayer(),currentLongestRoad) && longestRoadPlayer!=getCurrentPlayer()){
+                    if(currentLongestRoad!=4) {
+                        for (int x = 0; x < catanPlayerList.size(); x++)
+                            if (catanPlayerList.get(x).hasLongestRoad()) {
+                                catanPlayerList.get(x).setLongestRoad(false);
+                                catanPlayerList.get(x).changeVictoryPoints(-2);
+                                break;
+                            }
+                    }
+                    getCurrentPlayer().setLongestRoad(true);
+                    getCurrentPlayer().changeVictoryPoints(2);
+                    JOptionPane.showMessageDialog(this,(currentLongestRoad!=4)?"There is a new longest road comprised of "+currentLongestRoad+" segments by "+getCurrentPlayer().getName()+".":"The longest road award has been claimed by "+getCurrentPlayer().getName()+", who has a road of "+currentLongestRoad+" continuous segments.","New Longest Road",1);
+                    this.longestRoadPlayer=getCurrentPlayer();
+                    updateAllStatusMenus();
+                }
+
                 if(doingStartup) {
                     if (duplicates.size() > 0) {
                         duplicates.get(0).setTurn(false);
@@ -378,7 +398,7 @@ public class CatanBoard extends JFrame implements MouseListener{
                         g.drawImage(cross,(int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
                     }
                 }
-                
+
                 //Draws Cities/Settlements
                 for(int x=0; x<indexes.length; x++){
                     if(indexes[x].isTaken()){
@@ -398,7 +418,7 @@ public class CatanBoard extends JFrame implements MouseListener{
                     BufferedImage road = ImageIO.read(new File("Pieces/"+indexConnections.get(x).getRoadType()+"_"+indexConnections.get(x).getOwner().getColor()+"_Road.png"));
                     g.drawImage(road,(int)indexConnections.get(x).getPosition().getX(),(int)indexConnections.get(x).getPosition().getY(),null);
                 }
-                
+
                 redrawEverything=false;
             }
         }
@@ -556,6 +576,9 @@ public class CatanBoard extends JFrame implements MouseListener{
 
                     else if(!buildable(checkedIndex))
                         JOptionPane.showMessageDialog(this,"You are within one road-length of another settlement/city. Please choose again.","Spot Proximity Too Close",3);
+
+                    else if(!settlementBuildable(checkedIndex) && !doingStartup)
+                        JOptionPane.showMessageDialog(this,"You cannot build here as you aren't connecting this settlement to a road you own.","Spot Unconnected",3);
 
                     else {
                         isSettlementBuilding = false;
@@ -743,6 +766,21 @@ public class CatanBoard extends JFrame implements MouseListener{
         return true;
     }
 
+    public boolean settlementBuildable(Index newSpot){
+        int counter=0;
+        for(int x=0; x<indexConnections.size(); x++){
+            if(newSpot.getIndexID()==indexConnections.get(x).getIndexA() || newSpot.getIndexID()==indexConnections.get(x).getIndexB()){
+                if(indexConnections.get(x).getOwner()==getCurrentPlayer())
+                    counter++;
+            }
+        }
+        if(counter>0)
+            return true;
+
+        else
+            return false;
+    }
+
     public void performStartingOperations(){
         int startingPlayer = new Random().nextInt(playerCreation.length);
         doingStartup=true;
@@ -873,7 +911,7 @@ public class CatanBoard extends JFrame implements MouseListener{
             if(tiles[x].getNum()==roll)
                 for(int y=0; y<6; y++)
                     for(int z=0; z<indexes.length; z++)
-                        if(Math.abs(tiles[x].getVertices().get(y).getX()-indexes[z].getLocation()[0])<35 && Math.abs(tiles[x].getVertices().get(y).getY()-indexes[z].getLocation()[1])<35)
+                        if(Math.abs(tiles[x].getVertices().get(y).getX()-indexes[z].getLocation()[0])<35 && Math.abs(tiles[x].getVertices().get(y).getY()-indexes[z].getLocation()[1])<35 && !tiles[x].isHasRobber())
                             for(int a=0; a<catanPlayerList.size(); a++)
                                 if (indexes[z].getOwner() == catanPlayerList.get(a)) {
                                     if (tiles[x].getType().equals("Grain"))
@@ -907,6 +945,63 @@ public class CatanBoard extends JFrame implements MouseListener{
 
         else
             return "";
+    }
+
+    //Method doesn't work if there is a fork in the road. Still need to work on that
+    public boolean longestRoad(Player player, int previousLongestRoad){
+        ArrayList<Road> playerRoads = new ArrayList<Road>();
+        ArrayList<Integer> roadLengths = new ArrayList<Integer>();
+        ArrayList<Road> alreadyUsed = new ArrayList<Road>();
+        ArrayList<Integer> alreadyJumpedFrom = new ArrayList<Integer>();
+        boolean stillHasConnections=true;
+
+        for(int x=0; x<indexConnections.size(); x++){
+            if(indexConnections.get(x).getOwner()==getCurrentPlayer())
+                playerRoads.add(indexConnections.get(x));
+        }
+
+        for(int a=0; a<playerRoads.size(); a++){
+            alreadyUsed.clear();
+            alreadyJumpedFrom.clear();
+            alreadyUsed.add(playerRoads.get(a));
+            Road current = playerRoads.get(a);
+            int counter=1;
+            while(stillHasConnections){
+                stillHasConnections=false;
+                for(int y=0; y<playerRoads.size(); y++){
+                    if(current.getIndexA()==playerRoads.get(y).getIndexA() || current.getIndexA()==playerRoads.get(y).getIndexB() || current.getIndexB()==playerRoads.get(y).getIndexA() || current.getIndexB()==playerRoads.get(y).getIndexB()){
+                        if(!alreadyUsed.contains(playerRoads.get(y))) {
+                            current = playerRoads.get(y);
+                            alreadyUsed.add(current);
+                            counter++;
+                            stillHasConnections=true;
+                            System.out.println(current.toString());
+                        }
+                    }
+                }
+            }
+            roadLengths.add(counter);
+        }
+
+        for(int x=0; x<roadLengths.size(); x++){
+            System.out.println(roadLengths.get(x));
+            if(roadLengths.get(x)>previousLongestRoad) {
+                this.currentLongestRoad = roadLengths.get(x);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+
+    public int commonIndex(Road roadA, Road roadB){
+        if(roadA.getIndexA()==roadB.getIndexA() || roadA.getIndexA()==roadB.getIndexB())
+            return roadA.getIndexA();
+
+        else if(roadA.getIndexB()==roadB.getIndexA() || roadA.getIndexB()==roadB.getIndexB())
+            return roadA.getIndexB();
+
+        return 0;
     }
 
     public void mouseReleased(MouseEvent e){}
