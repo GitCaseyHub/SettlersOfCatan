@@ -95,6 +95,9 @@ public class PlayerView extends JFrame implements ActionListener {
         buildingCard.addActionListener(this);
         options.add(endTurn);
         endTurn.addActionListener(this);
+        options.setEnabled(false);
+        development.setEnabled(false);
+        build.setEnabled(false);
 
         //Creating the GUI
         this.setLayout(new BorderLayout());
@@ -175,11 +178,11 @@ public class PlayerView extends JFrame implements ActionListener {
     }
 
     public void update(){
-        brickNum.setText(""+player.getBrickNum());
-        oreNum.setText(""+player.getOreNum());
-        sheepNum.setText(""+player.getWoolNum());
-        wheatNum.setText(""+player.getGrainNum());
-        woodNum.setText(""+player.getLumberNum());
+        brickNum.setText((!player.isTurn()?"?":""+player.getBrickNum()));
+        oreNum.setText((!player.isTurn()?"?":""+player.getOreNum()));
+        sheepNum.setText((!player.isTurn()?"?":""+player.getWoolNum()));
+        wheatNum.setText((!player.isTurn()?"?":""+player.getGrainNum()));
+        woodNum.setText((!player.isTurn()?"?":""+player.getLumberNum()));
         largestArmyBox.setSelected(player.hasLargestArmy());
         longestRoadBox.setSelected(player.hasLongestRoad());
         victoryPointLabel.setText("   "+player.getVictoryPointTotal()+"   ");
@@ -189,17 +192,11 @@ public class PlayerView extends JFrame implements ActionListener {
         largestArmyBox.setSelected(player.hasLargestArmy());
         turnBox.setSelected(player.isTurn());
 
-        if(reference.doingStartup){
-            build.setEnabled(player.isTurn());
-            development.setEnabled(player.isTurn());
-            options.setEnabled(player.isTurn());
-        }
-
         //Workaround for revalidate() / invalidate() validate()
         this.setSize(this.getWidth()+1,this.getHeight());
         this.setSize(this.getWidth()-1,this.getHeight());
 
-        if(player.isTurn())
+        if(player.isTurn() && !reference.doingStartup)
             if(hasRolled)
                 afterRoll();
             else
@@ -413,7 +410,7 @@ public class PlayerView extends JFrame implements ActionListener {
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
-            JOptionPane.showMessageDialog(reference,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn",1);
+            JOptionPane.showMessageDialog(this,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn",1);
             if(diceRoll==7) {
                 reference.getPlayerStatusMenu(player).options.setEnabled(false);
                 reference.getPlayerStatusMenu(player).build.setEnabled(false);
@@ -449,5 +446,13 @@ public class PlayerView extends JFrame implements ActionListener {
                 counter++;
 
         return counter>1;
+    }
+
+    public boolean winTheGame(Player player){
+        if(player.getVictoryPointTotal()>=10){
+            JOptionPane.showMessageDialog(this,player.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1);
+            return true;
+        }
+        return false;
     }
 }
