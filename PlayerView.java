@@ -41,6 +41,7 @@ public class PlayerView extends JFrame implements ActionListener {
     //Constructor Variables
     Player player;
     CatanBoard reference;
+    TradingFrame tf;
 
     //MenuBar manipulation
     boolean hasRolled=false;
@@ -67,10 +68,11 @@ public class PlayerView extends JFrame implements ActionListener {
     JFrame costFrame = new JFrame();
     JLabel imageCostLabel = new JLabel("",0);
 
-    public PlayerView(Player player, CatanBoard reference) {
+    public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
         this.player = player;
         this.reference=reference;
+        this.tf=tf;
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -375,7 +377,14 @@ public class PlayerView extends JFrame implements ActionListener {
                     }
             }
         }
-        else if(e.getSource()==exchange){}
+        else if(e.getSource()==exchange){
+            if(tf.isVisible())
+                JOptionPane.showMessageDialog(this,"You already have your trading frame open.","Already Open",3);
+            else {
+                this.tf.setVisible(true);
+                this.tf.updateComboBoxes();
+            }
+        }
 
         else if(e.getSource()==endTurn){
             ArrayList<Player> turnOrder = new ArrayList<Player>();
