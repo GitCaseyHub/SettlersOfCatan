@@ -23,7 +23,6 @@ public class DevelopmentCard implements ActionListener {
     JCheckBox wheatCheck = new JCheckBox();
     JCheckBox sheepCheck = new JCheckBox();
     JCheckBox woodCheck = new JCheckBox();
-    JButton confirmButton = new JButton("Confirm Choices");
     int counter = 0;
     boolean yearOfPlenty=false;
     boolean monopoly=false;
@@ -119,12 +118,14 @@ public class DevelopmentCard implements ActionListener {
     public void performYearOfPlenty() {
         counter = 0;
         yearOfPlenty=true;
+        choiceFrame.setTitle("Year of Plenty Resource Choices");
         choiceFrame.setVisible(true);
     }
 
     public void performMonopoly() {
         counter=0;
         monopoly=true;
+        choiceFrame.setTitle("Monopoly Resource Choice");
         choiceFrame.setVisible(true);
     }
 
@@ -171,7 +172,6 @@ public class DevelopmentCard implements ActionListener {
         woodCheck.setBorderPainted(true);
 
         choiceFrame.add(graphicHolder);
-        choiceFrame.setTitle("Year of Plenty Activation");
         choiceFrame.setBounds(100, 100, 475, 200);
     }
 
