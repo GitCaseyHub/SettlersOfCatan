@@ -47,7 +47,9 @@ public class CatanBoard extends JFrame implements MouseListener{
 
     //Awards
     int currentLongestRoad=4;
-    Player longestRoadPlayer;
+    Player longestRoadPlayer = new Player();
+    int currentLargestArmy=2;
+    Player largestArmyPlayer = new Player();
 
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
@@ -182,6 +184,7 @@ public class CatanBoard extends JFrame implements MouseListener{
             }
             if(isDoneMovingRobber){
                 BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
+                redrawEverything=true;
                 for(int x=0; x<tiles.length; x++)
                     if(tiles[x].isHasRobber()){
                         g.drawImage(robber,tiles[x].getPosition()[0]+57,tiles[x].getPosition()[1]+80,null);
@@ -260,7 +263,7 @@ public class CatanBoard extends JFrame implements MouseListener{
                         updateAllStatusMenus();
                     }
                 }
-                redrawEverything=true;
+                largestArmy(getCurrentPlayer(),currentLargestArmy);
                 isDoneMovingRobber=false;
             }
             if (settlementPaintCondition) {
@@ -598,6 +601,7 @@ public class CatanBoard extends JFrame implements MouseListener{
             for (int x = 0; x < tiles.length; x++)
                 if (tiles[x].isHasRobber())
                     tiles[x].setHasRobber(false);
+                redrawEverything=true;
 
             for (int x = 0; x < tiles.length; x++)
                 if (tiles[x].getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
@@ -793,7 +797,8 @@ public class CatanBoard extends JFrame implements MouseListener{
         //Creating status screen for each player
         statusViewer = new PlayerView[catanPlayerList.size()];
         for (int x = 0; x < catanPlayerList.size(); x++){
-            statusViewer[x] = new PlayerView(catanPlayerList.get(x), this);
+            statusViewer[x] = new PlayerView(catanPlayerList.get(x), this, new TradingFrame(catanPlayerList.get(x),true));
+            statusViewer[x].tf.cbRef=this;
             statusViewer[x].setBounds((int)statusGenerationalPoints[x].getX(),(int)statusGenerationalPoints[x].getY(),475,353);
             statusViewer[x].pack();
             statusViewer[x].setVisible(true);
@@ -992,7 +997,24 @@ public class CatanBoard extends JFrame implements MouseListener{
         }
         return false;
     }
-    
+
+    public void largestArmy(Player player, int largestArmy){
+        int knightCounter=0;
+        for(int x=0; x<player.getPlayedCards().size(); x++)
+            if(player.getPlayedCards().get(x).getType().equals("Knight"))
+                knightCounter++;
+
+        if(knightCounter>currentLargestArmy && largestArmyPlayer!=getCurrentPlayer()){
+            largestArmyPlayer.setLargestArmy(false);
+            largestArmyPlayer.changeVictoryPoints(-2);
+            player.setLargestArmy(true);
+            player.changeVictoryPoints(2);
+            largestArmyPlayer=player;
+            currentLargestArmy=knightCounter;
+            JOptionPane.showMessageDialog(this,"There is a new largest army of size "+knightCounter+" controlled by "+player.getName()+".","New Largest Army",1);
+            updateAllStatusMenus();
+        }
+    }
 
     public int commonIndex(Road roadA, Road roadB){
         if(roadA.getIndexA()==roadB.getIndexA() || roadA.getIndexA()==roadB.getIndexB())
