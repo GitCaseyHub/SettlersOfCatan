@@ -42,7 +42,6 @@ public class CatanBoard extends JFrame implements MouseListener{
     boolean isCityUpgrading=false;
     boolean redrawEverything=false;
     boolean usablePorts=false;
-
     int count=0;
 
     //Awards
@@ -50,6 +49,10 @@ public class CatanBoard extends JFrame implements MouseListener{
     Player longestRoadPlayer = new Player();
     int currentLargestArmy=2;
     Player largestArmyPlayer = new Player();
+
+    //Trading Variables
+    TradingFrame firstFrame;
+    TradingFrame secondFrame;
 
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
@@ -69,6 +72,8 @@ public class CatanBoard extends JFrame implements MouseListener{
                                          new Point[]{new Point(198,235),new Point(197,312), new Point(88,244)}};
     String[] portTypes = {"Generic","Generic","Generic","Generic","Wool","Wheat","Ore","Brick","Wood"};
     Port[] ports = new Port[9];
+    int portCount=0;
+    JCheckBox[] checkOptions;
 
     //Robber Objects
     Tile robberTile;
@@ -127,6 +132,7 @@ public class CatanBoard extends JFrame implements MouseListener{
         }
         //Methods to take care of things before startup; the method names are pretty self-explanatory on what they are doing
         constructPorts();
+        getPortsReady();
     }
 
     public void paint(Graphics g) {
@@ -446,6 +452,26 @@ public class CatanBoard extends JFrame implements MouseListener{
         System.out.println("X: "+xLoc);
         System.out.println("Y: "+yLoc);
         */
+        if(bgReference.usablePorts && !doingStartup) {
+            portCount = 0;
+            for (int x = 0; x < ports.length; x++) {
+                if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) ports[x].getLocations()[2].getX() + 25, (int) ports[x].getLocations()[2].getY() + 25, 50, 50))) {
+                    for (int y = 0; y < indexes.length; y++) {
+                        if ((Math.abs(ports[x].getLocations()[0].getX() - indexes[y].getLocation()[0]) < 10 && Math.abs(ports[x].getLocations()[0].getY() - indexes[y].getLocation()[1]) < 10) ||
+                                (Math.abs(ports[x].getLocations()[1].getX() - indexes[y].getLocation()[0]) < 10 && Math.abs(ports[x].getLocations()[1].getX() - indexes[y].getLocation()[1]) < 10)) {
+
+                            if (indexes[y].isTaken() && indexes[y].getOwner() == getCurrentPlayer())
+                                portCount++;
+                        }
+                    }
+                    if(portCount>0)
+                        usePort(ports[x]);
+
+                    else
+                        JOptionPane.showMessageDialog(this,"You don't have access to this port.","Port inaccessible",3);
+                }
+            }
+        }
 
         //Code to draw roads if boolean is in correct state
         if(isRoadBuilding) {
@@ -1024,6 +1050,176 @@ public class CatanBoard extends JFrame implements MouseListener{
             return roadA.getIndexB();
 
         return 0;
+    }
+
+    public void usePort(Port port){
+        if(port.getType().equals("Wheat")){
+            String use = "";
+            while(use.equals(""))
+                use = JOptionPane.showInputDialog(this,"Would you like to trade two wheat for a single resource?","Wheat Port",1);
+            if(use.equalsIgnoreCase("yes")) {
+                while (numberChecked() == 0 || numberChecked() > 1) {
+                    checkOptions[1].setEnabled(false);
+                    JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange wheat for:",checkOptions}, "Wheat Exchange", 1);
+                    if (numberChecked() > 1)
+                        JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                }
+
+                if (checkOptions[0].isSelected())
+                    getCurrentPlayer().monoWool(1);
+
+                if (checkOptions[2].isSelected())
+                    getCurrentPlayer().monoOre(1);
+
+                if (checkOptions[3].isSelected())
+                    getCurrentPlayer().monoBrick(1);
+
+                if (checkOptions[4].isSelected())
+                    getCurrentPlayer().monoLumber(1);
+
+                getCurrentPlayer().monoWheat(-2);
+                JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+            }
+        }
+
+        else if(port.getType().equals("Wool")){
+            String use = "";
+            while(use.equals(""))
+                use = JOptionPane.showInputDialog(this,"Would you like to trade two sheep for a single resource?","Sheep Port",1);
+            if(use.equalsIgnoreCase("yes")) {
+                while (numberChecked() == 0 || numberChecked() > 1) {
+                    checkOptions[0].setEnabled(false);
+                    JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange sheep for:",checkOptions}, "Sheep Exchange", 1);
+                    if (numberChecked() > 1)
+                        JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                }
+
+                if (checkOptions[1].isSelected())
+                    getCurrentPlayer().monoWheat(1);
+
+                if (checkOptions[2].isSelected())
+                    getCurrentPlayer().monoOre(1);
+
+                if (checkOptions[3].isSelected())
+                    getCurrentPlayer().monoBrick(1);
+
+                if (checkOptions[4].isSelected())
+                    getCurrentPlayer().monoLumber(1);
+
+                getCurrentPlayer().monoWool(-2);
+                JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+            }
+        }
+
+        else if(port.getType().equals("Ore")){
+            String use = "";
+            while(use.equals(""))
+                use = JOptionPane.showInputDialog(this,"Would you like to trade two ore for a single resource?","Ore Port",1);
+            if(use.equalsIgnoreCase("yes")) {
+                while (numberChecked() == 0 || numberChecked() > 1) {
+                    checkOptions[2].setEnabled(false);
+                    JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange ore for:",checkOptions}, "Ore Exchange", 1);
+                    if (numberChecked() > 1)
+                        JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                }
+
+                if (checkOptions[0].isSelected())
+                    getCurrentPlayer().monoWool(1);
+
+                if (checkOptions[1].isSelected())
+                    getCurrentPlayer().monoWheat(1);
+
+                if (checkOptions[3].isSelected())
+                    getCurrentPlayer().monoBrick(1);
+
+                if (checkOptions[4].isSelected())
+                    getCurrentPlayer().monoLumber(1);
+
+                getCurrentPlayer().monoOre(-2);
+                JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+            }
+        }
+
+        else if(port.getType().equals("Brick")) {
+            String use = "";
+            while (use.equals(""))
+                use = JOptionPane.showInputDialog(this, "Would you like to trade two brick for a single resource?", "Brick Port", 1);
+            if (use.equalsIgnoreCase("yes")){
+                while (numberChecked() == 0 || numberChecked() > 1) {
+                    checkOptions[3].setEnabled(false);
+                    JOptionPane.showMessageDialog(this,  new Object[]{"Choose the resource you'd like to exchange brick for:",checkOptions}, "Brick Exchange", 1);
+                    if (numberChecked() > 1)
+                        JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                }
+
+                if (checkOptions[1].isSelected())
+                    getCurrentPlayer().monoWheat(1);
+
+                if (checkOptions[2].isSelected())
+                    getCurrentPlayer().monoOre(1);
+
+                if (checkOptions[0].isSelected())
+                    getCurrentPlayer().monoWool(1);
+
+                if (checkOptions[4].isSelected())
+                    getCurrentPlayer().monoLumber(1);
+            }
+
+            getCurrentPlayer().monoBrick(-2);
+            JOptionPane.showMessageDialog(this,"The exchange has been made.","Port Used",1);
+        }
+
+        else if(port.getType().equals("Wood")) {
+            String use = "";
+            while (use.equals(""))
+                use = JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1);
+            if (use.equalsIgnoreCase("yes")){
+                while (numberChecked() == 0 || numberChecked() > 1) {
+                    checkOptions[4].setEnabled(false);
+                    JOptionPane.showMessageDialog(this,  new Object[]{"Choose the resource you'd like to exchange lumber for:",checkOptions}, "Lumber Exchange", 1);
+                    if (numberChecked() > 1)
+                        JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                }
+
+                if (checkOptions[1].isSelected())
+                    getCurrentPlayer().monoWheat(1);
+
+                if (checkOptions[2].isSelected())
+                    getCurrentPlayer().monoOre(1);
+
+                if (checkOptions[0].isSelected())
+                    getCurrentPlayer().monoWool(1);
+
+                if (checkOptions[3].isSelected())
+                    getCurrentPlayer().monoBrick(1);
+            }
+
+            getCurrentPlayer().monoLumber(-2);
+            JOptionPane.showMessageDialog(this,"The exchange has been made.","Port Used",1);
+        }
+        resetPortBoxes();
+        getPlayerStatusMenu(getCurrentPlayer()).update();
+    }
+
+    public void getPortsReady(){
+        checkOptions = new JCheckBox[5];
+        for(int x=0; x<5; x++)
+            checkOptions[x] = new JCheckBox(portTypes[x+4]);
+    }
+
+    public void resetPortBoxes(){
+        for(int x=0; x<checkOptions.length; x++){
+            checkOptions[x].setEnabled(true);
+            checkOptions[x].setSelected(false);
+        }
+    }
+
+    public int numberChecked(){
+        int counter=0;
+        for(int x=0; x<checkOptions.length; x++)
+            if(checkOptions[x].isSelected())
+                counter++;
+        return counter;
     }
 
     public void mouseReleased(MouseEvent e){}
