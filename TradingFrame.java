@@ -17,7 +17,7 @@ public class TradingFrame extends JFrame implements ActionListener {
     JComboBox wheatCheck = new JComboBox();
     JComboBox sheepCheck = new JComboBox();
     JComboBox woodCheck = new JComboBox();
-    JButton confirmButton = new JButton("Confirm Choices");
+    JButton confirmButton = new JButton("Confirm Trade");
     JButton askButton = new JButton("Ask Another Player");
 
     //Constructor variables
