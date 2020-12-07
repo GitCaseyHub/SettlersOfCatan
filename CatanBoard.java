@@ -796,9 +796,9 @@ public class CatanBoard extends JFrame implements MouseListener{
 
     public boolean buildable(Index newSpot){
         for(int x=0; x<indexes.length; x++)
-            if((indexes[x].isTaken() && distance(new Point(indexes[x].getLocation()[0],indexes[x].getLocation()[1]),new Point(newSpot.getLocation()[0],newSpot.getLocation()[1]))<80) &&
-                    (Math.abs(indexes[x].getLocation()[0]-newSpot.getLocation()[0])!=0 && Math.abs(indexes[x].getLocation()[1]-newSpot.getLocation()[1])!=0))
+            if ((indexes[x].isTaken() && newSpot!=indexes[x] && distance(new Point(indexes[x].getLocation()[0], indexes[x].getLocation()[1]), new Point(newSpot.getLocation()[0], newSpot.getLocation()[1])) < 100))
                 return false;
+            
         return true;
     }
 
@@ -891,7 +891,7 @@ public class CatanBoard extends JFrame implements MouseListener{
         for(int x=0; x<t.getVertices().size(); x++){
             for(int y=0; y<indexes.length; y++){
                 if(Math.abs(t.getVertices().get(x).getX() - indexes[y].getLocation()[0]) < 30 && Math.abs(t.getVertices().get(x).getY() - indexes[y].getLocation()[1])<30)
-                    if(indexes[y].getOwner()!=getCurrentPlayer() && !players.contains(indexes[y].getOwner()) && indexes[y].getOwner()!=null)
+                    if(indexes[y].getOwner()!=getCurrentPlayer() && !players.contains(indexes[y].getOwner()) && !indexes[y].getOwner().getName().equals(""))
                         players.add(indexes[y].getOwner());
             }
         }
