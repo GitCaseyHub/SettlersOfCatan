@@ -86,13 +86,14 @@ public class CatanBoard extends JFrame implements MouseListener{
     ArrayList<Index> checkedIndexes = new ArrayList<Index>();
     Object[] roadInfo;
     ArrayList<Road> indexConnections = new ArrayList<Road>();
+    int settlementIndex=0;
     
     //Constructor Variables
     ArrayList<Player> catanPlayerList;
     Point[] statusGenerationalPoints;
     PlayerSelect[] playerCreation;
     ArrayList<Player> duplicates = new ArrayList<Player>();
-    BeginGame bgReference = new BeginGame();
+    BeginGame bgReference;
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference){
         this.addMouseListener(this);
@@ -111,7 +112,7 @@ public class CatanBoard extends JFrame implements MouseListener{
             coordList.add(coords[x]);
 
         for(int x=0; x<indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x],false,x,new Player(),false,false);
+            indexes[x] = new Index(indexCoords[x], false, x, new Player("","","",new ArrayList<Index>(),new ArrayList<DevelopmentCard>(),new ArrayList<DevelopmentCard>(),0,0,0,0,0,0,false,false,false,69), false, false);
 
         for(int x=0; x<types.length; x++){
             int typeIndex = new Random().nextInt(typeList.size());
@@ -455,6 +456,28 @@ public class CatanBoard extends JFrame implements MouseListener{
         System.out.println("Y: "+yLoc);
         */
 
+        //Code to draw ports
+        if(bgReference.usablePorts && !doingStartup) {
+            portCount = 0;
+            for (int x = 0; x < ports.length; x++) {
+                if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) ports[x].getLocations()[2].getX() + 25, (int) ports[x].getLocations()[2].getY() + 25, 50, 50))) {
+                    for (int y = 0; y < indexes.length; y++) {
+                        if ((Math.abs(ports[x].getLocations()[0].getX() - indexes[y].getLocation()[0]) < 25 && Math.abs(ports[x].getLocations()[0].getY() - indexes[y].getLocation()[1]) < 25) ||
+                                (Math.abs(ports[x].getLocations()[1].getX() - indexes[y].getLocation()[0]) < 25 && Math.abs(ports[x].getLocations()[1].getY() - indexes[y].getLocation()[1]) < 25)) {
+
+                            if(indexes[y].isTaken() && indexes[y].getOwner().getName().equals(getCurrentPlayer().getName()))
+                                portCount++;
+
+                        }
+                    }
+                    if(portCount>0)
+                        usePort(ports[x]);
+
+                    else
+                        JOptionPane.showMessageDialog(this,"You don't have access to this port.","Port inaccessible",3);
+                }
+            }
+        }
         //Code to draw roads if boolean is in correct state
         if(isRoadBuilding) {
             if (roadCondition != 2) {
@@ -577,13 +600,14 @@ public class CatanBoard extends JFrame implements MouseListener{
                         if (indexes[i] == checkedIndex && !indexes[i].isTaken()) {
                             chosen_x = indexCoords[x][0] - 5;
                             chosen_y = indexCoords[x][1] - 16;
+                            settlementIndex=i;
                             checked=indexes[i];
                             breakCheck = false;
                             break;
                         }
                     }
                     if (checkedIndex.isTaken() && breakCheck)
-                        JOptionPane.showMessageDialog(this, "This spot is unavailable. Pick another spot.","Spot Taken",3);
+                        JOptionPane.showMessageDialog(this, "This spot has already been built upon. Please choose again..","Spot Taken",3);
 
                     else if(!buildable(checkedIndex))
                         JOptionPane.showMessageDialog(this,"You are within one road-length of another settlement/city. Please choose again.","Spot Proximity Too Close",3);
@@ -592,12 +616,12 @@ public class CatanBoard extends JFrame implements MouseListener{
                         JOptionPane.showMessageDialog(this,"You cannot build here as you aren't connecting this settlement to a road you own.","Spot Unconnected",3);
 
                     else {
+                        indexes[settlementIndex].setTaken(true);
+                        indexes[settlementIndex].setOwner(getCurrentPlayer());
+                        indexes[settlementIndex].setSettlement(true);
+                        getCurrentPlayer().addIndex(indexes[settlementIndex]);
                         isSettlementBuilding = false;
                         settlementPaintCondition=true;
-                        checked.setTaken(true);
-                        checked.setOwner(getCurrentPlayer());
-                        getCurrentPlayer().addIndex(checked);
-                        checked.setSettlement(true);
                         repaint();
                     }
                 }
@@ -650,28 +674,6 @@ public class CatanBoard extends JFrame implements MouseListener{
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1);
             }
         }
-
-        if(bgReference.usablePorts && !doingStartup) {
-            portCount = 0;
-            for (int x = 0; x < ports.length; x++) {
-                if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) ports[x].getLocations()[2].getX() + 25, (int) ports[x].getLocations()[2].getY() + 25, 50, 50))) {
-                    for (int y = 0; y < indexes.length; y++) {
-                        if ((Math.abs(ports[x].getLocations()[0].getX() - indexes[y].getLocation()[0]) < 10 && Math.abs(ports[x].getLocations()[0].getY() - indexes[y].getLocation()[1]) < 10) ||
-                                (Math.abs(ports[x].getLocations()[1].getX() - indexes[y].getLocation()[0]) < 10 && Math.abs(ports[x].getLocations()[1].getX() - indexes[y].getLocation()[1]) < 10)) {
-
-                            if(getCurrentPlayer().getOwnedIndexes().contains(indexes[y]))
-                                portCount++;
-
-                        }
-                    }
-                    if(portCount>0)
-                        usePort(ports[x]);
-
-                    else
-                        JOptionPane.showMessageDialog(this,"You don't have access to this port.","Port inaccessible",3);
-                }
-            }
-        }
     }
 
     public void constructPorts(){
@@ -685,7 +687,7 @@ public class CatanBoard extends JFrame implements MouseListener{
         for(int x=0; x<9; x++){
             int pointIndex = new Random().nextInt(portPointList.size());
             int stringIndex = new Random().nextInt(portPointList.size());
-            ports[x] = new Port(portPointList.get(pointIndex),portTypesList.get(stringIndex),false);
+            ports[x] = new Port(portPointList.get(pointIndex),portTypesList.get(stringIndex));
             portPointList.remove(portPointList.get(pointIndex));
             portTypesList.remove(portTypesList.get(stringIndex));
         }
