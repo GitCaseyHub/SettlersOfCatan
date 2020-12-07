@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Player {
@@ -6,6 +7,7 @@ public class Player {
     boolean turn,longestRoad,largestArmy;
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
+    CatanBoard cb;
 
     public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber){
         this.color=color;
@@ -87,6 +89,7 @@ public class Player {
 
     public void changeVictoryPoints(int pointChange) {
         this.victoryPointTotal+=pointChange;
+        winTheGame();
     }
 
     public ArrayList<DevelopmentCard> getPlayedCards() {
@@ -225,7 +228,19 @@ public class Player {
         this.ownedIndexes.add(newIndex);
     }
 
-    public String toString(){
-        return "Player Ref Number: "+referenceNumber;
+    public boolean equals(Player player){
+        if(this.getName().equals(player.getName()))
+            return true;
+
+        return false;
+    }
+
+    public boolean winTheGame(){
+        cb.updateAllStatusMenus();
+        if(this.getVictoryPointTotal()>=10){
+            JOptionPane.showMessageDialog(null,this.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1);
+            return true;
+        }
+        return false;
     }
 }
