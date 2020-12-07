@@ -56,7 +56,8 @@ public class PlayerView extends JFrame implements ActionListener {
     JMenuItem buyCard = new JMenuItem("Buy Development Card");
     JMenuItem playCard = new JMenuItem("Play Development Card");
     JMenu options = new JMenu("Options");
-    JMenuItem exchange = new JMenuItem("Trade Resources");
+    JMenuItem exchange = new JMenuItem("Trade w/ Other Players");
+    JMenuItem fourForOne = new JMenuItem("Four/One Resource Trade");
     JMenuItem buildingCard = new JMenuItem("Building Helper Card");
     JMenuItem rollDice = new JMenuItem("Roll Dice");
     JMenuItem endTurn = new JMenuItem("End Turn");
@@ -89,10 +90,12 @@ public class PlayerView extends JFrame implements ActionListener {
         development.add(playCard);
         playCard.addActionListener(this);
         mb.add(options);
-        options.add(exchange);
-        exchange.addActionListener(this);
         options.add(rollDice);
         rollDice.addActionListener(this);
+        options.add(fourForOne);
+        fourForOne.addActionListener(this);
+        options.add(exchange);
+        exchange.addActionListener(this);
         options.add(buildingCard);
         buildingCard.addActionListener(this);
         options.add(endTurn);
@@ -216,6 +219,7 @@ public class PlayerView extends JFrame implements ActionListener {
         buyCard.setEnabled(false);
         playCard.setEnabled(false);
         exchange.setEnabled(false);
+        fourForOne.setEnabled(false);
         rollDice.setEnabled(true);
         endTurn.setEnabled(false);
     }
@@ -228,6 +232,7 @@ public class PlayerView extends JFrame implements ActionListener {
         playCard.setEnabled(true);
         exchange.setEnabled(true);
         endTurn.setEnabled(true);
+        fourForOne.setEnabled(true);
         rollDice.setEnabled(false);
         buildingCard.setEnabled(true);
     }
@@ -414,7 +419,9 @@ public class PlayerView extends JFrame implements ActionListener {
 
             for(int x=0; x<player.getUnPlayedCards().size(); x++)
                 player.getUnPlayedCards().get(x).setBoughtThisTurn(false);
-
+            tf.rejections.clear();
+            tf.setVisible(false);
+            costFrame.setVisible(false);
             update();
         }
         else if(e.getSource()==rollDice){
@@ -455,13 +462,5 @@ public class PlayerView extends JFrame implements ActionListener {
                 counter++;
 
         return counter>1;
-    }
-
-    public boolean winTheGame(Player player){
-        if(player.getVictoryPointTotal()>=10){
-            JOptionPane.showMessageDialog(this,player.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1);
-            return true;
-        }
-        return false;
     }
 }
