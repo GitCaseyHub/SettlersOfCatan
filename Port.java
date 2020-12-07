@@ -3,12 +3,10 @@ import java.awt.*;
 public class Port {
     Point[] locations;
     String type;
-    boolean occupied;
 
-    public Port(Point[] locations, String type, boolean occupied){
+    public Port(Point[] locations, String type){
         this.locations=locations;
         this.type=type;
-        this.occupied=occupied;
     }
 
     public Point[] getLocations() {
@@ -25,13 +23,5 @@ public class Port {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public boolean isOccupied() {
-        return occupied;
-    }
-
-    public void setOccupied(boolean occupied) {
-        this.occupied = occupied;
     }
 }
