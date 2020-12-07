@@ -7,6 +7,7 @@ public class Index {
     public Index(int[] location, boolean taken, int indexID, Player owner){
         this.location = location;
         this.taken=taken;
+        this.owner=owner;
         this.indexID=indexID;
     }
 
