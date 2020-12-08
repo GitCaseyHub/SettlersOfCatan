@@ -11,8 +11,7 @@ import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener{
     //Longest Road needs to deal with forking issue; causes it to think there is an additional road there. I think that I need to do this by forcing the program to check at only one index
-    //Ports still weird; there is an issue with the owner of the index the port is on not updating (but only sometimes lol)
-
+   
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
