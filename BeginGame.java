@@ -17,7 +17,7 @@ public class BeginGame extends JFrame implements ActionListener {
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
     Point[] generationPoints = new Point[]{new Point(550,100),new Point(550,455), new Point(1035,100), new Point(1035,455)};
-    Point[] statusGenerationPoints = new Point[]{new Point(1080,100),new Point(1080,503), new Point(1555,100), new Point(1605,503)};
+    Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
     PlayerSelect[] playerCreation;
 
     ArrayList<Player> catanPlayerList = new ArrayList<Player>();
@@ -39,7 +39,7 @@ public class BeginGame extends JFrame implements ActionListener {
             options.add(classicVersion);
                 activePorts.setBorderPainted(true);
                 activePorts.setBorder(compound);
-                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game.");
+                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports will be identified by red 'x's and green 'o's.");
                 classicVersion.setBorder(compound);
                 classicVersion.setBorderPainted(true);
                 classicVersion.setToolTipText("Select this checkbox if you want to remove classes from the game.");
@@ -47,11 +47,11 @@ public class BeginGame extends JFrame implements ActionListener {
             charGenerate.setBorder(new TitledBorder("Game Generation"));
             charGenerate.add(generateChars);
                 generateChars.setBorder(compound);
+                generateChars.setToolTipText("Click this button to create screens for players to choose their characters.");
             charGenerate.add(startGame);
                 startGame.setBorder(compound);
                 startGame.setEnabled(false);
                 generateChars.setEnabled(false);
-
                 players.addActionListener(this);
                 generateChars.addActionListener(this);
                 startGame.addActionListener(this);
@@ -82,7 +82,6 @@ public class BeginGame extends JFrame implements ActionListener {
                 }
             }
             classicVersion.setEnabled(false);
-            activePorts.setEnabled(false);
             playerCreation[0].nameField.requestFocus();
         }
 
@@ -92,12 +91,13 @@ public class BeginGame extends JFrame implements ActionListener {
                 usablePorts=true;
 
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
-            cbMain.setBounds(100, 100, 930, 800);
+            cbMain.setBounds(60, 100, 930, 800);
             cbMain.dispose();
             cbMain.setUndecorated(true);
             cbMain.setTitle("Settlers of Catan®");
             cbMain.setVisible(true);
             cbMain.performStartingOperations();
+            this.setVisible(false);
         }
     }
 
@@ -146,4 +146,3 @@ public class BeginGame extends JFrame implements ActionListener {
             startGame.setEnabled(true);
         }
     }
-}
