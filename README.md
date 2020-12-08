@@ -1,0 +1,4 @@
+<h1>Settlers of Catan</h1>
+This is my version of 'Settlers of Catan'. It is ostensibly complete (with the exception of some glitchy code for the Longest Road award; it's a graph theory problem, so I'm going to be working on it). The game functions best on a screen 1920x1080 as that enables status screens to be visible if 3-4 players are playing.
+<br><br>A shortcut key has been implemented for cancellation of actions. Hold ALT_C when the Catan Board has focus, and this will enable an OptionPane to appear that allows for cancellation.
+<br><br>As for how the file directory system needs to be set up so the images can be read, there is an image, 'Directory.png', in this repository that shows what is necessary. And finally, a lot of the images have transparent backgrounds, so if you decide to mess with them to get them to have a more complete feel, keep that in mind.
