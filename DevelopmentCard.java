@@ -103,6 +103,7 @@ public class DevelopmentCard implements ActionListener {
     public void performKnightAction() {
         JOptionPane.showMessageDialog(null,"Move the robber to a tile. Note that you may keep the robber in the same position by click on the tile it is already located on.","Knight Card Action",1);
         cbReference.isMovingRobber=true;
+        cbReference.isPlayerActing=true;
     }
 
     public void performVictoryPoints() {
@@ -113,6 +114,7 @@ public class DevelopmentCard implements ActionListener {
         cbReference.roadDevCard=true;
         cbReference.finishedRoadCard=false;
         cbReference.isRoadBuilding=true;
+        cbReference.isPlayerActing=true;
     }
 
     public void performYearOfPlenty() {
