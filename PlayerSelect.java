@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
 
 public class PlayerSelect extends JFrame implements ActionListener, FocusListener {
     //Fancy Border
@@ -101,8 +102,11 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                     JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Stop wasting time and decide!", "Color & Class Error", 3);
 
                 else {
-                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), null, null, null, 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
-                    bgReference.addPlayer(newPlayer,referenceNumber);
+                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
+
+                    /*Testing Players
+                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber);
+                    bgReference.addPlayer(newPlayer,referenceNumber);*/
                 }
             }
             else
