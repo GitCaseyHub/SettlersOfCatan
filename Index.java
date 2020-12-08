@@ -1,14 +1,32 @@
 public class Index {
     int[] location;
-    boolean taken;
+    boolean taken, isSettlement, isCity;
     int indexID;
     Player owner;
 
-    public Index(int[] location, boolean taken, int indexID, Player owner){
+    public Index(int[] location, boolean taken, int indexID, Player owner, boolean isSettlement, boolean isCity){
         this.location = location;
         this.taken=taken;
         this.owner=owner;
         this.indexID=indexID;
+        this.isCity=isCity;
+        this.isSettlement=isSettlement;
+    }
+
+    public boolean isSettlement() {
+        return isSettlement;
+    }
+
+    public void setSettlement(boolean settlement) {
+        isSettlement = settlement;
+    }
+
+    public boolean isCity() {
+        return isCity;
+    }
+
+    public void setCity(boolean city) {
+        isCity = city;
     }
 
     public Player getOwner() {
