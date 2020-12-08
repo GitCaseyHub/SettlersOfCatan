@@ -260,6 +260,7 @@ public class PlayerView extends JFrame implements ActionListener {
             int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Building",JOptionPane.YES_NO_OPTION);
             if(settlementInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
+                    reference.isPlayerActing=true;
                     this.player.changeVictoryPoints(1);
                     JOptionPane.showMessageDialog(this,"Select the index you'd like to build a new settlement on.","Settlement Building",1);
                     reference.isSettlementBuilding=true;
@@ -282,6 +283,7 @@ public class PlayerView extends JFrame implements ActionListener {
             if(cityInput==0){
                 if((player.getGrainNum()>=2 && player.getOreNum()>=3 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getGrainNum()>=4 && player.getOreNum()>=6 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     if(playerHasSettlements()) {
+                        reference.isPlayerActing=true;
                         this.player.changeVictoryPoints(1);
                         JOptionPane.showMessageDialog(null, "Select the settlement you'd like to upgrade.", "City Building", 1);
                         reference.isCityUpgrading = true;
@@ -305,6 +307,7 @@ public class PlayerView extends JFrame implements ActionListener {
             int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION);
             if(roadInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))) {
+                    reference.isPlayerActing=true;
                     JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building",1);
                     reference.isRoadBuilding=true;
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
