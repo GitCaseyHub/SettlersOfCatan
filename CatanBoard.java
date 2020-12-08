@@ -1,6 +1,8 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -9,9 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CatanBoard extends JFrame implements MouseListener{
+public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     //Longest Road needs to deal with forking issue; causes it to think there is an additional road there. I think that I need to do this by forcing the program to check at only one index
-   
+
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
@@ -42,6 +44,7 @@ public class CatanBoard extends JFrame implements MouseListener{
     boolean isCityUpgrading=false;
     boolean redrawEverything=false;
     boolean usablePorts=false;
+    boolean isPlayerActing=false;
     int count=0;
 
     //Awards
@@ -96,6 +99,7 @@ public class CatanBoard extends JFrame implements MouseListener{
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference){
         this.addMouseListener(this);
+        this.addKeyListener(this);
         this.catanPlayerList=catanPlayerList;
         this.statusGenerationalPoints=statusGenerationalPoints;
         this.playerCreation=playerCreation;
@@ -294,7 +298,7 @@ public class CatanBoard extends JFrame implements MouseListener{
                 isDoneRoadBuilding=true;
                 isRoadBuilding=false;
 
-                if(longestRoad(getCurrentPlayer(),currentLongestRoad) && longestRoadPlayer!=getCurrentPlayer()){
+                if(longestRoad(currentLongestRoad) && longestRoadPlayer!=getCurrentPlayer()){
                     if(currentLongestRoad!=4) {
                         for (int x = 0; x < catanPlayerList.size(); x++)
                             if (catanPlayerList.get(x).hasLongestRoad()) {
@@ -450,10 +454,10 @@ public class CatanBoard extends JFrame implements MouseListener{
         int xLoc = e.getX();
         int yLoc = e.getY();
 
-        /* Convenient way to find specific coordinates
+        //Convenient way to find specific coordinates
         System.out.println("X: "+xLoc);
         System.out.println("Y: "+yLoc);
-        */
+
 
         //Code to draw ports
         if(bgReference.usablePorts && !doingStartup) {
@@ -629,10 +633,7 @@ public class CatanBoard extends JFrame implements MouseListener{
 
         if(isMovingRobber) {
             checkCounter = 0;
-            for (int x = 0; x < tiles.length; x++)
-                if (tiles[x].isHasRobber())
-                    tiles[x].setHasRobber(false);
-                redrawEverything=true;
+            int reCheckRobber=0;
 
             for (int x = 0; x < tiles.length; x++)
                 if (tiles[x].getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
@@ -640,13 +641,19 @@ public class CatanBoard extends JFrame implements MouseListener{
                     isDoneMovingRobber = true;
                     isMovingRobber = false;
                     robberTile = tiles[x];
+                    reCheckRobber=x;
                     repaint();
                     checkCounter++;
                     getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
                     getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
                     getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+
+                    for (int y = 0; y < tiles.length; y++)
+                        if (tiles[y].isHasRobber() && y!=x)
+                            tiles[x].setHasRobber(false);
                     break;
                 }
+            redrawEverything=true;
             if (checkCounter == 0)
                 JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning", 3);
         }
@@ -690,6 +697,15 @@ public class CatanBoard extends JFrame implements MouseListener{
             portPointList.remove(portPointList.get(pointIndex));
             portTypesList.remove(portTypesList.get(stringIndex));
         }
+    }
+
+
+    public ArrayList<Player> getOtherPlayers(){
+        ArrayList<Player> others = new ArrayList<Player>();
+        for(int x=0; x<catanPlayerList.size(); x++)
+            if(catanPlayerList.get(x)!=getCurrentPlayer())
+                others.add(catanPlayerList.get(x));
+        return others;
     }
 
     public ArrayList<Integer> getIndexIDs() {
@@ -797,7 +813,7 @@ public class CatanBoard extends JFrame implements MouseListener{
         for(int x=0; x<indexes.length; x++)
             if ((indexes[x].isTaken() && newSpot!=indexes[x] && distance(new Point(indexes[x].getLocation()[0], indexes[x].getLocation()[1]), new Point(newSpot.getLocation()[0], newSpot.getLocation()[1])) < 100))
                 return false;
-            
+
         return true;
     }
 
@@ -981,52 +997,6 @@ public class CatanBoard extends JFrame implements MouseListener{
 
         else
             return "";
-    }
-
-    //Method doesn't work if there is a fork in the road. Still need to work on that
-    public boolean longestRoad(Player player, int previousLongestRoad){
-        ArrayList<Road> playerRoads = new ArrayList<Road>();
-        ArrayList<Integer> roadLengths = new ArrayList<Integer>();
-        ArrayList<Road> alreadyUsed = new ArrayList<Road>();
-        ArrayList<Integer> alreadyJumpedFrom = new ArrayList<Integer>();
-        boolean stillHasConnections=true;
-
-        for(int x=0; x<indexConnections.size(); x++){
-            if(indexConnections.get(x).getOwner()==getCurrentPlayer())
-                playerRoads.add(indexConnections.get(x));
-        }
-
-        for(int a=0; a<playerRoads.size(); a++){
-            alreadyUsed.clear();
-            alreadyJumpedFrom.clear();
-            alreadyUsed.add(playerRoads.get(a));
-            Road current = playerRoads.get(a);
-            int counter=1;
-            while(stillHasConnections){
-                stillHasConnections=false;
-                for(int y=0; y<playerRoads.size(); y++){
-                    if(current.getIndexA()==playerRoads.get(y).getIndexA() || current.getIndexA()==playerRoads.get(y).getIndexB() || current.getIndexB()==playerRoads.get(y).getIndexA() || current.getIndexB()==playerRoads.get(y).getIndexB()){
-                        if(!alreadyUsed.contains(playerRoads.get(y))) {
-                            current = playerRoads.get(y);
-                            alreadyUsed.add(current);
-                            counter++;
-                            stillHasConnections=true;
-                            System.out.println(current.toString());
-                        }
-                    }
-                }
-            }
-            roadLengths.add(counter);
-        }
-
-        for(int x=0; x<roadLengths.size(); x++){
-            System.out.println(roadLengths.get(x));
-            if(roadLengths.get(x)>previousLongestRoad) {
-                this.currentLongestRoad = roadLengths.get(x);
-                return true;
-            }
-        }
-        return false;
     }
 
     public void largestArmy(Player player, int largestArmy){
@@ -1285,4 +1255,103 @@ public class CatanBoard extends JFrame implements MouseListener{
     public void mouseReleased(MouseEvent e){}
     public void mouseEntered(MouseEvent e){}
     public void mouseExited(MouseEvent e){}
+
+    //Method doesn't work if there is a fork in the road. Still need to work on that
+    public boolean longestRoad(int previousLongestRoad){
+        ArrayList<Road> playerRoads = new ArrayList<Road>();
+        ArrayList<Integer> roadLengths = new ArrayList<Integer>();
+        ArrayList<Road> alreadyUsed = new ArrayList<Road>();
+        ArrayList<Integer> alreadyJumpedFrom = new ArrayList<Integer>();
+        boolean stillHasConnections=true;
+
+        for(int x=0; x<indexConnections.size(); x++){
+            if(indexConnections.get(x).getOwner()==getCurrentPlayer())
+                playerRoads.add(indexConnections.get(x));
+        }
+
+        for(int a=0; a<playerRoads.size(); a++){
+            alreadyUsed.clear();
+            alreadyJumpedFrom.clear();
+            alreadyUsed.add(playerRoads.get(a));
+            Road current = playerRoads.get(a);
+            int counter=1;
+            while(stillHasConnections){
+                stillHasConnections=false;
+                for(int y=0; y<playerRoads.size(); y++){
+                    if(current.getIndexA()==playerRoads.get(y).getIndexA() || current.getIndexA()==playerRoads.get(y).getIndexB() || current.getIndexB()==playerRoads.get(y).getIndexA() || current.getIndexB()==playerRoads.get(y).getIndexB()){
+                        if(!alreadyUsed.contains(playerRoads.get(y))) {
+                            current = playerRoads.get(y);
+                            alreadyUsed.add(current);
+                            counter++;
+                            stillHasConnections=true;
+                            System.out.println(current.toString());
+                        }
+                    }
+                }
+            }
+            roadLengths.add(counter);
+        }
+
+        for(int x=0; x<roadLengths.size(); x++){
+            System.out.println(roadLengths.get(x));
+            if(roadLengths.get(x)>previousLongestRoad) {
+                this.currentLongestRoad = roadLengths.get(x);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void keyTyped(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {}
+
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_C) {
+            if (!doingStartup) {
+                int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION);
+                if (confirmCancellation == 0) {
+                    if (!doingStartup && isPlayerActing) {
+                        if (isSettlementBuilding) {
+                            isSettlementBuilding = false;
+                            isDoneSettlementBuilding = false;
+                            getCurrentPlayer().changeWool(1);
+                            getCurrentPlayer().changeBrick(1);
+                            getCurrentPlayer().changeGrain(1);
+                            getCurrentPlayer().changeLumber(1);
+                            getCurrentPlayer().changeVictoryPoints(-1);
+                        }
+                        else if (isMovingRobber) {
+                            isMovingRobber = false;
+                            isDoneMovingRobber = false;
+                            getCurrentPlayer().addDevelopmentCardToUnplayed(new DevelopmentCard("Knight",getCurrentPlayer(),getOtherPlayers(),this,false));
+                            getCurrentPlayer().removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight",getCurrentPlayer(),getOtherPlayers(),this,false));
+                            getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem("Knight");
+                            getPlayerStatusMenu(getCurrentPlayer()).played.removeItem("Knight");
+                        }
+                        else if (isRoadBuilding) {
+                            isRoadBuilding = false;
+                            isDoneRoadBuilding = false;
+                            roadCondition = 0;
+                            checkedIndexes.clear();
+                            getCurrentPlayer().changeLumber(1);
+                            getCurrentPlayer().changeBrick(1);
+
+                        } else if (isCityUpgrading) {
+                            isCityUpgrading = false;
+                            getCurrentPlayer().changeGrain(2);
+                            getCurrentPlayer().changeOre(3);
+                            getCurrentPlayer().changeVictoryPoints(-1);
+                        }
+                    }
+                    isPlayerActing = false;
+                    getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
+                    getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+                    getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+                    updateAllStatusMenus();
+                    JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", 1);
+                } else
+                    JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", 1);
+            }
+        }
+    }
 }
