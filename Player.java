@@ -111,6 +111,10 @@ public class Player {
     public void removeDevelopmentCardFromUnplayed(DevelopmentCard dc){
         this.unPlayedCards.remove(dc);
     }
+    
+    public void removeDevelopmentCardFromPlayed(DevelopmentCard dc){
+        this.playedCards.remove(dc);
+    }
 
     public String getColor() {
         return color;
