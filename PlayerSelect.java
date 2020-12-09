@@ -46,6 +46,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     public PlayerSelect(BeginGame bgReference, int referenceNumber){
         this.bgReference=bgReference;
         this.referenceNumber=referenceNumber;
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         this.add(holder);
             holder.add(upperPanel,BorderLayout.CENTER);
@@ -103,7 +104,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
                 else {
                     Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
-
+                    bgReference.addPlayer(newPlayer,referenceNumber);
                     /*Testing Players
                     Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber);
                     bgReference.addPlayer(newPlayer,referenceNumber);*/
