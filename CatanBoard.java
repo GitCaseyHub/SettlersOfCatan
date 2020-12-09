@@ -1,10 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +26,10 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     Point[] waterPoints = new Point[]{new Point(201,-30), new Point(334,-30), new Point(467,-30), new Point(600,-30), new Point(133,84), new Point(66,198), new Point(0,312), new Point(67,429), new Point(133,543), new Point(333,656), new Point(466,656), new Point(600,656), new Point(201,656), new Point(668,84), new Point(734,198), new Point(800,312), new Point(668, 543), new Point(734,429)};
     Point[] outLinePoints = new Point[]{new Point(1,431), new Point(66,467), new Point(66,545), new Point(133,584), new Point(133,659), new Point(200,698), new Point(200,770), new Point(246, 799), new Point(287,799), new Point(333,774), new Point(377,798), new Point(417,798), new Point(465,773), new Point(512,798), new Point(551,798), new Point(599,772), new Point(645,798), new Point(686,798),new Point(733,773),new Point(733,697),new Point(800,659), new Point(800,584), new Point(866,546), new Point(866,468), new Point(929,429), new Point(929,348), new Point(868,313), new Point(868,237), new Point(800,198), new Point(800,122), new Point(732,84), new Point(732,8), new Point(719, 0), new Point(613,0), new Point(599,8), new Point(585,0), new Point(479,0), new Point(467,8), new Point(451,0), new Point(348,0), new Point(334,8), new Point(319,0), new Point(212,0), new Point(202,8), new Point(202,84), new Point(133,122), new Point(133,197), new Point(65,236), new Point(65,311), new Point(1,348)};
 
+    //Frame shaping objects
+    int[] framex = new int[outLinePoints.length];
+    int[] framey = new int[outLinePoints.length];
+    
     //Paint/Repaint Conditions
     boolean loaded=false;
     boolean settlementPaintCondition=false;
@@ -135,10 +136,22 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 rollNumList.remove(rollIndex);
             }
         }
+
+        for(int x=0; x<outLinePoints.length; x++) {
+            framex[x] = (int) outLinePoints[x].getX();
+            framey[x] = (int) outLinePoints[x].getY();
+        }
+
         //Methods to take care of things before startup; the method names are pretty self-explanatory on what they are doing
         constructPorts();
         getPortsReady();
         givePlayersCatanBoardReference();
+
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                setShape(new Polygon(framex,framey,outLinePoints.length));
+            }
+        });
     }
 
     public void paint(Graphics g) {
@@ -453,11 +466,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public void mousePressed(MouseEvent e){
         int xLoc = e.getX();
         int yLoc = e.getY();
-
-        //Convenient way to find specific coordinates
-        System.out.println("X: "+xLoc);
-        System.out.println("Y: "+yLoc);
-
 
         //Code to draw ports
         if(bgReference.usablePorts && !doingStartup) {
