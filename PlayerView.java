@@ -278,6 +278,67 @@ public class PlayerView extends JFrame implements ActionListener {
             }
         }
 
+        else if(e.getSource()==fourForOne) {
+            if(player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4)
+                JOptionPane.showMessageDialog(this,"You don't have four or more of a single resource. You cannot use this 'option'.","Insufficient Resources",3);
+            else{
+                int confirm = JOptionPane.showConfirmDialog(this,"Would you like to trade in four of a resource for one of another resource?","Generic Resource Exchange",JOptionPane.YES_NO_OPTION);
+
+                if(confirm==JOptionPane.YES_OPTION) {
+                    try {
+                        String exchangeResource = "";
+                        while (!exchangeResource.equalsIgnoreCase("Sheep") && !exchangeResource.equalsIgnoreCase("Lumber") && !exchangeResource.equalsIgnoreCase("Ore") && !exchangeResource.equalsIgnoreCase("Brick") && !exchangeResource.equalsIgnoreCase("Wheat")) {
+                            exchangeResource = JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade four in of: Sheep - Lumber - Ore - Brick - Wheat", "Resource Exchange", 1);
+
+                            if (!exchangeResource.equalsIgnoreCase("Sheep") && !exchangeResource.equalsIgnoreCase("Lumber") && !exchangeResource.equalsIgnoreCase("Ore") && !exchangeResource.equalsIgnoreCase("Brick") && !exchangeResource.equalsIgnoreCase("Wheat"))
+                                JOptionPane.showMessageDialog(this, "That is not one of the resource choices. Please choose again.", "Invalid Resource", 3);
+
+                            if ((exchangeResource.equalsIgnoreCase("Sheep") && player.getWoolNum() < 4) || (exchangeResource.equalsIgnoreCase("Lumber") && player.getLumberNum() < 4) || (exchangeResource.equalsIgnoreCase("Ore") && player.getOreNum() < 4) || (exchangeResource.equalsIgnoreCase("Bric") && player.getBrickNum() < 4) || (exchangeResource.equalsIgnoreCase("Wheat") && player.getGrainNum() < 4)) {
+                                JOptionPane.showMessageDialog(this, "You do not have at least four of that resource to complete an exchange.", "Invalid Resource", 3);
+                                exchangeResource = "";
+                            }
+                        }
+                        JCheckBox[] optionResources = new JCheckBox[]{new JCheckBox("Sheep"), new JCheckBox("Lumber"), new JCheckBox("Ore"), new JCheckBox("Brick"), new JCheckBox("Wheat")};
+                        for (int x = 0; x < optionResources.length; x++)
+                            if (optionResources[x].getText().equalsIgnoreCase(exchangeResource))
+                                optionResources[x].setEnabled(false);
+                        while (!findNumSelected(optionResources)) {
+                            JOptionPane.showMessageDialog(this, new Object[]{"Select the resource you'd like to exchange for:", optionResources}, "Exchanging Resources", 1);
+
+                            if (!findNumSelected(optionResources))
+                                JOptionPane.showMessageDialog(this, "You must select a single resource to trade in for.", "Invalid Selection", 3);
+                        }
+
+                        if (optionResources[0].isSelected())
+                            player.monoWool(1);
+                        else if (optionResources[1].isSelected())
+                            player.monoLumber(1);
+                        else if (optionResources[2].isSelected())
+                            player.monoOre(1);
+                        else if (optionResources[3].isSelected())
+                            player.monoBrick(1);
+                        else if (optionResources[4].isSelected())
+                            player.monoWheat(1);
+
+                        if (exchangeResource.equalsIgnoreCase("Sheep"))
+                            player.monoWool(-4);
+                        else if (exchangeResource.equalsIgnoreCase("Lumber"))
+                            player.monoLumber(-4);
+                        else if (exchangeResource.equalsIgnoreCase("Brick"))
+                            player.monoBrick(-4);
+                        else if (exchangeResource.equalsIgnoreCase("Ore"))
+                            player.monoOre(-4);
+                        else if (exchangeResource.equalsIgnoreCase("Wheat"))
+                            player.monoWheat(-4);
+
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Exchange Complete", 1);
+                    } catch (NullPointerException cancelCaught) {
+                        JOptionPane.showMessageDialog(this, "An invalid input has been received. This operation has been cancelled", "Cancellation", 3);
+                    }
+                }
+            }
+        }
+
         else if(e.getSource()==city){
             int cityInput = JOptionPane.showConfirmDialog(this,"Would you like to upgrade one of your settlements into a city?","Settlement Upgrade",JOptionPane.YES_NO_OPTION);
             if(cityInput==0){
@@ -465,5 +526,13 @@ public class PlayerView extends JFrame implements ActionListener {
                 counter++;
 
         return counter>1;
+    }
+
+    public boolean findNumSelected(JCheckBox[] checkboxes){
+        int val=0;
+        for(int x=0; x<checkboxes.length; x++)
+            val+=(checkboxes[x].isSelected()?1:0);
+
+        return (val>1 || val==0)?false:true;
     }
 }
