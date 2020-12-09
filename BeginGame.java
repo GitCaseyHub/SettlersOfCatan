@@ -31,6 +31,7 @@ public class BeginGame extends JFrame implements ActionListener {
             players.addItem(comboOptions[x]);
 
         this.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.add(options,BorderLayout.CENTER);
             options.setBorder(new TitledBorder("Game Options"));
             options.add(players);
@@ -91,7 +92,7 @@ public class BeginGame extends JFrame implements ActionListener {
                 usablePorts=true;
 
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
-            cbMain.setBounds(60, 100, 930, 800);
+            cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
             cbMain.setTitle("Settlers of Catan®");
@@ -117,15 +118,15 @@ public class BeginGame extends JFrame implements ActionListener {
                     playerCreation[y].colorBox.removeItem(referenceView.colorBox.getSelectedItem());
         }
         else{
-            boolean fuckCounter=false;
+            boolean counter=false;
             for(int x=0; x<catanPlayerList.size(); x++)
                 if (catanPlayerList.get(x).getName().equals(addedPlayer.getName())) {
                     JOptionPane.showMessageDialog(this, "Another player has already registered that name. Choose another name.", "Name Error", 3);
-                    fuckCounter = true;
+                    counter = true;
                     break;
                 }
 
-            if(!fuckCounter){
+            if(!counter){
                 PlayerSelect referenceView = playerCreation[referenceNumber];
                 referenceView.nameField.setEditable(false);
                 referenceView.classBox.setEnabled(false);
@@ -146,3 +147,4 @@ public class BeginGame extends JFrame implements ActionListener {
             startGame.setEnabled(true);
         }
     }
+}
