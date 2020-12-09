@@ -74,6 +74,7 @@ public class PlayerView extends JFrame implements ActionListener {
         this.player = player;
         this.reference=reference;
         this.tf=tf;
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         //Menubar creation
         this.setJMenuBar(mb);
