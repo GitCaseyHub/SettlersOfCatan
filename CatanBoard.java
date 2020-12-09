@@ -14,7 +14,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     //Objects for Board Generation
     String[] types = {"Mountain","Mountain","Mountain","Brick","Brick","Brick","Forest","Forest","Forest","Forest","Plains","Plains","Plains","Plains","Grain","Grain","Grain","Grain","Desert"};
     int[] rollNums = {8,4,11,12,3,11,10,9,6,9,5,2,4,5,10,8,3,6};
-    int[][] coords = {{267,87},{267+134,87},{267+2*134,87},{200,200},{334,200},{200+2*134,200},{200+3*134,200},{133,313},{133+134,313},{133+2*134,313},{133+3*134,313},{666,313},{200,426},{200+134,426},{200+134*2,426},{200+134*3,426},{267,426+113},{267+134,426+113},{267+134*2,426+113}};
+    int[][] coords1 = {{267,87},{267+134,87},{267+2*134,87},{200,200},{334,200},{200+2*134,200},{200+3*134,200},{133,313},{133+134,313},{133+2*134,313},{133+3*134,313},{666,313},{200,426},{200+134,426},{200+134*2,426},{200+134*3,426},{267,426+113},{267+134,426+113},{267+134*2,426+113}};
     ArrayList<String> typeList = new ArrayList<String>();
     ArrayList<Integer> rollNumList = new ArrayList<Integer>();
     ArrayList<int[]> coordList = new ArrayList<int[]>();
@@ -23,13 +23,13 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     ArrayList<String> turnNameList;
 
     //Water Tiles
-    Point[] waterPoints = new Point[]{new Point(201,-30), new Point(334,-30), new Point(467,-30), new Point(600,-30), new Point(133,84), new Point(66,198), new Point(0,312), new Point(67,429), new Point(133,543), new Point(333,656), new Point(466,656), new Point(600,656), new Point(201,656), new Point(668,84), new Point(734,198), new Point(800,312), new Point(668, 543), new Point(734,429)};
-    Point[] outLinePoints = new Point[]{new Point(1,431), new Point(66,467), new Point(66,545), new Point(133,584), new Point(133,659), new Point(200,698), new Point(200,770), new Point(246, 799), new Point(287,799), new Point(333,774), new Point(377,798), new Point(417,798), new Point(465,773), new Point(512,798), new Point(551,798), new Point(599,772), new Point(645,798), new Point(686,798),new Point(733,773),new Point(733,697),new Point(800,659), new Point(800,584), new Point(866,546), new Point(866,468), new Point(929,429), new Point(929,348), new Point(868,313), new Point(868,237), new Point(800,198), new Point(800,122), new Point(732,84), new Point(732,8), new Point(719, 0), new Point(613,0), new Point(599,8), new Point(585,0), new Point(479,0), new Point(467,8), new Point(451,0), new Point(348,0), new Point(334,8), new Point(319,0), new Point(212,0), new Point(202,8), new Point(202,84), new Point(133,122), new Point(133,197), new Point(65,236), new Point(65,311), new Point(1,348)};
+    Point[] waterPoints1 = new Point[]{new Point(201,-30), new Point(334,-30), new Point(467,-30), new Point(600,-30), new Point(133,84), new Point(66,198), new Point(0,312), new Point(67,429), new Point(133,543), new Point(333,656), new Point(466,656), new Point(600,656), new Point(201,656), new Point(668,84), new Point(734,198), new Point(800,312), new Point(668, 543), new Point(734,429)};
+    Point[] outLinePoints1 = new Point[]{new Point(1,431), new Point(66,467), new Point(66,545), new Point(133,584), new Point(133,659), new Point(200,698), new Point(200,770), new Point(266,811), new Point(333,774), new Point(398,811), new Point(465,774), new Point(530,811), new Point(599,772), new Point(662,811),new Point(733,773),new Point(733,697),new Point(800,659), new Point(800,584), new Point(866,546), new Point(866,468), new Point(929,429), new Point(929,348), new Point(868,313), new Point(868,237), new Point(800,198), new Point(800,122), new Point(732,84), new Point(732,8), new Point(664,-30), new Point(599,8), new Point(532,-30), new Point(467,8), new Point(400,-30), new Point(334,8), new Point(268,-30), new Point(202,8), new Point(202,84), new Point(133,122), new Point(133,197), new Point(65,236), new Point(65,311), new Point(1,348)};
 
     //Frame shaping objects
-    int[] framex = new int[outLinePoints.length];
-    int[] framey = new int[outLinePoints.length];
-    
+    int[] framex = new int[outLinePoints1.length];
+    int[] framey = new int[outLinePoints1.length];
+
     //Paint/Repaint Conditions
     boolean loaded=false;
     boolean settlementPaintCondition=false;
@@ -60,12 +60,12 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     //Index Creation
     ArrayList<int[]> coord = new ArrayList<int[]>();
-    int[][] indexCoords = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{655,646},{594,683},{461,687},{392,646},{526,654},{266,647},{332,686},{664,577},{731,536}};
-    Index[] indexes = new Index[indexCoords.length];
+    int[][] indexCoords1 = {{264,122},{330,87},{398,122},{461,87},{533,121},{599,87},{658,122},{663,200},{599,234},{532,200},{463,233},{396,201},{329,235},{262,202},{196,235},{197,312},{262,347},{329,312},{394,348},{461,311},{528,346},{599,312},{665,350},{727,313},{729,237},{797,346},{798,425},{725,461},{660,423},{597,457},{527,424},{462,459},{393,422},{327,460},{258,421},{198,459},{132,423},{130,345},{200,536},{263,572},{329,537},{393,574},{464,534},{526,574},{599,536},{655,646},{594,683},{461,687},{392,646},{526,654},{266,647},{332,686},{664,577},{731,536}};
+    Index[] indexes = new Index[indexCoords1.length];
     Index checked;
 
     //Port Creation
-    Point[][] portPoints = new Point[][]{new Point[]{new Point(264,122),new Point(330,87), new Point(219,18)},
+    Point[][] portPoints1 = new Point[][]{new Point[]{new Point(264,122),new Point(330,87), new Point(219,18)},
                                          new Point[]{new Point(461,87),new Point(533,121), new Point(486,18)},
                                          new Point[]{new Point(663,200),new Point(729,237), new Point(681,132)},
                                          new Point[]{new Point(797,346),new Point(798,425), new Point(810,351)},
@@ -98,7 +98,29 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     ArrayList<Player> duplicates = new ArrayList<Player>();
     BeginGame bgReference;
 
+    //Duplicates
+    int[][] coords = new int[coords1.length][];
+    int[][] indexCoords = new int[indexCoords1.length][];
+    Point[] waterPoints= new Point[waterPoints1.length];
+    Point[] outLinePoints = new Point[outLinePoints1.length];
+    Point[][] portPoints = new Point[portPoints1.length][];
+
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference){
+        for(int x=0; x<coords1.length; x++)
+            coords[x] = new int[]{coords1[x][0],coords1[x][1]+50};
+
+        for(int x=0; x<indexCoords1.length; x++)
+            indexCoords[x] = new int[]{indexCoords1[x][0],indexCoords1[x][1]+50};
+
+        for(int x=0; x<waterPoints1.length; x++)
+            waterPoints[x] = new Point((int)waterPoints1[x].getX(),(int)waterPoints1[x].getY()+50);
+
+        for(int x=0; x<outLinePoints1.length; x++)
+            outLinePoints[x] = new Point((int)outLinePoints1[x].getX(),(int)outLinePoints1[x].getY()+50);
+
+        for(int x=0; x<portPoints1.length; x++)
+            portPoints[x] = new Point[]{new Point((int)portPoints1[x][0].getX(),(int)portPoints1[x][0].getY()+50),new Point((int)portPoints1[x][1].getX(),(int)portPoints1[x][1].getY()+50),new Point((int)portPoints1[x][2].getX(),(int)portPoints1[x][2].getY()+50)};
+
         this.addMouseListener(this);
         this.addKeyListener(this);
         this.catanPlayerList=catanPlayerList;
@@ -466,6 +488,9 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public void mousePressed(MouseEvent e){
         int xLoc = e.getX();
         int yLoc = e.getY();
+        
+        //Testing
+        //System.out.println("(X,Y): ( "+xLoc+" , "+yLoc+" )");
 
         //Code to draw ports
         if(bgReference.usablePorts && !doingStartup) {
