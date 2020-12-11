@@ -1360,7 +1360,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                             getCurrentPlayer().removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight",getCurrentPlayer(),getOtherPlayers(),this,false));
                             getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem("Knight");
                             getPlayerStatusMenu(getCurrentPlayer()).played.removeItem("Knight");
-                            isPlayerActing=false;
                         }
                         else if (isRoadBuilding) {
                             isRoadBuilding = false;
