@@ -268,10 +268,19 @@ public class PlayerView extends JFrame implements ActionListener {
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
                     reference.getPlayerStatusMenu(player).build.setEnabled(false);
                     reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                    player.changeBrick(-1);
-                    player.changeGrain(-1);
-                    player.changeLumber(-1);
-                    player.changeWool(-1);
+
+                    if(player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")){
+                        player.monoBrick(-2);
+                        player.monoWheat(-2);
+                        player.monoLumber(-2);
+                        player.monoWool(-2);
+                    }
+                    else{
+                        player.monoBrick(-1);
+                        player.monoWheat(-1);
+                        player.monoLumber(-1);
+                        player.monoWool(-1);
+                    }
                     update();
                 }
                 else
@@ -352,8 +361,15 @@ public class PlayerView extends JFrame implements ActionListener {
                         reference.getPlayerStatusMenu(player).options.setEnabled(false);
                         reference.getPlayerStatusMenu(player).build.setEnabled(false);
                         reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                        player.changeOre(-3);
-                        player.changeGrain(-2);
+
+                        if(player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")){
+                            player.monoOre(-6);
+                            player.monoWheat(-4);
+                        }
+                        else{
+                            player.monoOre(-3);
+                            player.monoWheat(-2);
+                        }
                         update();
                     }
                     else
@@ -375,8 +391,16 @@ public class PlayerView extends JFrame implements ActionListener {
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
                     reference.getPlayerStatusMenu(player).build.setEnabled(false);
                     reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                    player.changeBrick(-1);
-                    player.changeLumber(-1);
+                    
+                    if(player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")){
+                        player.monoBrick(2);
+                        player.monoLumber(2);
+                    }
+                    else{
+                        player.monoBrick(1);
+                        player.monoLumber(1);
+                    }
+                    
                     update();
                 }
                 else
@@ -392,9 +416,17 @@ public class PlayerView extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card",1);
                     player.addDevelopmentCardToUnplayed(newDc);
                     unplayed.addItem(newDc.getType());
-                    player.changeWool(-1);
-                    player.changeOre(-1);
-                    player.changeGrain(-1);
+
+                    if(player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")){
+                        player.monoWool(-1);
+                        player.monoOre(-1);
+                        player.monoWheat(-1);
+                    }
+                    else{
+                        player.monoWool(-1);
+                        player.monoOre(-1);
+                        player.monoWheat(-1);
+                    }
                     update();
                 }
                 else
