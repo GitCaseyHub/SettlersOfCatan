@@ -391,7 +391,7 @@ public class PlayerView extends JFrame implements ActionListener {
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
                     reference.getPlayerStatusMenu(player).build.setEnabled(false);
                     reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                    
+
                     if(player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")){
                         player.monoBrick(2);
                         player.monoLumber(2);
@@ -400,7 +400,7 @@ public class PlayerView extends JFrame implements ActionListener {
                         player.monoBrick(1);
                         player.monoLumber(1);
                     }
-                    
+
                     update();
                 }
                 else
@@ -437,48 +437,54 @@ public class PlayerView extends JFrame implements ActionListener {
         else if(e.getSource()==playCard){
             if(unplayed.getSelectedIndex()==0)
                 JOptionPane.showMessageDialog(this,"You must select a card name from your 'Hidden Cards' list. The name you have selected will be the card that is played.","Unplayable Card",3);
-
-            else if(unplayed.getSelectedIndex()!=0){
-                for(int x=0; x<player.getUnPlayedCards().size(); x++)
-                    if(unplayed.getSelectedItem().toString().equals(player.getUnPlayedCards().get(x).getType())) {
-                        if(multiples(player.getUnPlayedCards().get(x).getType())){
-                            reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                            reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                            reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                            JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
-                            player.getUnPlayedCards().get(x).playCard();
-                            player.addDevelopmentCardToPlayed(player.getUnPlayedCards().get(x));
-                            unplayed.removeItem(player.getUnPlayedCards().get(x).getType());
-                            played.addItem(player.getUnPlayedCards().get(x).getType());
-                            player.removeDevelopmentCardFromUnplayed(player.getUnPlayedCards().get(x));
-                            reference.updateAllStatusMenus();
-                            unplayed.setSelectedIndex(0);
-                            playCard.setEnabled(false);
-                            break;
-                        }
-                        else {
-                            if (player.getUnPlayedCards().get(x).isBoughtThisTurn())
-                                JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", 3);
-
-                            else {
-                                reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                                reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                                reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                                JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
-                                player.getUnPlayedCards().get(x).playCard();
-                                player.addDevelopmentCardToPlayed(player.getUnPlayedCards().get(x));
-                                unplayed.removeItem(player.getUnPlayedCards().get(x).getType());
-                                played.addItem(player.getUnPlayedCards().get(x).getType());
-                                player.removeDevelopmentCardFromUnplayed(player.getUnPlayedCards().get(x));
-                                reference.updateAllStatusMenus();
-                                unplayed.setSelectedIndex(0);
-                                playCard.setEnabled(false);
-                                break;
-                            }
-                        }
+            else {
+                //Fix this issue; problem with playing a card even though you bought it this turn; need a counter or something
+                DevelopmentCard playedCard = new DevelopmentCard();
+                for (int x = 0; x < player.getUnPlayedCards().size(); x++)
+                    if (unplayed.getSelectedItem().toString().equals(player.getUnPlayedCards().get(x).getType())) {
+                        playedCard = player.getUnPlayedCards().get(x);
+                        break;
                     }
+
+
+                if ((multiples(playedCard.getType()) && !boughtAllOnSameTurn(playedCard.getType())) || !playedCard.isBoughtThisTurn()) {
+                    reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                    reference.getPlayerStatusMenu(player).development.setEnabled(false);
+                    JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
+                    playedCard.playCard();
+                    player.addDevelopmentCardToPlayed(playedCard);
+                    unplayed.removeItem(playedCard.getType());
+                    played.addItem(playedCard.getType());
+                    player.removeDevelopmentCardFromUnplayed(playedCard);
+                    reference.updateAllStatusMenus();
+                    unplayed.setSelectedIndex(0);
+                    playCard.setEnabled(false);
+                    System.out.println("IM IN HERE");
+                }
+                else {
+                    if (playedCard.isBoughtThisTurn())
+                        JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", 3);
+
+                    else {
+                        reference.getPlayerStatusMenu(player).options.setEnabled(false);
+                        reference.getPlayerStatusMenu(player).build.setEnabled(false);
+                        reference.getPlayerStatusMenu(player).development.setEnabled(false);
+                        JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
+                        playedCard.playCard();
+                        player.addDevelopmentCardToPlayed(playedCard);
+                        unplayed.removeItem(playedCard.getType());
+                        played.addItem(playedCard.getType());
+                        player.removeDevelopmentCardFromUnplayed(playedCard);
+                        reference.updateAllStatusMenus();
+                        unplayed.setSelectedIndex(0);
+                        playCard.setEnabled(false);
+                    }
+                }
             }
         }
+
+
         else if(e.getSource()==exchange){
             if(tf.isVisible())
                 JOptionPane.showMessageDialog(this,"You already have your trading frame open.","Already Open",3);
@@ -567,5 +573,17 @@ public class PlayerView extends JFrame implements ActionListener {
             val+=(checkboxes[x].isSelected()?1:0);
 
         return (val>1 || val==0)?false:true;
+    }
+
+    public boolean boughtAllOnSameTurn(String type){
+        int counter=0;
+        for(int x=0; x<player.unPlayedCards.size(); x++) {
+            if (player.unPlayedCards.get(x).getType().equals(type))
+                counter++;
+            if (player.unPlayedCards.get(x).isBoughtThisTurn())
+                counter--;
+        }
+        System.out.println("Counter: "+counter);
+        return counter==0;
     }
 }
