@@ -6,11 +6,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class CatanBoard extends JFrame implements MouseListener, KeyListener {
-    //Longest Road needs to deal with forking issue; causes it to think there is an additional road there. I think that I need to do this by forcing the program to check at only one index
-
     //Objects for Board Generation
     String[] types = {"Mountain", "Mountain", "Mountain", "Brick", "Brick", "Brick", "Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains", "Grain", "Grain", "Grain", "Grain", "Desert"};
     int[] rollNums = {8, 4, 11, 12, 3, 11, 10, 9, 6, 9, 5, 2, 4, 5, 10, 8, 3, 6};
@@ -18,7 +17,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     ArrayList<String> typeList = new ArrayList<String>();
     ArrayList<Integer> rollNumList = new ArrayList<Integer>();
     ArrayList<int[]> coordList = new ArrayList<int[]>();
-    Tile tiles[] = new Tile[19];
+    Tile[] tiles = new Tile[19];
     PlayerView[] statusViewer;
     ArrayList<String> turnNameList;
 
@@ -331,7 +330,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 isDoneRoadBuilding = true;
                 isRoadBuilding = false;
 
-                if (longestRoad(currentLongestRoad) && longestRoadPlayer != getCurrentPlayer()) {
+                if (runRoadAlgorithm() && longestRoadPlayer != getCurrentPlayer()) {
                     if (currentLongestRoad != 4) {
                         for (int x = 0; x < catanPlayerList.size(); x++)
                             if (catanPlayerList.get(x).hasLongestRoad()) {
@@ -1272,52 +1271,62 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public void mouseExited(MouseEvent e) {
     }
 
-    //Method doesn't work if there is a fork in the road. Still need to work on that
-    public boolean longestRoad(int previousLongestRoad) {
-        ArrayList<Road> playerRoads = new ArrayList<Road>();
-        ArrayList<Integer> roadLengths = new ArrayList<Integer>();
-        ArrayList<Road> alreadyUsed = new ArrayList<Road>();
-        ArrayList<Integer> alreadyJumpedFrom = new ArrayList<Integer>();
-        boolean stillHasConnections = true;
+    //Longest road algorithm using recursion; I think this will work, but there is something going on here that the program doesn't like
+    public boolean runRoadAlgorithm(){
+        ArrayList<Road> singleConnections = new ArrayList<Road>();
+        ArrayList<Integer> lengths = new ArrayList<Integer>();
 
-        for (int x = 0; x < indexConnections.size(); x++) {
+        for(int x=0; x<indexConnections.size(); x++) {
             if (indexConnections.get(x).getOwner() == getCurrentPlayer())
-                playerRoads.add(indexConnections.get(x));
+                singleConnections.add(indexConnections.get(x));
         }
 
-        for (int a = 0; a < playerRoads.size(); a++) {
-            alreadyUsed.clear();
-            alreadyJumpedFrom.clear();
-            alreadyUsed.add(playerRoads.get(a));
-            Road current = playerRoads.get(a);
-            int counter = 1;
-            while (stillHasConnections) {
-                stillHasConnections = false;
-                for (int y = 0; y < playerRoads.size(); y++) {
-                    if (current.getIndexA() == playerRoads.get(y).getIndexA() || current.getIndexA() == playerRoads.get(y).getIndexB() || current.getIndexB() == playerRoads.get(y).getIndexA() || current.getIndexB() == playerRoads.get(y).getIndexB()) {
-                        if (!alreadyUsed.contains(playerRoads.get(y))) {
-                            current = playerRoads.get(y);
-                            alreadyUsed.add(current);
-                            counter++;
-                            stillHasConnections = true;
-                            System.out.println(current.toString());
-                        }
-                    }
-                }
-            }
-            roadLengths.add(counter);
-        }
+        for(int x=0; x<singleConnections.size(); x++)
+            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()),new ArrayList<Road>(),0,singleConnections.get(x)));
 
-        for (int x = 0; x < roadLengths.size(); x++) {
-            System.out.println(roadLengths.get(x));
-            if (roadLengths.get(x) > previousLongestRoad) {
-                this.currentLongestRoad = roadLengths.get(x);
-                return true;
-            }
-        }
-        return false;
+        int previous = this.currentLongestRoad;
+        this.currentLongestRoad = (Collections.max(lengths)>this.currentLongestRoad)?Collections.max(lengths):this.currentLongestRoad;
+        return Collections.max(lengths)>previous;
     }
 
+    public int roadRecursion(ArrayList<Road> potential, ArrayList<Road> usedAlready, int currentLength, Road currentRoad){
+        ArrayList<Road> possibleSplittings= new ArrayList<>();
+        ArrayList<Integer> splits = new ArrayList<>();
+        boolean stillHasConnections = true;
+        int subConnections=0;
+        usedAlready.add(currentRoad);
+        currentLength++;
+
+        while(stillHasConnections) {
+            potential.removeAll(usedAlready);
+            stillHasConnections=false;
+            possibleSplittings.clear();
+            splits.clear();
+            subConnections=0;
+            for (int x = 0; x < potential.size(); x++)
+                if (currentRoad.isConnectedTo(potential.get(x)) && currentRoad!=potential.get(x)) {
+                    subConnections++;
+                    possibleSplittings.add(potential.get(x));
+                }
+
+            if (subConnections > 1) {
+                usedAlready.addAll(possibleSplittings);
+                for (int y = 0; y < possibleSplittings.size(); y++)
+                    splits.add(roadRecursion(potential, usedAlready, 0, possibleSplittings.get(y)));
+
+                currentLength += Collections.max(splits);
+                return currentLength;
+            }
+            else if (subConnections == 1) {
+                currentRoad = possibleSplittings.get(0);
+                usedAlready.add(currentRoad);
+                currentLength++;
+                stillHasConnections=true;
+            }
+        }
+        return currentLength;
+    }
+    
     public void keyTyped(KeyEvent e) {
     }
 
@@ -1370,5 +1379,14 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", 1);
             }
         }
+    }
+
+    public ArrayList<Road> getPlayerRoads(Player player){
+        ArrayList<Road> roads = new ArrayList<>();
+        for(int x=0; x<indexConnections.size(); x++)
+            if(indexConnections.get(x).getOwner()==player)
+                roads.add(indexConnections.get(x));
+
+        return roads;
     }
 }
