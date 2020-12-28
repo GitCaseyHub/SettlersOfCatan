@@ -201,19 +201,19 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public void paint(Graphics g) {
         try {
             if (!loaded) {
-                for (int x = 0; x < tiles.length; x++) {
-                    BufferedImage tile = ImageIO.read(new File("Tiles/" + tiles[x].getType() + ".png"));
-                    g.drawImage(tile, tiles[x].getPosition()[0], tiles[x].getPosition()[1], null);
+                for (Tile element : tiles) {
+                    BufferedImage tile = ImageIO.read(new File("Tiles/" + element.getType() + ".png"));
+                    g.drawImage(tile, element.getPosition()[0], element.getPosition()[1], null);
                 }
 
-                for (int x = 0; x < tiles.length; x++) {
-                    BufferedImage dice = ImageIO.read(new File("Rolls/" + tiles[x].getNum() + ".png"));
-                    g.drawImage(dice, (int) tiles[x].getPosition()[0] + 42, (int) tiles[x].getPosition()[1] + 25, null);
+                for (Tile item : tiles) {
+                    BufferedImage dice = ImageIO.read(new File("Rolls/" + item.getNum() + ".png"));
+                    g.drawImage(dice, (int) item.getPosition()[0] + 42, (int) item.getPosition()[1] + 25, null);
                 }
 
                 BufferedImage water = ImageIO.read(new File("Tiles/Water_Tile.png"));
-                for (int x = 0; x < waterPoints.length; x++)
-                    g.drawImage(water, (int) waterPoints[x].getX(), (int) waterPoints[x].getY(), null);
+                for (Point waterPoint : waterPoints)
+                    g.drawImage(water, (int) waterPoint.getX(), (int) waterPoint.getY(), null);
 
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(3));
@@ -221,15 +221,15 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
 
-                for (int x = 0; x < ports.length; x++) {
-                    BufferedImage port = ImageIO.read(new File("Resources/Port/" + ports[x].getType() + "_Port_Ship.png"));
-                    g.drawImage(port, (int) ports[x].getLocations()[2].getX(), (int) ports[x].getLocations()[2].getY(), null);
+                for (Port value : ports) {
+                    BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
+                    g.drawImage(port, (int) value.getLocations()[2].getX(), (int) value.getLocations()[2].getY(), null);
                 }
 
-                for (int x = 0; x < tiles.length; x++)
-                    if (tiles[x].isHasRobber()) {
+                for (Tile tile : tiles)
+                    if (tile.isHasRobber()) {
                         BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
-                        g.drawImage(robber, tiles[x].getPosition()[0] + 57, tiles[x].getPosition()[1] + 80, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 80, null);
                     }
 
                 //Draws Ports
@@ -519,19 +519,19 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         //Code to draw ports
         if (bgReference.usablePorts && !doingStartup) {
             portCount = 0;
-            for (int x = 0; x < ports.length; x++) {
-                if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) ports[x].getLocations()[2].getX() + 25, (int) ports[x].getLocations()[2].getY() + 25, 50, 50))) {
-                    for (int y = 0; y < indexes.length; y++) {
-                        if ((Math.abs(ports[x].getLocations()[0].getX() - indexes[y].getLocation()[0]) < 25 && Math.abs(ports[x].getLocations()[0].getY() - indexes[y].getLocation()[1]) < 25) ||
-                                (Math.abs(ports[x].getLocations()[1].getX() - indexes[y].getLocation()[0]) < 25 && Math.abs(ports[x].getLocations()[1].getY() - indexes[y].getLocation()[1]) < 25)) {
+            for (Port port : ports) {
+                if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) port.getLocations()[2].getX() + 25, (int) port.getLocations()[2].getY() + 25, 50, 50))) {
+                    for (Index index : indexes) {
+                        if ((Math.abs(port.getLocations()[0].getX() - index.getLocation()[0]) < 25 && Math.abs(port.getLocations()[0].getY() - index.getLocation()[1]) < 25) ||
+                                (Math.abs(port.getLocations()[1].getX() - index.getLocation()[0]) < 25 && Math.abs(port.getLocations()[1].getY() - index.getLocation()[1]) < 25)) {
 
-                            if (indexes[y].isTaken() && indexes[y].getOwner().getName().equals(getCurrentPlayer().getName()))
+                            if (index.isTaken() && index.getOwner().getName().equals(getCurrentPlayer().getName()))
                                 portCount++;
 
                         }
                     }
                     if (portCount > 0)
-                        usePort(ports[x]);
+                        usePort(port);
 
                     else
                         JOptionPane.showMessageDialog(this, "You don't have access to this port.", "Port inaccessible", 3);
@@ -1313,13 +1313,13 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         ArrayList<Road> singleConnections = new ArrayList<Road>();
         ArrayList<Integer> lengths = new ArrayList<Integer>();
 
-        for (Road indexConnection : indexConnections) {
-            if (indexConnection.getOwner() == getCurrentPlayer())
-                singleConnections.add(indexConnection);
+        for(int x=0; x<indexConnections.size(); x++) {
+            if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                singleConnections.add(indexConnections.get(x));
         }
 
-        for (Road singleConnection : singleConnections)
-            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()), new ArrayList<Road>(), 0, singleConnection));
+        for(int x=0; x<singleConnections.size(); x++)
+            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()),new ArrayList<Road>(),0,singleConnections.get(x)));
 
         int previous = this.currentLongestRoad;
         this.currentLongestRoad = (Collections.max(lengths)>this.currentLongestRoad)?Collections.max(lengths):this.currentLongestRoad;
@@ -1339,16 +1339,16 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             stillHasConnections=false;
             possibleSplittings.clear();
             subConnections=0;
-            for (Road road : potential)
-                if (currentRoad.isConnectedTo(road) && currentRoad != road) {
+            for (int x = 0; x < potential.size(); x++)
+                if (currentRoad.isConnectedTo(potential.get(x)) && currentRoad!=potential.get(x)) {
                     subConnections++;
-                    possibleSplittings.add(road);
+                    possibleSplittings.add(potential.get(x));
                 }
 
             if (subConnections > 1) {
                 usedAlready.addAll(possibleSplittings);
-                for (Road possibleSplitting : possibleSplittings)
-                    splits.add(roadRecursion(potential, usedAlready, 0, possibleSplitting));
+                for (int y = 0; y < possibleSplittings.size(); y++)
+                    splits.add(roadRecursion(potential, usedAlready, 0, possibleSplittings.get(y)));
 
                 currentLength += Collections.max(splits);
                 return currentLength;
