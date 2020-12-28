@@ -81,28 +81,28 @@ public class DevelopmentCard implements ActionListener {
             performKnightAction();
 
         else if (type.equals("Victory Points")) {
-            JOptionPane.showMessageDialog(null, "You are awarded one victory point. This will now be reflected in your status screen.", "Victory Point Action", 1);
+            JOptionPane.showMessageDialog(null, "You are awarded one victory point. This will now be reflected in your status screen.", "Victory Point Action",JOptionPane.INFORMATION_MESSAGE);
             performVictoryPoints();
         }
 
         else if (type.equals("Road Builder")) {
-            JOptionPane.showMessageDialog(null,"You will now select two sets of indices to build roads on.","Road Building Action",1);
+            JOptionPane.showMessageDialog(null,"You will now select two sets of indices to build roads on.","Road Building Action",JOptionPane.INFORMATION_MESSAGE);
             performRoadBuilding();
         }
 
         else if (type.equals("Year of Plenty")) {
-            JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action", 1);
+            JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action",JOptionPane.INFORMATION_MESSAGE);
             performYearOfPlenty();
         }
 
         else {
-            JOptionPane.showMessageDialog(null,"Select one of the following five resources. You will be given all of that resource from each player. Your class will not affect the amount given.","Monopoly Action",1);
+            JOptionPane.showMessageDialog(null,"Select one of the following five resources. You will be given all of that resource from each player. Your class will not affect the amount given.","Monopoly Action",JOptionPane.INFORMATION_MESSAGE);
             performMonopoly();
         }
     }
 
     public void performKnightAction() {
-        JOptionPane.showMessageDialog(null,"Move the robber to a tile. Note that you may keep the robber in the same position by click on the tile it is already located on.","Knight Card Action",1);
+        JOptionPane.showMessageDialog(null,"Move the robber to a tile. Note that you may keep the robber in the same position by click on the tile it is already located on.","Knight Card Action",JOptionPane.INFORMATION_MESSAGE);
         cbReference.isMovingRobber=true;
         cbReference.isPlayerActing=true;
     }
@@ -136,7 +136,7 @@ public class DevelopmentCard implements ActionListener {
         //Array manipulation stuff
         for (int x = 0; x < 5; x++) {
             graphicPanels[x] = new JPanel(new BorderLayout());
-            graphicImageLabels[x] = new JLabel("", 0);
+            graphicImageLabels[x] = new JLabel("", SwingConstants.CENTER);
             graphicImageLabels[x].setIcon(new ImageIcon("Resources/" + graphicStrings[x] + "_Image.png"));
             graphicPanels[x].add(graphicImageLabels[x], BorderLayout.CENTER);
             graphicImageLabels[x].setBorder(compound);
@@ -223,7 +223,7 @@ public class DevelopmentCard implements ActionListener {
         if (counter == 2 && yearOfPlenty) {
             int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION);
             if (confirmation == 0) {
-                JOptionPane.showMessageDialog(null, "Okay. You will be given your chosen resources.", "Resources Chosen", 1);
+                JOptionPane.showMessageDialog(null, "Okay. You will be given your chosen resources.", "Resources Chosen", JOptionPane.INFORMATION_MESSAGE);
                 player.changeBrick((brickCheck.isSelected() ? 1 : 0));
                 player.changeWool((sheepCheck.isSelected() ? 1 : 0));
                 player.changeGrain((wheatCheck.isSelected() ? 1 : 0));
@@ -237,13 +237,13 @@ public class DevelopmentCard implements ActionListener {
                 cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
                 yearOfPlenty=false;
             } else
-                JOptionPane.showMessageDialog(null, "Okay. Reselect the resources you want.", "Cancellation", 1);
+                JOptionPane.showMessageDialog(null, "Okay. Reselect the resources you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE);
         }
 
         if(counter==1 && monopoly){
             int confirm = JOptionPane.showConfirmDialog(null,"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION);
             if(confirm==0) {
-                JOptionPane.showMessageDialog(null, "Okay. You will be given all resources of that type from other players.", "Monopoly Action", 1);
+                JOptionPane.showMessageDialog(null, "Okay. You will be given all resources of that type from other players.", "Monopoly Action",JOptionPane.INFORMATION_MESSAGE);
                 for (int x = 0; x < otherPlayers.size(); x++) {
                     if (brickCheck.isSelected()) {
                         player.monoBrick(otherPlayers.get(x).getBrickNum());
@@ -276,7 +276,7 @@ public class DevelopmentCard implements ActionListener {
                 monopoly = false;
             }
             else
-                JOptionPane.showMessageDialog(null, "Okay. Reselect the resource you want.", "Cancellation", 1);
+                JOptionPane.showMessageDialog(null, "Okay. Reselect the resource you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
