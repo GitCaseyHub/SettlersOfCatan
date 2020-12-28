@@ -236,16 +236,16 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 if (bgReference.usablePorts) {
                     //Port Indexes if Active
                     BufferedImage circle = ImageIO.read(new File("Pieces/Active_Ports.png"));
-                    for (int x = 0; x < portPoints.length; x++) {
-                        g.drawImage(circle, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
-                        g.drawImage(circle, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
+                    for (Point[] portPoint : portPoints) {
+                        g.drawImage(circle, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
+                        g.drawImage(circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 } else {
                     //Port Indexes if Inactive
                     BufferedImage cross = ImageIO.read(new File("Pieces/Cross_Ports.png"));
-                    for (int x = 0; x < portPoints.length; x++) {
-                        g.drawImage(cross, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
-                        g.drawImage(cross, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
+                    for (Point[] portPoint : portPoints) {
+                        g.drawImage(cross, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
+                        g.drawImage(cross, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 }
                 loaded = true;
@@ -253,9 +253,9 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             if (isDoneMovingRobber) {
                 BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
                 redrawEverything = true;
-                for (int x = 0; x < tiles.length; x++)
-                    if (tiles[x].isHasRobber()) {
-                        g.drawImage(robber, tiles[x].getPosition()[0] + 57, tiles[x].getPosition()[1] + 80, null);
+                for (Tile tile : tiles)
+                    if (tile.isHasRobber()) {
+                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 80, null);
                         isDoneMovingRobber = false;
                         break;
                     }
@@ -277,24 +277,24 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         selectCounter = 0;
                         JOptionPane.showMessageDialog(this, params, "Robber Action", JOptionPane.INFORMATION_MESSAGE);
 
-                        for (int x = 0; x < possibleTargets.length; x++)
-                            if (possibleTargets[x].isSelected())
+                        for (JCheckBox possibleTarget : possibleTargets)
+                            if (possibleTarget.isSelected())
                                 selectCounter++;
 
                         if (selectCounter == 0)
                             JOptionPane.showMessageDialog(this, "You have to steal from someone. You cannot elect out of this.", "Try Again", 3);
 
                         if (selectCounter == possibleTargets.length && possibleTargets.length != 1) {
-                            for (int x = 0; x < possibleTargets.length; x++)
-                                possibleTargets[x].setSelected(false);
+                            for (JCheckBox possibleTarget : possibleTargets)
+                                possibleTarget.setSelected(false);
 
                             JOptionPane.showMessageDialog(this, "You may only steal from one player.", "Try Again", 3);
                         }
                     }
 
-                    for (int x = 0; x < possibleTargets.length; x++)
-                        if (possibleTargets[x].isSelected()) {
-                            playerName = possibleTargets[x].getText();
+                    for (JCheckBox possibleTarget : possibleTargets)
+                        if (possibleTarget.isSelected()) {
+                            playerName = possibleTarget.getText();
                             break;
                         }
 
@@ -356,10 +356,10 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
                 if (runRoadAlgorithm() && longestRoadPlayer != getCurrentPlayer()) {
                     if (currentLongestRoad != 4) {
-                        for (int x = 0; x < catanPlayerList.size(); x++)
-                            if (catanPlayerList.get(x).hasLongestRoad()) {
-                                catanPlayerList.get(x).setLongestRoad(false);
-                                catanPlayerList.get(x).changeVictoryPoints(-2);
+                        for (Player player : catanPlayerList)
+                            if (player.hasLongestRoad()) {
+                                player.setLongestRoad(false);
+                                player.changeVictoryPoints(-2);
                                 break;
                             }
                     }
@@ -384,9 +384,9 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
                     if (duplicates.size() == 0) {
                         doingStartup = false;
-                        for (int x = 0; x < catanPlayerList.size(); x++)
-                            if (catanPlayerList.get(x).getName().equals(turnNameList.get(0)))
-                                catanPlayerList.get(x).setTurn(true);
+                        for (Player player : catanPlayerList)
+                            if (player.getName().equals(turnNameList.get(0)))
+                                player.setTurn(true);
 
                         getPlayerStatusMenu(catanPlayerList.get(0)).update();
                         isDoneSettlementBuilding = true;
@@ -402,7 +402,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         isRoadBuilding = true;
                         roadDevCard = false;
                         finishedRoadCard = true;
-                    } else if (finishedRoadCard) {
+                    } else {
                         JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action", 1);
                         getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
                         getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
@@ -414,15 +414,15 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
             if (redrawEverything) {
                 //Redraws Tiles
-                for (int x = 0; x < tiles.length; x++) {
-                    BufferedImage tile = ImageIO.read(new File("Tiles/" + tiles[x].getType() + ".png"));
-                    g.drawImage(tile, tiles[x].getPosition()[0], tiles[x].getPosition()[1], null);
+                for (Tile value : tiles) {
+                    BufferedImage tile = ImageIO.read(new File("Tiles/" + value.getType() + ".png"));
+                    g.drawImage(tile, value.getPosition()[0], value.getPosition()[1], null);
                 }
 
                 //Redraws Water Tiles
                 BufferedImage water = ImageIO.read(new File("Tiles/Water_Tile.png"));
-                for (int x = 0; x < waterPoints.length; x++)
-                    g.drawImage(water, (int) waterPoints[x].getX(), (int) waterPoints[x].getY(), null);
+                for (Point waterPoint : waterPoints)
+                    g.drawImage(water, (int) waterPoint.getX(), (int) waterPoint.getY(), null);
 
                 //Redraws Water Border
                 Graphics2D g2 = (Graphics2D) g;
@@ -434,62 +434,62 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 workAround();
 
                 //Redraws Port Ships
-                for (int x = 0; x < ports.length; x++) {
-                    BufferedImage port = ImageIO.read(new File("Resources/Port/" + ports[x].getType() + "_Port_Ship.png"));
-                    g.drawImage(port, (int) ports[x].getLocations()[2].getX(), (int) ports[x].getLocations()[2].getY(), null);
+                for (Port value : ports) {
+                    BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
+                    g.drawImage(port, (int) value.getLocations()[2].getX(), (int) value.getLocations()[2].getY(), null);
                 }
 
                 //Redraws Roll Tiles
-                for (int x = 0; x < tiles.length; x++) {
-                    BufferedImage dice = ImageIO.read(new File("Rolls/" + tiles[x].getNum() + ".png"));
-                    g.drawImage(dice, (int) tiles[x].getPosition()[0] + 42, (int) tiles[x].getPosition()[1] + 25, null);
+                for (Tile tile : tiles) {
+                    BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
+                    g.drawImage(dice, (int) tile.getPosition()[0] + 42, (int) tile.getPosition()[1] + 25, null);
                 }
 
                 //Draws Robber
-                for (int x = 0; x < tiles.length; x++)
-                    if (tiles[x].isHasRobber()) {
+                for (Tile tile : tiles)
+                    if (tile.isHasRobber()) {
                         BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
-                        g.drawImage(robber, tiles[x].getPosition()[0] + 57, tiles[x].getPosition()[1] + 80, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 80, null);
                     }
 
                 //Redraws Ports
                 if (bgReference.usablePorts) {
                     //Port Indexes if Active
                     BufferedImage circle = ImageIO.read(new File("Pieces/Active_Ports.png"));
-                    for (int x = 0; x < portPoints.length; x++) {
-                        if(!sharesLocation(new Point((int)portPoints[x][0].getX(),(int)portPoints[x][0].getY())))
-                            g.drawImage(circle, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
-                        if(!sharesLocation(new Point((int)portPoints[x][1].getX(),(int)portPoints[x][1].getY())))
-                            g.drawImage(circle, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
+                    for (Point[] portPoint : portPoints) {
+                        if (!sharesLocation(new Point((int) portPoint[0].getX(), (int) portPoint[0].getY())))
+                            g.drawImage(circle, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
+                        if (!sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
+                            g.drawImage(circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 } else {
                     //Port Indexes if Inactive
                     BufferedImage cross = ImageIO.read(new File("Pieces/Cross_Ports.png"));
-                    for (int x = 0; x < portPoints.length; x++) {
-                        if(!sharesLocation(new Point((int)portPoints[x][0].getX(),(int)portPoints[x][0].getY())))
-                            g.drawImage(cross, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
-                        if(!sharesLocation(new Point((int)portPoints[x][1].getX(),(int)portPoints[x][1].getY())))
-                            g.drawImage(cross, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
+                    for (Point[] portPoint : portPoints) {
+                        if (!sharesLocation(new Point((int) portPoint[0].getX(), (int) portPoint[0].getY())))
+                            g.drawImage(cross, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
+                        if (!sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
+                            g.drawImage(cross, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 }
 
                 //Draws Cities/Settlements
-                for (int x = 0; x < indexes.length; x++) {
-                    if (indexes[x].isTaken()) {
-                        if (indexes[x].isSettlement()) {
-                            BufferedImage settlement = ImageIO.read(new File("Pieces/" + indexes[x].getOwner().getColor() + "_Settlement.png"));
-                            g.drawImage(settlement, indexes[x].getLocation()[0] - 5, indexes[x].getLocation()[1] - 16, null);
-                        } else if (indexes[x].isCity()) {
-                            BufferedImage city = ImageIO.read(new File("Pieces/" + indexes[x].getOwner().getColor() + "_City.png"));
-                            g.drawImage(city, indexes[x].getLocation()[0] - 5, indexes[x].getLocation()[1] - 16, null);
+                for (Index index : indexes) {
+                    if (index.isTaken()) {
+                        if (index.isSettlement()) {
+                            BufferedImage settlement = ImageIO.read(new File("Pieces/" + index.getOwner().getColor() + "_Settlement.png"));
+                            g.drawImage(settlement, index.getLocation()[0] - 5, index.getLocation()[1] - 16, null);
+                        } else if (index.isCity()) {
+                            BufferedImage city = ImageIO.read(new File("Pieces/" + index.getOwner().getColor() + "_City.png"));
+                            g.drawImage(city, index.getLocation()[0] - 5, index.getLocation()[1] - 16, null);
                         }
                     }
                 }
 
                 //Redraw Roads
-                for (int x = 0; x < indexConnections.size(); x++) {
-                    BufferedImage road = ImageIO.read(new File("Pieces/" + indexConnections.get(x).getRoadType() + "_" + indexConnections.get(x).getOwner().getColor() + "_Road.png"));
-                    g.drawImage(road, (int) indexConnections.get(x).getPosition().getX(), (int) indexConnections.get(x).getPosition().getY(), null);
+                for (Road indexConnection : indexConnections) {
+                    BufferedImage road = ImageIO.read(new File("Pieces/" + indexConnection.getRoadType() + "_" + indexConnection.getOwner().getColor() + "_Road.png"));
+                    g.drawImage(road, (int) indexConnection.getPosition().getX(), (int) indexConnection.getPosition().getY(), null);
                 }
 
                 redrawEverything = false;
@@ -507,10 +507,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         updateAllStatusMenus();
     }
 
-    public void mouseClicked(MouseEvent e) {
-        if(e.getSource()==largestArmyLabel){}
-        else if(e.getSource()== longestRoadLabel){}
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     public void mousePressed(MouseEvent e) {
         int xLoc = e.getX();
@@ -544,12 +541,12 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         //Code to draw roads if boolean is in correct state
         if (isRoadBuilding) {
             if (roadCondition != 2) {
-                for (int x = 0; x < indexCoords.length; x++) {
-                    if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
-                        Index checkedIndex = returnAppropIndex(indexCoords[x][0], indexCoords[x][1]);
-                        for (int i = 0; i < indexes.length; i++) {
-                            if (indexes[i] == checkedIndex) {
-                                checkedIndexes.add(indexes[i]);
+                for (int[] indexCoord : indexCoords) {
+                    if (Math.abs(indexCoord[0] - xLoc) < 20 && Math.abs(indexCoord[1] - yLoc) < 20) {
+                        Index checkedIndex = returnAppropIndex(indexCoord[0], indexCoord[1]);
+                        for (Index index : indexes) {
+                            if (index == checkedIndex) {
+                                checkedIndexes.add(index);
                                 roadCondition++;
                             }
                         }
@@ -581,8 +578,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         repaint();
                     }
                 } else {
-                    for (int x = 0; x < indexConnections.size(); x++) {
-                        if ((indexConnections.get(x).getIndexA() == checkedIndexes.get(0).getIndexID() && indexConnections.get(x).getIndexB() == checkedIndexes.get(1).getIndexID()) || (indexConnections.get(x).getIndexA() == checkedIndexes.get(1).getIndexID() && indexConnections.get(x).getIndexB() == checkedIndexes.get(0).getIndexID())) {
+                    for (Road indexConnection : indexConnections) {
+                        if ((indexConnection.getIndexA() == checkedIndexes.get(0).getIndexID() && indexConnection.getIndexB() == checkedIndexes.get(1).getIndexID()) || (indexConnection.getIndexA() == checkedIndexes.get(1).getIndexID() && indexConnection.getIndexB() == checkedIndexes.get(0).getIndexID())) {
                             JOptionPane.showMessageDialog(this, "There is already a road here. Choose two different indexes that do not contain a road between them.", "Road Error", 3);
                             roadCondition = 0;
                             checkedIndexes.clear();
@@ -591,22 +588,22 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         }
                     }
                     count = 0;
-                    for (int x = 0; x < indexConnections.size(); x++) {
+                    for (Road indexConnection : indexConnections) {
                         if (!doingStartup) {
-                            if (indexConnections.get(x).getIndexA() == checkedIndexes.get(0).getIndexID())
-                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                            if (indexConnection.getIndexA() == checkedIndexes.get(0).getIndexID())
+                                if (indexConnection.getOwner() == getCurrentPlayer())
                                     count++;
 
-                            if (indexConnections.get(x).getIndexA() == checkedIndexes.get(1).getIndexID())
-                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                            if (indexConnection.getIndexA() == checkedIndexes.get(1).getIndexID())
+                                if (indexConnection.getOwner() == getCurrentPlayer())
                                     count++;
 
-                            if (indexConnections.get(x).getIndexB() == checkedIndexes.get(0).getIndexID())
-                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                            if (indexConnection.getIndexB() == checkedIndexes.get(0).getIndexID())
+                                if (indexConnection.getOwner() == getCurrentPlayer())
                                     count++;
 
-                            if (indexConnections.get(x).getIndexB() == checkedIndexes.get(1).getIndexID())
-                                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+                            if (indexConnection.getIndexB() == checkedIndexes.get(1).getIndexID())
+                                if (indexConnection.getOwner() == getCurrentPlayer())
                                     count++;
                         }
                     }
@@ -643,14 +640,14 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         if (isSettlementBuilding) {
             checkedIndexes.clear();
             boolean breakCheck = false;
-            for (int x = 0; x < indexCoords.length; x++) {
-                if (Math.abs(indexCoords[x][0] - xLoc) < 20 && Math.abs(indexCoords[x][1] - yLoc) < 20) {
-                    Index checkedIndex = returnAppropIndex(indexCoords[x][0], indexCoords[x][1]);
+            for (int[] indexCoord : indexCoords) {
+                if (Math.abs(indexCoord[0] - xLoc) < 20 && Math.abs(indexCoord[1] - yLoc) < 20) {
+                    Index checkedIndex = returnAppropIndex(indexCoord[0], indexCoord[1]);
                     for (int i = 0; i < indexes.length; i++) {
                         breakCheck = true;
                         if (indexes[i] == checkedIndex && !indexes[i].isTaken()) {
-                            chosen_x = indexCoords[x][0] - 5;
-                            chosen_y = indexCoords[x][1] - 16;
+                            chosen_x = indexCoord[0] - 5;
+                            chosen_y = indexCoord[1] - 16;
                             settlementIndex = i;
                             checked = indexes[i];
                             breakCheck = false;
@@ -684,12 +681,12 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 t.setHasRobber(false);
 
             checkCounter = 0;
-            for (int x = 0; x < tiles.length; x++)
-                if (tiles[x].getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
-                    tiles[x].setHasRobber(true);
+            for (Tile tile : tiles)
+                if (tile.getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
+                    tile.setHasRobber(true);
                     isDoneMovingRobber = true;
                     isMovingRobber = false;
-                    robberTile = tiles[x];
+                    robberTile = tile;
                     repaint();
                     checkCounter++;
                     getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
@@ -746,43 +743,43 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     public ArrayList<Player> getOtherPlayers() {
         ArrayList<Player> others = new ArrayList<Player>();
-        for (int x = 0; x < catanPlayerList.size(); x++)
-            if (catanPlayerList.get(x) != getCurrentPlayer())
-                others.add(catanPlayerList.get(x));
+        for (Player player : catanPlayerList)
+            if (player != getCurrentPlayer())
+                others.add(player);
         return others;
     }
 
     public ArrayList<Integer> getIndexIDs() {
         ArrayList<Integer> ids = new ArrayList<Integer>();
-        for (int x = 0; x < indexConnections.size(); x++) {
-            ids.add(indexConnections.get(x).getIndexA());
-            ids.add(indexConnections.get(x).getIndexB());
+        for (Road indexConnection : indexConnections) {
+            ids.add(indexConnection.getIndexA());
+            ids.add(indexConnection.getIndexB());
         }
         return ids;
     }
 
     public Index returnAppropIndex(int chosen_x, int chosen_y) {
-        for (int x = 0; x < indexes.length; x++)
-            if (indexes[x].getLocation()[0] == chosen_x && indexes[x].getLocation()[1] == chosen_y)
-                return indexes[x];
+        for (Index index : indexes)
+            if (index.getLocation()[0] == chosen_x && index.getLocation()[1] == chosen_y)
+                return index;
 
         return null;
     }
 
     public Player getPlayerViaName(String name) {
-        for (int x = 0; x < catanPlayerList.size(); x++)
-            if (catanPlayerList.get(x).getName().equals(name))
-                return catanPlayerList.get(x);
+        for (Player player : catanPlayerList)
+            if (player.getName().equals(name))
+                return player;
 
         return null;
     }
 
     public ArrayList<Player> turnOrder(ArrayList<String> nameList) {
         ArrayList<Player> players = new ArrayList<Player>();
-        for (int x = 0; x < nameList.size(); x++)
-            for (int y = 0; y < catanPlayerList.size(); y++)
-                if (nameList.get(x).equals(catanPlayerList.get(y).getName()))
-                    players.add(catanPlayerList.get(y));
+        for (String s : nameList)
+            for (Player player : catanPlayerList)
+                if (s.equals(player.getName()))
+                    players.add(player);
 
         return players;
     }
@@ -828,12 +825,12 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     //Gets resources that would be obtained for an index at start of game
     public ArrayList<String> getAdjacentResources(int xLoc, int yLoc) {
         ArrayList<String> adjacentResources = new ArrayList<String>();
-        for (int x = 0; x < indexes.length; x++) {
-            if (Math.abs(indexes[x].getLocation()[0] - xLoc) < 20 && Math.abs(indexes[x].getLocation()[1] - yLoc) < 20) {
-                for (int a = 0; a < tiles.length; a++) {
+        for (Index index : indexes) {
+            if (Math.abs(index.getLocation()[0] - xLoc) < 20 && Math.abs(index.getLocation()[1] - yLoc) < 20) {
+                for (Tile tile : tiles) {
                     for (int b = 0; b < 6; b++) {
-                        if (Math.abs(tiles[a].getVertices().get(b).getX() - xLoc) < 20 && Math.abs(tiles[a].getVertices().get(b).getY() - yLoc) < 20) {
-                            adjacentResources.add(tiles[a].getType());
+                        if (Math.abs(tile.getVertices().get(b).getX() - xLoc) < 20 && Math.abs(tile.getVertices().get(b).getY() - yLoc) < 20) {
+                            adjacentResources.add(tile.getType());
                         }
                     }
                 }
@@ -844,16 +841,16 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     //Returns the player whose turn is currently taking place
     public Player getCurrentPlayer() {
-        for (int x = 0; x < catanPlayerList.size(); x++)
-            if (catanPlayerList.get(x).isTurn())
-                return catanPlayerList.get(x);
+        for (Player player : catanPlayerList)
+            if (player.isTurn())
+                return player;
 
         return null;
     }
 
     public boolean buildable(Index newSpot) {
-        for (int x = 0; x < indexes.length; x++)
-            if ((indexes[x].isTaken() && newSpot != indexes[x] && distance(new Point(indexes[x].getLocation()[0], indexes[x].getLocation()[1]), new Point(newSpot.getLocation()[0], newSpot.getLocation()[1])) < 100))
+        for (Index index : indexes)
+            if ((index.isTaken() && newSpot != index && distance(new Point(index.getLocation()[0], index.getLocation()[1]), new Point(newSpot.getLocation()[0], newSpot.getLocation()[1])) < 100))
                 return false;
 
         return true;
@@ -861,25 +858,21 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     public boolean settlementBuildable(Index newSpot) {
         int counter = 0;
-        for (int x = 0; x < indexConnections.size(); x++) {
-            if (newSpot.getIndexID() == indexConnections.get(x).getIndexA() || newSpot.getIndexID() == indexConnections.get(x).getIndexB()) {
-                if (indexConnections.get(x).getOwner() == getCurrentPlayer())
+        for (Road indexConnection : indexConnections) {
+            if (newSpot.getIndexID() == indexConnection.getIndexA() || newSpot.getIndexID() == indexConnection.getIndexB()) {
+                if (indexConnection.getOwner() == getCurrentPlayer())
                     counter++;
             }
         }
-        if (counter > 0)
-            return true;
-
-        else
-            return false;
+        return counter > 0;
     }
 
     public void performStartingOperations() {
         int startingPlayer = new Random().nextInt(playerCreation.length);
         doingStartup = true;
-        for (int x = 0; x < catanPlayerList.size(); x++) {
-            if (catanPlayerList.get(x).getRefNumber() == startingPlayer) {
-                catanPlayerList.get(x).setTurn(true);
+        for (Player player : catanPlayerList) {
+            if (player.getRefNumber() == startingPlayer) {
+                player.setTurn(true);
             }
         }
 
@@ -903,33 +896,33 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         turnOrder = startPickOrder;
         String turnOrderString = "The turn order is as follows: ";
         for (int x = 0; x < turnOrder.size(); x++)
-            for (int y = 0; y < catanPlayerList.size(); y++)
-                if (catanPlayerList.get(y).getRefNumber() == turnOrder.get(x))
-                    turnOrderString += catanPlayerList.get(y).getName() + ((x != turnOrder.size() - 1) ? ", " : ". ");
+            for (Player player : catanPlayerList)
+                if (player.getRefNumber() == turnOrder.get(x))
+                    turnOrderString += player.getName() + ((x != turnOrder.size() - 1) ? ", " : ". ");
 
         startPickOrder.addAll(reverse(startPickOrder));
-        String buildingOrder = "With that in mind, the starting order placement will be: ";
+        StringBuilder buildingOrder = new StringBuilder("With that in mind, the starting order placement will be: ");
         turnNameList = new ArrayList<String>();
 
         for (int x = 0; x < startPickOrder.size(); x++)
-            for (int y = 0; y < catanPlayerList.size(); y++)
-                if (catanPlayerList.get(y).getRefNumber() == turnOrder.get(x)) {
-                    buildingOrder += catanPlayerList.get(y).getName() + ((x != turnOrder.size() - 1) ? ", " : ".");
-                    turnNameList.add(catanPlayerList.get(y).getName());
+            for (Player player : catanPlayerList)
+                if (player.getRefNumber() == turnOrder.get(x)) {
+                    buildingOrder.append(player.getName()).append((x != turnOrder.size() - 1) ? ", " : ".");
+                    turnNameList.add(player.getName());
                 }
         JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Beginning Game", 1);
         JOptionPane.showMessageDialog(this, turnOrderString + buildingOrder, "Turn and Building Order", 1);
 
-        for (int y = 0; y < statusViewer.length; y++) {
-            statusViewer[y].options.setEnabled(false);
-            statusViewer[y].build.setEnabled(false);
-            statusViewer[y].development.setEnabled(false);
+        for (PlayerView playerView : statusViewer) {
+            playerView.options.setEnabled(false);
+            playerView.build.setEnabled(false);
+            playerView.development.setEnabled(false);
         }
 
-        for (int y = 0; y < turnNameList.size(); y++)
-            for (int x = 0; x < catanPlayerList.size(); x++)
-                if (turnNameList.get(y).equals(catanPlayerList.get(x).getName()))
-                    duplicates.add(catanPlayerList.get(x));
+        for (String s : turnNameList)
+            for (Player player : catanPlayerList)
+                if (s.equals(player.getName()))
+                    duplicates.add(player);
 
         JOptionPane.showMessageDialog(this, "So, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building", 1);
         this.isSettlementBuilding = true;
@@ -946,78 +939,92 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public ArrayList<Player> getPlayersOnTile(Tile t) {
         ArrayList<Player> players = new ArrayList<Player>();
         for (int x = 0; x < t.getVertices().size(); x++) {
-            for (int y = 0; y < indexes.length; y++) {
-                if (Math.abs(t.getVertices().get(x).getX() - indexes[y].getLocation()[0]) < 30 && Math.abs(t.getVertices().get(x).getY() - indexes[y].getLocation()[1]) < 30)
-                    if (indexes[y].getOwner() != getCurrentPlayer() && !players.contains(indexes[y].getOwner()) && !indexes[y].getOwner().getName().equals(""))
-                        players.add(indexes[y].getOwner());
+            for (Index index : indexes) {
+                if (Math.abs(t.getVertices().get(x).getX() - index.getLocation()[0]) < 30 && Math.abs(t.getVertices().get(x).getY() - index.getLocation()[1]) < 30)
+                    if (index.getOwner() != getCurrentPlayer() && !players.contains(index.getOwner()) && !index.getOwner().getName().equals(""))
+                        players.add(index.getOwner());
             }
         }
         return players;
     }
 
     public void givePlayersStartingResources() {
-        for (int x = 0; x < catanPlayerList.size(); x++) {
-            ArrayList<Index> ownedIndexes = getOwnedIndexes(catanPlayerList.get(x));
-            for (int y = 0; y < ownedIndexes.size(); y++) {
-                ArrayList<String> startResources = getAdjacentResources(ownedIndexes.get(y).getLocation()[0], ownedIndexes.get(y).getLocation()[1]);
-                for (int z = 0; z < startResources.size(); z++) {
-                    if (startResources.get(z).equals("Grain"))
-                        catanPlayerList.get(x).changeGrain(1);
-                    else if (startResources.get(z).equals("Brick"))
-                        catanPlayerList.get(x).changeBrick(1);
-                    else if (startResources.get(z).equals("Forest"))
-                        catanPlayerList.get(x).changeLumber(1);
-                    else if (startResources.get(z).equals("Plains"))
-                        catanPlayerList.get(x).changeWool(1);
-                    else if (startResources.get(z).equals("Mountain"))
-                        catanPlayerList.get(x).changeOre(1);
+        for (Player player : catanPlayerList) {
+            ArrayList<Index> ownedIndexes = getOwnedIndexes(player);
+            for (Index ownedIndex : ownedIndexes) {
+                ArrayList<String> startResources = getAdjacentResources(ownedIndex.getLocation()[0], ownedIndex.getLocation()[1]);
+                for (String startResource : startResources) {
+                    switch (startResource) {
+                        case "Grain":
+                            player.changeGrain(1);
+                            break;
+                        case "Brick":
+                            player.changeBrick(1);
+                            break;
+                        case "Forest":
+                            player.changeLumber(1);
+                            break;
+                        case "Plains":
+                            player.changeWool(1);
+                            break;
+                        case "Mountain":
+                            player.changeOre(1);
+                            break;
+                    }
                 }
             }
-            getPlayerStatusMenu(catanPlayerList.get(x)).update();
+            getPlayerStatusMenu(player).update();
         }
     }
 
     public PlayerView getPlayerStatusMenu(Player player) {
-        for (int x = 0; x < statusViewer.length; x++)
-            if (statusViewer[x].player == player)
-                return statusViewer[x];
+        for (PlayerView playerView : statusViewer)
+            if (playerView.player == player)
+                return playerView;
 
         return null;
     }
 
     public ArrayList<Index> getOwnedIndexes(Player player) {
         ArrayList<Index> ownedIndexes = new ArrayList<Index>();
-        for (int x = 0; x < indexes.length; x++)
-            if (indexes[x].getOwner() == player)
-                ownedIndexes.add(indexes[x]);
+        for (Index index : indexes)
+            if (index.getOwner() == player)
+                ownedIndexes.add(index);
 
         return ownedIndexes;
     }
 
     public void updateAllStatusMenus() {
-        for (int x = 0; x < statusViewer.length; x++)
-            statusViewer[x].update();
+        for (PlayerView playerView : statusViewer)
+            playerView.update();
     }
 
     //This method is an abomination
     public void giveOutResources(int roll) {
-        for (int x = 0; x < tiles.length; x++)
-            if (tiles[x].getNum() == roll)
+        for (Tile tile : tiles)
+            if (tile.getNum() == roll)
                 for (int y = 0; y < 6; y++)
-                    for (int z = 0; z < indexes.length; z++)
-                        if (Math.abs(tiles[x].getVertices().get(y).getX() - indexes[z].getLocation()[0]) < 35 && Math.abs(tiles[x].getVertices().get(y).getY() - indexes[z].getLocation()[1]) < 35 && !tiles[x].isHasRobber())
-                            for (int a = 0; a < catanPlayerList.size(); a++)
-                                if (indexes[z].getOwner() == catanPlayerList.get(a)) {
-                                    if (tiles[x].getType().equals("Grain"))
-                                        catanPlayerList.get(a).changeGrain((indexes[z].isSettlement() ? 1 : 2));
-                                    else if (tiles[x].getType().equals("Brick"))
-                                        catanPlayerList.get(a).changeBrick((indexes[z].isSettlement() ? 1 : 2));
-                                    else if (tiles[x].getType().equals("Forest"))
-                                        catanPlayerList.get(a).changeLumber((indexes[z].isSettlement() ? 1 : 2));
-                                    else if (tiles[x].getType().equals("Plains"))
-                                        catanPlayerList.get(a).changeWool((indexes[z].isSettlement() ? 1 : 2));
-                                    else if (tiles[x].getType().equals("Mountain"))
-                                        catanPlayerList.get(a).changeOre((indexes[z].isSettlement() ? 1 : 2));
+                    for (Index index : indexes)
+                        if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
+                            for (Player player : catanPlayerList)
+                                if (index.getOwner() == player) {
+                                    switch (tile.getType()) {
+                                        case "Grain":
+                                            player.changeGrain((index.isSettlement() ? 1 : 2));
+                                            break;
+                                        case "Brick":
+                                            player.changeBrick((index.isSettlement() ? 1 : 2));
+                                            break;
+                                        case "Forest":
+                                            player.changeLumber((index.isSettlement() ? 1 : 2));
+                                            break;
+                                        case "Plains":
+                                            player.changeWool((index.isSettlement() ? 1 : 2));
+                                            break;
+                                        case "Mountain":
+                                            player.changeOre((index.isSettlement() ? 1 : 2));
+                                            break;
+                                    }
                                 }
     }
 
@@ -1072,193 +1079,200 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public void usePort(Port port) {
         try {
             String use = "";
-            if (port.getType().equals("Wheat")) {
-                while (use.equals(""))
-                    use = JOptionPane.showInputDialog(this, "Would you like to trade two wheat for a single resource?", "Wheat Port", 1);
-                if (use.equalsIgnoreCase("yes")) {
-                    while (numberChecked() == 0 || numberChecked() > 1) {
-                        checkOptions[1].setEnabled(false);
-                        JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange wheat for:", checkOptions}, "Wheat Exchange", 1);
-                        if (numberChecked() > 1)
-                            JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
-                    }
-
-                    if (checkOptions[0].isSelected())
-                        getCurrentPlayer().monoWool(1);
-
-                    if (checkOptions[2].isSelected())
-                        getCurrentPlayer().monoOre(1);
-
-                    if (checkOptions[3].isSelected())
-                        getCurrentPlayer().monoBrick(1);
-
-                    if (checkOptions[4].isSelected())
-                        getCurrentPlayer().monoLumber(1);
-
-                    getCurrentPlayer().monoWheat(-2);
-                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
-                }
-            } else if (port.getType().equals("Sheep")) {
-                while (use.equals(""))
-                    use = JOptionPane.showInputDialog(this, "Would you like to trade two sheep for a single resource?", "Sheep Port", 1);
-                if (use.equalsIgnoreCase("yes")) {
-                    while (numberChecked() == 0 || numberChecked() > 1) {
-                        checkOptions[0].setEnabled(false);
-                        JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange sheep for:", checkOptions}, "Sheep Exchange", 1);
-                        if (numberChecked() > 1)
-                            JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
-                    }
-
-                    if (checkOptions[1].isSelected())
-                        getCurrentPlayer().monoWheat(1);
-
-                    if (checkOptions[2].isSelected())
-                        getCurrentPlayer().monoOre(1);
-
-                    if (checkOptions[3].isSelected())
-                        getCurrentPlayer().monoBrick(1);
-
-                    if (checkOptions[4].isSelected())
-                        getCurrentPlayer().monoLumber(1);
-
-                    getCurrentPlayer().monoWool(-2);
-                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
-                }
-            } else if (port.getType().equals("Ore")) {
-                while (use.equals(""))
-                    use = JOptionPane.showInputDialog(this, "Would you like to trade two ore for a single resource?", "Ore Port", 1);
-                if (use.equalsIgnoreCase("yes")) {
-                    while (numberChecked() == 0 || numberChecked() > 1) {
-                        checkOptions[2].setEnabled(false);
-                        JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange ore for:", checkOptions}, "Ore Exchange", 1);
-                        if (numberChecked() > 1)
-                            JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
-                    }
-
-                    if (checkOptions[0].isSelected())
-                        getCurrentPlayer().monoWool(1);
-
-                    if (checkOptions[1].isSelected())
-                        getCurrentPlayer().monoWheat(1);
-
-                    if (checkOptions[3].isSelected())
-                        getCurrentPlayer().monoBrick(1);
-
-                    if (checkOptions[4].isSelected())
-                        getCurrentPlayer().monoLumber(1);
-
-                    getCurrentPlayer().monoOre(-2);
-                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
-                }
-            } else if (port.getType().equals("Brick")) {
-                while (use.equals(""))
-                    use = JOptionPane.showInputDialog(this, "Would you like to trade two brick for a single resource?", "Brick Port", 1);
-                if (use.equalsIgnoreCase("yes")) {
-                    while (numberChecked() == 0 || numberChecked() > 1) {
-                        checkOptions[3].setEnabled(false);
-                        JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange brick for:", checkOptions}, "Brick Exchange", 1);
-                        if (numberChecked() > 1)
-                            JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
-                    }
-
-                    if (checkOptions[1].isSelected())
-                        getCurrentPlayer().monoWheat(1);
-
-                    if (checkOptions[2].isSelected())
-                        getCurrentPlayer().monoOre(1);
-
-                    if (checkOptions[0].isSelected())
-                        getCurrentPlayer().monoWool(1);
-
-                    if (checkOptions[4].isSelected())
-                        getCurrentPlayer().monoLumber(1);
-                }
-
-                getCurrentPlayer().monoBrick(-2);
-                JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
-            } else if (port.getType().equals("Wood")) {
-                while (use.equals(""))
-                    use = JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1);
-                if (use.equalsIgnoreCase("yes")) {
-                    while (numberChecked() == 0 || numberChecked() > 1) {
-                        checkOptions[4].setEnabled(false);
-                        JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange lumber for:", checkOptions}, "Lumber Exchange", 1);
-                        if (numberChecked() > 1)
-                            JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
-                    }
-
-                    if (checkOptions[1].isSelected())
-                        getCurrentPlayer().monoWheat(1);
-
-                    if (checkOptions[2].isSelected())
-                        getCurrentPlayer().monoOre(1);
-
-                    if (checkOptions[0].isSelected())
-                        getCurrentPlayer().monoWool(1);
-
-                    if (checkOptions[3].isSelected())
-                        getCurrentPlayer().monoBrick(1);
-                }
-                getCurrentPlayer().monoLumber(-2);
-            } else if (port.getType().equals("Generic")) {
-                while (use.equals(""))
-                    use = JOptionPane.showInputDialog(this, "Would you like to trade three of a resource for another single resource?", "Generic Port", 1);
-                if (use.equalsIgnoreCase("yes")) {
-                    String resourceChoice = "";
-                    while (!(resourceChoice.equalsIgnoreCase("Sheep") || resourceChoice.equalsIgnoreCase("Lumber") || resourceChoice.equalsIgnoreCase("Brick") || resourceChoice.equalsIgnoreCase("Ore") || resourceChoice.equalsIgnoreCase("Wheat"))) {
-                        resourceChoice = JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade three in of: Sheep - Lumber - Ore - Brick - Wheat", "Generic Action", 1);
-
-                        if (!(resourceChoice.equalsIgnoreCase("Sheep") || resourceChoice.equalsIgnoreCase("Lumber") || resourceChoice.equalsIgnoreCase("Brick") || resourceChoice.equalsIgnoreCase("Ore") || resourceChoice.equalsIgnoreCase("Wheat")))
-                            JOptionPane.showMessageDialog(this, "That is not an accepted resource. Try again.", "Improper Choice", 3);
-                    }
-                    while (numberChecked() == 0 || numberChecked() > 1) {
-                        if (resourceChoice.equalsIgnoreCase("Sheep"))
-                            checkOptions[0].setEnabled(false);
-                        if (resourceChoice.equalsIgnoreCase("Wheat"))
+            switch (port.getType()) {
+                case "Wheat":
+                    while (use.equals(""))
+                        use = JOptionPane.showInputDialog(this, "Would you like to trade two wheat for a single resource?", "Wheat Port", 1);
+                    if (use.equalsIgnoreCase("yes")) {
+                        while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[1].setEnabled(false);
-                        if (resourceChoice.equalsIgnoreCase("Ore"))
-                            checkOptions[2].setEnabled(false);
-                        if (resourceChoice.equalsIgnoreCase("Brick"))
-                            checkOptions[3].setEnabled(false);
-                        if (resourceChoice.equalsIgnoreCase("Wood"))
-                            checkOptions[4].setEnabled(false);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange wheat for:", checkOptions}, "Wheat Exchange", 1);
+                            if (numberChecked() > 1)
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                        }
 
-                        JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange for:", checkOptions}, "Generic Exchange", 1);
-                        if (numberChecked() > 1)
-                            JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                        if (checkOptions[0].isSelected())
+                            getCurrentPlayer().monoWool(1);
+
+                        if (checkOptions[2].isSelected())
+                            getCurrentPlayer().monoOre(1);
+
+                        if (checkOptions[3].isSelected())
+                            getCurrentPlayer().monoBrick(1);
+
+                        if (checkOptions[4].isSelected())
+                            getCurrentPlayer().monoLumber(1);
+
+                        getCurrentPlayer().monoWheat(-2);
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
                     }
-                    if (checkOptions[0].isSelected())
-                        getCurrentPlayer().monoWool(1);
+                    break;
+                case "Sheep":
+                    while (use.equals(""))
+                        use = JOptionPane.showInputDialog(this, "Would you like to trade two sheep for a single resource?", "Sheep Port", 1);
+                    if (use.equalsIgnoreCase("yes")) {
+                        while (numberChecked() == 0 || numberChecked() > 1) {
+                            checkOptions[0].setEnabled(false);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange sheep for:", checkOptions}, "Sheep Exchange", 1);
+                            if (numberChecked() > 1)
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                        }
 
-                    if (checkOptions[1].isSelected())
-                        getCurrentPlayer().monoWheat(1);
+                        if (checkOptions[1].isSelected())
+                            getCurrentPlayer().monoWheat(1);
 
-                    if (checkOptions[2].isSelected())
-                        getCurrentPlayer().monoOre(1);
+                        if (checkOptions[2].isSelected())
+                            getCurrentPlayer().monoOre(1);
 
-                    if (checkOptions[3].isSelected())
-                        getCurrentPlayer().monoBrick(1);
+                        if (checkOptions[3].isSelected())
+                            getCurrentPlayer().monoBrick(1);
 
-                    if (checkOptions[4].isSelected())
-                        getCurrentPlayer().monoLumber(1);
+                        if (checkOptions[4].isSelected())
+                            getCurrentPlayer().monoLumber(1);
 
-                    if (resourceChoice.equalsIgnoreCase("Wheat"))
-                        getCurrentPlayer().monoWheat(-3);
+                        getCurrentPlayer().monoWool(-2);
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                    }
+                    break;
+                case "Ore":
+                    while (use.equals(""))
+                        use = JOptionPane.showInputDialog(this, "Would you like to trade two ore for a single resource?", "Ore Port", 1);
+                    if (use.equalsIgnoreCase("yes")) {
+                        while (numberChecked() == 0 || numberChecked() > 1) {
+                            checkOptions[2].setEnabled(false);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange ore for:", checkOptions}, "Ore Exchange", 1);
+                            if (numberChecked() > 1)
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                        }
 
-                    if (resourceChoice.equalsIgnoreCase("Sheep"))
-                        getCurrentPlayer().monoWool(-3);
+                        if (checkOptions[0].isSelected())
+                            getCurrentPlayer().monoWool(1);
 
-                    if (resourceChoice.equalsIgnoreCase("Ore"))
-                        getCurrentPlayer().monoOre(-3);
+                        if (checkOptions[1].isSelected())
+                            getCurrentPlayer().monoWheat(1);
 
-                    if (resourceChoice.equalsIgnoreCase("Brick"))
-                        getCurrentPlayer().monoBrick(-3);
+                        if (checkOptions[3].isSelected())
+                            getCurrentPlayer().monoBrick(1);
 
-                    if (resourceChoice.equalsIgnoreCase("Lumber"))
-                        getCurrentPlayer().monoLumber(-3);
-                }
-                JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                        if (checkOptions[4].isSelected())
+                            getCurrentPlayer().monoLumber(1);
 
+                        getCurrentPlayer().monoOre(-2);
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                    }
+                    break;
+                case "Brick":
+                    while (use.equals(""))
+                        use = JOptionPane.showInputDialog(this, "Would you like to trade two brick for a single resource?", "Brick Port", 1);
+                    if (use.equalsIgnoreCase("yes")) {
+                        while (numberChecked() == 0 || numberChecked() > 1) {
+                            checkOptions[3].setEnabled(false);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange brick for:", checkOptions}, "Brick Exchange", 1);
+                            if (numberChecked() > 1)
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                        }
+
+                        if (checkOptions[1].isSelected())
+                            getCurrentPlayer().monoWheat(1);
+
+                        if (checkOptions[2].isSelected())
+                            getCurrentPlayer().monoOre(1);
+
+                        if (checkOptions[0].isSelected())
+                            getCurrentPlayer().monoWool(1);
+
+                        if (checkOptions[4].isSelected())
+                            getCurrentPlayer().monoLumber(1);
+                    }
+
+                    getCurrentPlayer().monoBrick(-2);
+                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                    break;
+                case "Wood":
+                    while (use.equals(""))
+                        use = JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1);
+                    if (use.equalsIgnoreCase("yes")) {
+                        while (numberChecked() == 0 || numberChecked() > 1) {
+                            checkOptions[4].setEnabled(false);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange lumber for:", checkOptions}, "Lumber Exchange", 1);
+                            if (numberChecked() > 1)
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                        }
+
+                        if (checkOptions[1].isSelected())
+                            getCurrentPlayer().monoWheat(1);
+
+                        if (checkOptions[2].isSelected())
+                            getCurrentPlayer().monoOre(1);
+
+                        if (checkOptions[0].isSelected())
+                            getCurrentPlayer().monoWool(1);
+
+                        if (checkOptions[3].isSelected())
+                            getCurrentPlayer().monoBrick(1);
+                    }
+                    getCurrentPlayer().monoLumber(-2);
+                    break;
+                case "Generic":
+                    while (use.equals(""))
+                        use = JOptionPane.showInputDialog(this, "Would you like to trade three of a resource for another single resource?", "Generic Port", 1);
+                    if (use.equalsIgnoreCase("yes")) {
+                        String resourceChoice = "";
+                        while (!(resourceChoice.equalsIgnoreCase("Sheep") || resourceChoice.equalsIgnoreCase("Lumber") || resourceChoice.equalsIgnoreCase("Brick") || resourceChoice.equalsIgnoreCase("Ore") || resourceChoice.equalsIgnoreCase("Wheat"))) {
+                            resourceChoice = JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade three in of: Sheep - Lumber - Ore - Brick - Wheat", "Generic Action", 1);
+
+                            if (!(resourceChoice.equalsIgnoreCase("Sheep") || resourceChoice.equalsIgnoreCase("Lumber") || resourceChoice.equalsIgnoreCase("Brick") || resourceChoice.equalsIgnoreCase("Ore") || resourceChoice.equalsIgnoreCase("Wheat")))
+                                JOptionPane.showMessageDialog(this, "That is not an accepted resource. Try again.", "Improper Choice", 3);
+                        }
+                        while (numberChecked() == 0 || numberChecked() > 1) {
+                            if (resourceChoice.equalsIgnoreCase("Sheep"))
+                                checkOptions[0].setEnabled(false);
+                            if (resourceChoice.equalsIgnoreCase("Wheat"))
+                                checkOptions[1].setEnabled(false);
+                            if (resourceChoice.equalsIgnoreCase("Ore"))
+                                checkOptions[2].setEnabled(false);
+                            if (resourceChoice.equalsIgnoreCase("Brick"))
+                                checkOptions[3].setEnabled(false);
+                            if (resourceChoice.equalsIgnoreCase("Lumber"))
+                                checkOptions[4].setEnabled(false);
+
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange for:", checkOptions}, "Generic Exchange", 1);
+                            if (numberChecked() > 1)
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                        }
+                        if (checkOptions[0].isSelected())
+                            getCurrentPlayer().monoWool(1);
+
+                        if (checkOptions[1].isSelected())
+                            getCurrentPlayer().monoWheat(1);
+
+                        if (checkOptions[2].isSelected())
+                            getCurrentPlayer().monoOre(1);
+
+                        if (checkOptions[3].isSelected())
+                            getCurrentPlayer().monoBrick(1);
+
+                        if (checkOptions[4].isSelected())
+                            getCurrentPlayer().monoLumber(1);
+
+                        if (resourceChoice.equalsIgnoreCase("Wheat"))
+                            getCurrentPlayer().monoWheat(-3);
+
+                        if (resourceChoice.equalsIgnoreCase("Sheep"))
+                            getCurrentPlayer().monoWool(-3);
+
+                        if (resourceChoice.equalsIgnoreCase("Ore"))
+                            getCurrentPlayer().monoOre(-3);
+
+                        if (resourceChoice.equalsIgnoreCase("Brick"))
+                            getCurrentPlayer().monoBrick(-3);
+
+                        if (resourceChoice.equalsIgnoreCase("Lumber"))
+                            getCurrentPlayer().monoLumber(-3);
+                    }
+                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+
+                    break;
             }
 
             resetPortBoxes();
@@ -1282,14 +1296,14 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public void givePlayersCatanBoardReference() {
-        for (int x = 0; x < catanPlayerList.size(); x++)
-            catanPlayerList.get(x).cb = this;
+        for (Player player : catanPlayerList)
+            player.cb = this;
     }
 
     public int numberChecked() {
         int counter = 0;
-        for (int x = 0; x < checkOptions.length; x++)
-            if (checkOptions[x].isSelected())
+        for (JCheckBox checkOption : checkOptions)
+            if (checkOption.isSelected())
                 counter++;
         return counter;
     }
@@ -1299,13 +1313,13 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         ArrayList<Road> singleConnections = new ArrayList<Road>();
         ArrayList<Integer> lengths = new ArrayList<Integer>();
 
-        for(int x=0; x<indexConnections.size(); x++) {
-            if (indexConnections.get(x).getOwner() == getCurrentPlayer())
-                singleConnections.add(indexConnections.get(x));
+        for (Road indexConnection : indexConnections) {
+            if (indexConnection.getOwner() == getCurrentPlayer())
+                singleConnections.add(indexConnection);
         }
 
-        for(int x=0; x<singleConnections.size(); x++)
-            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()),new ArrayList<Road>(),0,singleConnections.get(x)));
+        for (Road singleConnection : singleConnections)
+            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()), new ArrayList<Road>(), 0, singleConnection));
 
         int previous = this.currentLongestRoad;
         this.currentLongestRoad = (Collections.max(lengths)>this.currentLongestRoad)?Collections.max(lengths):this.currentLongestRoad;
@@ -1325,16 +1339,16 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             stillHasConnections=false;
             possibleSplittings.clear();
             subConnections=0;
-            for (int x = 0; x < potential.size(); x++)
-                if (currentRoad.isConnectedTo(potential.get(x)) && currentRoad!=potential.get(x)) {
+            for (Road road : potential)
+                if (currentRoad.isConnectedTo(road) && currentRoad != road) {
                     subConnections++;
-                    possibleSplittings.add(potential.get(x));
+                    possibleSplittings.add(road);
                 }
 
             if (subConnections > 1) {
                 usedAlready.addAll(possibleSplittings);
-                for (int y = 0; y < possibleSplittings.size(); y++)
-                    splits.add(roadRecursion(potential, usedAlready, 0, possibleSplittings.get(y)));
+                for (Road possibleSplitting : possibleSplittings)
+                    splits.add(roadRecursion(potential, usedAlready, 0, possibleSplitting));
 
                 currentLength += Collections.max(splits);
                 return currentLength;
