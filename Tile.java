@@ -7,6 +7,8 @@ public class Tile {
     int num;
     boolean hasRobber;
     Point upper_left;
+
+    Shape robberRect;
     ArrayList<Point> vertices = new ArrayList<Point>();
 
     public int[] getPosition() {
@@ -55,6 +57,11 @@ public class Tile {
         vertices.add(new Point(x+72,y+155));
         vertices.add(new Point(x+134,y+39));
         vertices.add(new Point(x+134,y+116));
+        robberRect = new Rectangle(position[0]+5,position[1]+54,124,67);
+    }
+
+    public Shape getRobberRect() {
+        return robberRect;
     }
 
     public ArrayList<Point> getVertices(){
