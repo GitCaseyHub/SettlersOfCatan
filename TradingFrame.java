@@ -3,6 +3,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class TradingFrame extends JFrame implements ActionListener {
     //Year of Plenty & Monopoly
@@ -12,13 +13,14 @@ public class TradingFrame extends JFrame implements ActionListener {
     JPanel southPanel = new JPanel(new GridLayout(1,2));
     String[] graphicStrings = {"Brick", "Ore", "Sheep", "Wheat", "Wood"};
     JLabel[] graphicImageLabels = new JLabel[5];
-    JComboBox brickCheck = new JComboBox();
-    JComboBox oreCheck = new JComboBox();
-    JComboBox wheatCheck = new JComboBox();
-    JComboBox sheepCheck = new JComboBox();
-    JComboBox woodCheck = new JComboBox();
+    JComboBox<Integer> brickCheck = new JComboBox<Integer>();
+    JComboBox<Integer> oreCheck = new JComboBox<Integer>();
+    JComboBox<Integer> wheatCheck = new JComboBox<Integer>();
+    JComboBox<Integer> sheepCheck = new JComboBox<Integer>();
+    JComboBox<Integer> woodCheck = new JComboBox<Integer>();
     JButton confirmButton = new JButton("Confirm Trade");
     JButton askButton = new JButton("Ask Another Player");
+    ArrayList<String> rejections = new ArrayList<String>();
 
     //Constructor variables
     Player player;
@@ -91,13 +93,62 @@ public class TradingFrame extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,"There is no player with "+playerName+" as a name. Please type their name correctly.","No Such Player Exists",3);
             }
 
-            else if(playerCounter==1){
-                cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.asker=false;
-                cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.updateComboBoxes();
-                cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setBounds((int)this.getBounds().getX()+500,(int)this.getBounds().getY(),475,235);
-                cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setVisible(true);
-            }
+            else if(playerCounter==1 && !rejections.contains(playerName)){
+                String accept="";
+                while (accept.equals(""))
+                    accept = JOptionPane.showInputDialog(this,playerName+", would you like to trade with "+this.player.getName()+"?","Trade Request",1);
 
+                if(accept.equalsIgnoreCase("Yes")) {
+                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.asker = false;
+                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.updateComboBoxes();
+                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setBounds((int) this.getBounds().getX() + 500, (int) this.getBounds().getY(), 475, 235);
+                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setVisible(true);
+                    cbRef.firstFrame = this;
+                    cbRef.secondFrame = cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf;
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "Your trade request has been denied.", "Trade Failed", 3);
+                    rejections.add(playerName);
+                    askButton.setEnabled(true);
+                }
+            }
+            else{
+                askButton.setEnabled(true);
+                JOptionPane.showMessageDialog(this,"This player has already rejected your trade request this turn. Try again on your next turn.","Already Rejected",3);
+            }
+        }
+        else if(e.getSource()==confirmButton){
+            JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade",1);
+            TradingFrame firstFrame = cbRef.firstFrame;
+            TradingFrame secondFrame = cbRef.secondFrame;
+            //Adding Resources
+            firstFrame.player.monoBrick((int)secondFrame.brickCheck.getSelectedItem());
+            firstFrame.player.monoLumber((int)secondFrame.woodCheck.getSelectedItem());
+            firstFrame.player.monoOre((int)secondFrame.oreCheck.getSelectedItem());
+            firstFrame.player.monoWheat((int)secondFrame.wheatCheck.getSelectedItem());
+            firstFrame.player.monoWool((int)secondFrame.sheepCheck.getSelectedItem());
+
+            secondFrame.player.monoBrick((int)firstFrame.brickCheck.getSelectedItem());
+            secondFrame.player.monoLumber((int)firstFrame.woodCheck.getSelectedItem());
+            secondFrame.player.monoOre((int)firstFrame.oreCheck.getSelectedItem());
+            secondFrame.player.monoWheat((int)firstFrame.wheatCheck.getSelectedItem());
+            secondFrame.player.monoWool((int)firstFrame.sheepCheck.getSelectedItem());
+            
+            //Subtracting Resources
+            firstFrame.player.monoBrick(-1*(int)firstFrame.brickCheck.getSelectedItem());
+            firstFrame.player.monoLumber(-1*(int)firstFrame.woodCheck.getSelectedItem());
+            firstFrame.player.monoOre(-1*(int)firstFrame.oreCheck.getSelectedItem());
+            firstFrame.player.monoWheat(-1*(int)firstFrame.wheatCheck.getSelectedItem());
+            firstFrame.player.monoWool(-1*(int)firstFrame.sheepCheck.getSelectedItem());
+
+            secondFrame.player.monoBrick(-1*(int)secondFrame.brickCheck.getSelectedItem());
+            secondFrame.player.monoLumber(-1*(int)secondFrame.woodCheck.getSelectedItem());
+            secondFrame.player.monoOre(-1*(int)secondFrame.oreCheck.getSelectedItem());
+            secondFrame.player.monoWheat(-1*(int)secondFrame.wheatCheck.getSelectedItem());
+            secondFrame.player.monoWool(-1*(int)secondFrame.sheepCheck.getSelectedItem());
+            firstFrame.setVisible(false);
+            secondFrame.setVisible(false);
+            secondFrame.cbRef.updateAllStatusMenus();
         }
     }
 
