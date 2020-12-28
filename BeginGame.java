@@ -27,8 +27,8 @@ public class BeginGame extends JFrame implements ActionListener {
     boolean usablePorts=false;
 
     public BeginGame(){
-        for(int x=0; x<comboOptions.length; x++)
-            players.addItem(comboOptions[x]);
+        for (String comboOption : comboOptions)
+            players.addItem(comboOption);
 
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -118,15 +118,15 @@ public class BeginGame extends JFrame implements ActionListener {
                     playerCreation[y].colorBox.removeItem(referenceView.colorBox.getSelectedItem());
         }
         else{
-            boolean counter=false;
-            for(int x=0; x<catanPlayerList.size(); x++)
-                if (catanPlayerList.get(x).getName().equals(addedPlayer.getName())) {
+            boolean playerRegistration=false;
+            for (Player player : catanPlayerList)
+                if (player.getName().equals(addedPlayer.getName())) {
                     JOptionPane.showMessageDialog(this, "Another player has already registered that name. Choose another name.", "Name Error", 3);
-                    counter = true;
+                    playerRegistration = true;
                     break;
                 }
 
-            if(!counter){
+            if(!playerRegistration){
                 PlayerSelect referenceView = playerCreation[referenceNumber];
                 referenceView.nameField.setEditable(false);
                 referenceView.classBox.setEnabled(false);
