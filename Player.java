@@ -32,10 +32,6 @@ public class Player {
         return referenceNumber;
     }
 
-    public void setRefNumber(int refNumber) {
-        this.referenceNumber = referenceNumber;
-    }
-
     //Testing Constructor
     public Player(){}
 
@@ -111,7 +107,7 @@ public class Player {
     public void removeDevelopmentCardFromUnplayed(DevelopmentCard dc){
         this.unPlayedCards.remove(dc);
     }
-    
+
     public void removeDevelopmentCardFromPlayed(DevelopmentCard dc){
         this.playedCards.remove(dc);
     }
@@ -145,8 +141,9 @@ public class Player {
     }
 
     public void changeBrick(int brickNum) {
-        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman"))
-            this.brickNum+=0;
+        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
+            //Pass
+        }
         else if(this.classTitle.equals("Mountaineer"))
             this.brickNum+=2*brickNum;
         else
@@ -160,8 +157,9 @@ public class Player {
     public void changeLumber(int lumberNum) {
         if(this.classTitle.equals("Woodsman"))
             this.lumberNum+=4*lumberNum;
-        else if(this.classTitle.equals("Shepard"))
-            this.lumberNum+=0;
+        else if(this.classTitle.equals("Shepard")) {
+            //Pass
+        }
         else
             this.lumberNum += lumberNum;
     }
@@ -171,8 +169,9 @@ public class Player {
     }
 
     public void changeGrain(int grainNum) {
-        if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard"))
-            this.grainNum+=0;
+        if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard")) {
+            //Pass
+        }
         else if(this.classTitle.equals("Farmer"))
             this.grainNum+=2*grainNum;
         else
@@ -184,14 +183,21 @@ public class Player {
     }
 
     public void changeWool(int woolNum) {
-        if(this.classTitle.equals("Shepard"))
-            this.woolNum+=4*woolNum;
-        else if(this.classTitle.equals("Farmer"))
-            this.woolNum+=2*woolNum;
-        else if(this.classTitle.equals("Woodsman") || this.classTitle.equals("Mountaineer"))
-            this.woolNum+=0;
-        else
-            this.woolNum+=woolNum;
+        switch (this.classTitle) {
+            case "Shepard":
+                this.woolNum += 4 * woolNum;
+                break;
+            case "Farmer":
+                this.woolNum += 2 * woolNum;
+                break;
+            case "Woodsman":
+                break;
+            case "Mountaineer":
+                break;
+            default:
+                this.woolNum += woolNum;
+                break;
+        }
     }
 
     public int getOreNum() {
@@ -199,8 +205,8 @@ public class Player {
     }
 
     public void changeOre(int oreNum) {
-        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman"))
-            this.oreNum+=0;
+        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
+        }
         else if(this.classTitle.equals("Mountaineer"))
             this.oreNum+=2*oreNum;
         else
@@ -233,18 +239,13 @@ public class Player {
     }
 
     public boolean equals(Player player){
-        if(this.getName().equals(player.getName()))
-            return true;
-
-        return false;
+        return this.getName().equals(player.getName());
     }
 
-    public boolean winTheGame(){
+    public void winTheGame(){
         cb.updateAllStatusMenus();
         if(this.getVictoryPointTotal()>=10){
             JOptionPane.showMessageDialog(null,this.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1);
-            return true;
         }
-        return false;
     }
 }
