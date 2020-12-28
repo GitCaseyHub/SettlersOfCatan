@@ -1,15 +1,21 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class CatanBoard extends JFrame implements MouseListener, KeyListener {
+    //Fancy Border
+    Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
+
     //Objects for Board Generation
     String[] types = {"Mountain", "Mountain", "Mountain", "Brick", "Brick", "Brick", "Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains", "Grain", "Grain", "Grain", "Grain", "Desert"};
     int[] rollNums = {8, 4, 11, 12, 3, 11, 10, 9, 6, 9, 5, 2, 4, 5, 10, 8, 3, 6};
@@ -26,8 +32,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     Point[] outLinePoints1 = new Point[]{new Point(1, 431), new Point(66, 467), new Point(66, 545), new Point(133, 584), new Point(133, 659), new Point(200, 698), new Point(200, 770), new Point(266, 811), new Point(333, 774), new Point(398, 811), new Point(465, 774), new Point(530, 811), new Point(599, 772), new Point(662, 811), new Point(733, 773), new Point(733, 697), new Point(800, 659), new Point(800, 584), new Point(866, 546), new Point(866, 468), new Point(929, 429), new Point(929, 348), new Point(868, 313), new Point(868, 237), new Point(800, 198), new Point(800, 122), new Point(732, 84), new Point(732, 8), new Point(664, -30), new Point(599, 8), new Point(532, -30), new Point(467, 8), new Point(400, -30), new Point(334, 8), new Point(268, -30), new Point(202, 8), new Point(202, 84), new Point(133, 122), new Point(133, 197), new Point(65, 236), new Point(65, 311), new Point(1, 348)};
 
     //Frame shaping objects
-    int[] framex = new int[outLinePoints1.length];
-    int[] framey = new int[outLinePoints1.length];
+    int[] outline_x = new int[outLinePoints1.length];
+    int[] outline_y = new int[outLinePoints1.length];
 
     //Paint/Repaint Conditions
     boolean loaded = false;
@@ -52,6 +58,10 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     Player longestRoadPlayer = new Player();
     int currentLargestArmy = 2;
     Player largestArmyPlayer = new Player();
+
+    //Award OptionPane assets
+    JLabel longestRoadLabel = new JLabel("",JLabel.CENTER);
+    JLabel largestArmyLabel = new JLabel("",JLabel.CENTER);
 
     //Trading Variables
     TradingFrame firstFrame;
@@ -108,7 +118,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                setShape(new Polygon(framex,framey,outLinePoints.length));
+                setShape(new Polygon(outline_x,outline_y,outLinePoints.length));
             }
         });
 
@@ -133,15 +143,11 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         this.statusGenerationalPoints = statusGenerationalPoints;
         this.playerCreation = playerCreation;
         this.bgReference = bgReference;
+        Collections.addAll(typeList,types);
+        Collections.addAll(coordList,coords);
 
-        for (int x = 0; x < types.length; x++)
-            typeList.add(types[x]);
-
-        for (int x = 0; x < rollNums.length; x++)
-            rollNumList.add(rollNums[x]);
-
-        for (int x = 0; x < coords.length; x++)
-            coordList.add(coords[x]);
+        for (int x: rollNums)
+            rollNumList.add(x);
 
         for (int x = 0; x < indexes.length; x++)
             indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false, 69), false, false);
@@ -164,14 +170,32 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         }
 
         for (int x = 0; x < outLinePoints.length; x++) {
-            framex[x] = (int) outLinePoints[x].getX();
-            framey[x] = (int) outLinePoints[x].getY();
+            outline_x[x] = (int) outLinePoints[x].getX();
+            outline_y[x] = (int) outLinePoints[x].getY();
         }
 
         //Methods to take care of things before startup; the method names are pretty self-explanatory on what they are doing
         constructPorts();
         getPortsReady();
         givePlayersCatanBoardReference();
+        initializeAwardOptionPanes();
+        workAround();
+    }
+
+    public void workAround(){
+        JDialog dummy = new JDialog();
+        dummy.dispose();
+        dummy.setVisible(true);
+        dummy.setVisible(false);
+    }
+
+    public void initializeAwardOptionPanes(){
+        longestRoadLabel.setIcon(new ImageIcon("Resources/Awards/Longest_Road.png"));
+        longestRoadLabel.setBorder(compound);
+        longestRoadLabel.addMouseListener(this);
+        largestArmyLabel.setIcon(new ImageIcon("Resources/Awards/Largest_Army.png"));
+        largestArmyLabel.addMouseListener(this);
+        longestRoadLabel.setBorder(compound);
     }
 
     public void paint(Graphics g) {
@@ -193,7 +217,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(3));
-                g2.setColor(new Color(10, 30, 150));
+                g2.setColor(new Color(0,0,255));
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
 
@@ -274,8 +298,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                             break;
                         }
 
-                    for (int x = 0; x < possibleTargets.length; x++)
-                        possibleTargets[x].setSelected(false);
+                    for(JCheckBox cBox:possibleTargets)
+                        cBox.setSelected(false);
 
                     Player playerToStealFrom = getPlayerViaName(playerName);
                     String stolenResource = giveRandomResource(playerToStealFrom);
@@ -403,9 +427,11 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 //Redraws Water Border
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(3));
-                g2.setColor(new Color(10, 30, 150));
+                g2.setColor(new Color(0, 0, 255));
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
+
+                workAround();
 
                 //Redraws Port Ships
                 for (int x = 0; x < ports.length; x++) {
@@ -431,15 +457,19 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     //Port Indexes if Active
                     BufferedImage circle = ImageIO.read(new File("Pieces/Active_Ports.png"));
                     for (int x = 0; x < portPoints.length; x++) {
-                        g.drawImage(circle, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
-                        g.drawImage(circle, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
+                        if(!sharesLocation(new Point((int)portPoints[x][0].getX(),(int)portPoints[x][0].getY())))
+                            g.drawImage(circle, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
+                        if(!sharesLocation(new Point((int)portPoints[x][1].getX(),(int)portPoints[x][1].getY())))
+                            g.drawImage(circle, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
                     }
                 } else {
                     //Port Indexes if Inactive
                     BufferedImage cross = ImageIO.read(new File("Pieces/Cross_Ports.png"));
                     for (int x = 0; x < portPoints.length; x++) {
-                        g.drawImage(cross, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
-                        g.drawImage(cross, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
+                        if(!sharesLocation(new Point((int)portPoints[x][0].getX(),(int)portPoints[x][0].getY())))
+                            g.drawImage(cross, (int) portPoints[x][0].getX(), (int) portPoints[x][0].getY(), null);
+                        if(!sharesLocation(new Point((int)portPoints[x][1].getX(),(int)portPoints[x][1].getY())))
+                            g.drawImage(cross, (int) portPoints[x][1].getX(), (int) portPoints[x][1].getY(), null);
                     }
                 }
 
@@ -464,7 +494,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
                 redrawEverything = false;
             }
-        } catch (IOException ie) {
+        }
+        catch (IOException ie) {
             ie.printStackTrace();
         }
 
@@ -477,6 +508,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public void mouseClicked(MouseEvent e) {
+        if(e.getSource()==largestArmyLabel){}
+        else if(e.getSource()== longestRoadLabel){}
     }
 
     public void mousePressed(MouseEvent e) {
@@ -647,8 +680,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         }
 
         if (isMovingRobber) {
-            for (int x = 0; x < tiles.length; x++)
-                tiles[x].setHasRobber(false);
+            for(Tile t:tiles)
+                t.setHasRobber(false);
 
             checkCounter = 0;
             for (int x = 0; x < tiles.length; x++)
@@ -710,7 +743,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             portTypesList.remove(portTypesList.get(stringIndex));
         }
     }
-
 
     public ArrayList<Player> getOtherPlayers() {
         ArrayList<Player> others = new ArrayList<Player>();
@@ -1243,10 +1275,10 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public void resetPortBoxes() {
-        for (int x = 0; x < checkOptions.length; x++) {
-            checkOptions[x].setEnabled(true);
-            checkOptions[x].setSelected(false);
-        }
+        Arrays.stream(checkOptions).forEach(opt -> {
+            opt.setEnabled(true);
+            opt.setSelected(false);
+        });
     }
 
     public void givePlayersCatanBoardReference() {
@@ -1260,15 +1292,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             if (checkOptions[x].isSelected())
                 counter++;
         return counter;
-    }
-
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    public void mouseExited(MouseEvent e) {
     }
 
     //Longest road algorithm using recursion; I think this will work, but there is something going on here that the program doesn't like
@@ -1289,7 +1312,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         return Collections.max(lengths)>previous;
     }
 
-    public int roadRecursion(ArrayList<Road> potential, ArrayList<Road> usedAlready, int currentLength, Road currentRoad){
+    public int roadRecursion(java.util.List<Road> potential, ArrayList<Road> usedAlready, int currentLength, Road currentRoad){
         ArrayList<Road> possibleSplittings= new ArrayList<>();
         ArrayList<Integer> splits = new ArrayList<>();
         boolean stillHasConnections = true;
@@ -1301,7 +1324,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             potential.removeAll(usedAlready);
             stillHasConnections=false;
             possibleSplittings.clear();
-            splits.clear();
             subConnections=0;
             for (int x = 0; x < potential.size(); x++)
                 if (currentRoad.isConnectedTo(potential.get(x)) && currentRoad!=potential.get(x)) {
@@ -1326,67 +1348,73 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         }
         return currentLength;
     }
-    
-    public void keyTyped(KeyEvent e) {
-    }
-
-    public void keyReleased(KeyEvent e) {
-    }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_C) {
-            if (!doingStartup) {
-                int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION);
-                if (confirmCancellation == 0) {
-                    if (!doingStartup && isPlayerActing) {
-                        if (isSettlementBuilding) {
-                            isSettlementBuilding = false;
-                            isDoneSettlementBuilding = false;
-                            getCurrentPlayer().changeWool(1);
-                            getCurrentPlayer().changeBrick(1);
-                            getCurrentPlayer().changeGrain(1);
-                            getCurrentPlayer().changeLumber(1);
-                            getCurrentPlayer().changeVictoryPoints(-1);
-                        } else if (isMovingRobber) {
-                            isMovingRobber = false;
-                            isDoneMovingRobber = false;
-                            getCurrentPlayer().addDevelopmentCardToUnplayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
-                            getCurrentPlayer().removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
-                            getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem("Knight");
-                            getPlayerStatusMenu(getCurrentPlayer()).played.removeItem("Knight");
-                        } else if (isRoadBuilding) {
-                            isRoadBuilding = false;
-                            isDoneRoadBuilding = false;
-                            roadCondition = 0;
-                            checkedIndexes.clear();
-                            getCurrentPlayer().changeLumber(1);
-                            getCurrentPlayer().changeBrick(1);
+        if (e.getKeyCode() != KeyEvent.VK_C || doingStartup) {
+            return;
+        }
+        int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION);
+        if (confirmCancellation != 0) {
+            JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", 1);
+            return;
+        }
+        if (!doingStartup && isPlayerActing) {
+            if (isSettlementBuilding) {
+                isSettlementBuilding = false;
+                isDoneSettlementBuilding = false;
+                getCurrentPlayer().changeWool(1);
+                getCurrentPlayer().changeBrick(1);
+                getCurrentPlayer().changeGrain(1);
+                getCurrentPlayer().changeLumber(1);
+                getCurrentPlayer().changeVictoryPoints(-1);
+            } else if (isMovingRobber) {
+                isMovingRobber = false;
+                isDoneMovingRobber = false;
+                getCurrentPlayer().addDevelopmentCardToUnplayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
+                getCurrentPlayer().removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
+                getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem("Knight");
+                getPlayerStatusMenu(getCurrentPlayer()).played.removeItem("Knight");
+            } else if (isRoadBuilding) {
+                isRoadBuilding = false;
+                isDoneRoadBuilding = false;
+                roadCondition = 0;
+                checkedIndexes.clear();
+                getCurrentPlayer().changeLumber(1);
+                getCurrentPlayer().changeBrick(1);
 
-                        } else if (isCityUpgrading) {
-                            isCityUpgrading = false;
-                            getCurrentPlayer().changeGrain(2);
-                            getCurrentPlayer().changeOre(3);
-                            getCurrentPlayer().changeVictoryPoints(-1);
-                        }
-                    }
-                    isPlayerActing = false;
-                    getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
-                    getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
-                    getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-                    updateAllStatusMenus();
-                    JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", 1);
-                } else
-                    JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", 1);
+            } else if (isCityUpgrading) {
+                isCityUpgrading = false;
+                getCurrentPlayer().changeGrain(2);
+                getCurrentPlayer().changeOre(3);
+                getCurrentPlayer().changeVictoryPoints(-1);
             }
         }
+        isPlayerActing = false;
+        getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
+        getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+        getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+        updateAllStatusMenus();
+        JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", 1);
     }
 
-    public ArrayList<Road> getPlayerRoads(Player player){
-        ArrayList<Road> roads = new ArrayList<>();
-        for(int x=0; x<indexConnections.size(); x++)
-            if(indexConnections.get(x).getOwner()==player)
-                roads.add(indexConnections.get(x));
-
-        return roads;
+    public java.util.List<Road> getPlayerRoads(Player player){
+        return indexConnections.stream().filter(conn -> conn.getOwner() == player).collect(Collectors.toList());
     }
+
+    public boolean sharesLocation(Point point){
+        int counter=0;
+        for(int x=0; x<indexes.length; x++)
+            if(Math.abs(point.getX()-indexes[x].getLocation()[0])<10 && Math.abs(point.getY()-indexes[x].getLocation()[1])<10)
+                if(indexes[x].isTaken())
+                    counter++;
+
+        return counter>0;
+    }
+
+
+    public void keyTyped(KeyEvent e){}
+    public void keyReleased(KeyEvent e){}
+    public void mouseReleased(MouseEvent e){}
+    public void mouseEntered(MouseEvent e){}
+    public void mouseExited(MouseEvent e){}
 }
