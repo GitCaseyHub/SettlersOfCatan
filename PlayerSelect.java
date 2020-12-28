@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PlayerSelect extends JFrame implements ActionListener, FocusListener {
     //Fancy Border
@@ -25,14 +26,14 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
     //Frame Assets
     JPanel upperPanel = new JPanel(new GridLayout(1,2));
-    JComboBox classBox = new JComboBox();
+    JComboBox<String> classBox = new JComboBox<String>();
     JTextArea descriptionArea = new JTextArea("");
     JScrollPane descriptionPane = new JScrollPane(descriptionArea);
     JPanel descriptPanel = new JPanel(new BorderLayout());
     JPanel lowerPanel = new JPanel(new GridLayout(1,2));
     JPanel holder = new JPanel(new BorderLayout());
     JLabel imageLabel = new JLabel("",SwingConstants.CENTER);
-    JComboBox colorBox = new JComboBox();
+    JComboBox<String> colorBox = new JComboBox<String>();
     JTextField nameField = new JTextField("Name Your Player",SwingConstants.CENTER);
     JButton confirmButton = new JButton("    Confirm Character    ");
     JPanel southPanel = new JPanel(new BorderLayout());
@@ -79,16 +80,16 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                 southPanel.add(fillout,BorderLayout.CENTER);
                     fillout.setBorder(compound);
 
-        for(int x=0; x<classTitles.length; x++)
-            classBox.addItem(classTitles[x]);
+        for (String classTitle : classTitles)
+            classBox.addItem(classTitle);
 
-        for(int x=0;x<colors.length; x++)
-            colorBox.addItem(colors[x]);
+        for (String s : colors)
+            colorBox.addItem(s);
     }
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==classBox) {
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
-            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (classBox.getSelectedItem().equals("Settler") || classBox.getSelectedItem().equals("Pirate")||classBox.getSelectedItem().equals("Class")?".png":".jpg")));
+            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (Objects.equals(classBox.getSelectedItem(), "Settler") || Objects.equals(classBox.getSelectedItem(), "Pirate") ||classBox.getSelectedItem().equals("Class")?".png":".jpg")));
         }
         else if(e.getSource()==confirmButton) {
             if (!nameField.getText().equals("Name Your Player")){
@@ -103,11 +104,11 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                     JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Stop wasting time and decide!", "Color & Class Error", 3);
 
                 else {
-                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
+                    //Testing Player
+                    //Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber);
+
+                    Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
                     bgReference.addPlayer(newPlayer,referenceNumber);
-                    /*Testing Players
-                    Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber);
-                    bgReference.addPlayer(newPlayer,referenceNumber);*/
                 }
             }
             else
