@@ -1,13 +1,14 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-public class PlayerView extends JFrame implements ActionListener {
+public class PlayerView extends JFrame implements ActionListener, MouseMotionListener {
+    //Added JOptionPanes that appear when the player hovers over the award boxes (but the listener only activates if that player has the award)
+    
     //Fancy Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
@@ -149,6 +150,8 @@ public class PlayerView extends JFrame implements ActionListener {
         awardPanel.add(largestArmyBox);
         largestArmyBox.setBorderPainted(true);
         largestArmyBox.setEnabled(false);
+        largestArmyBox.addMouseMotionListener(this);
+        longestRoadBox.addMouseMotionListener(this);
         longestRoadBox.setToolTipText("Awarded to the player who has the longest continuous road that exceeds 4 separate segments");
         largestArmyBox.setToolTipText("Awarded to the player who has played the most 'Knight' DCs that exceeds 2 separate cards");
         victoryPointLabel.setToolTipText("Your victory point total; get to 10 and you win");
@@ -393,12 +396,12 @@ public class PlayerView extends JFrame implements ActionListener {
                     reference.getPlayerStatusMenu(player).development.setEnabled(false);
 
                     if(player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")){
-                        player.monoBrick(2);
-                        player.monoLumber(2);
+                        player.monoBrick(-2);
+                        player.monoLumber(-2);
                     }
                     else{
-                        player.monoBrick(1);
-                        player.monoLumber(1);
+                        player.monoBrick(-1);
+                        player.monoLumber(-1);
                     }
 
                     update();
@@ -418,9 +421,9 @@ public class PlayerView extends JFrame implements ActionListener {
                     unplayed.addItem(newDc.getType());
 
                     if(player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")){
-                        player.monoWool(-1);
-                        player.monoOre(-1);
-                        player.monoWheat(-1);
+                        player.monoWool(-2);
+                        player.monoOre(-2);
+                        player.monoWheat(-2);
                     }
                     else{
                         player.monoWool(-1);
@@ -438,7 +441,6 @@ public class PlayerView extends JFrame implements ActionListener {
             if(unplayed.getSelectedIndex()==0)
                 JOptionPane.showMessageDialog(this,"You must select a card name from your 'Hidden Cards' list. The name you have selected will be the card that is played.","Unplayable Card",3);
             else {
-                //Fix this issue; problem with playing a card even though you bought it this turn; need a counter or something
                 DevelopmentCard playedCard = new DevelopmentCard();
                 for (int x = 0; x < player.getUnPlayedCards().size(); x++)
                     if (unplayed.getSelectedItem().toString().equals(player.getUnPlayedCards().get(x).getType())) {
@@ -460,7 +462,6 @@ public class PlayerView extends JFrame implements ActionListener {
                     reference.updateAllStatusMenus();
                     unplayed.setSelectedIndex(0);
                     playCard.setEnabled(false);
-                    System.out.println("IM IN HERE");
                 }
                 else {
                     if (playedCard.isBoughtThisTurn())
@@ -583,7 +584,16 @@ public class PlayerView extends JFrame implements ActionListener {
             if (player.unPlayedCards.get(x).isBoughtThisTurn())
                 counter--;
         }
-        System.out.println("Counter: "+counter);
         return counter==0;
+    }
+
+    public void mouseDragged(MouseEvent e) {}
+
+    public void mouseMoved(MouseEvent e) {
+        if(e.getSource()==largestArmyBox && largestArmyBox.isSelected())
+            JOptionPane.showOptionDialog(null, null, "Largest Army Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{reference.largestArmyLabel}, null);
+
+        else if(e.getSource() == longestRoadBox && longestRoadBox.isSelected())
+            JOptionPane.showOptionDialog(null, null, "Longest Road Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{reference.longestRoadLabel}, null);
     }
 }
