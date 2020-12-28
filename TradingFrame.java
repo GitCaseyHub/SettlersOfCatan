@@ -33,7 +33,7 @@ public class TradingFrame extends JFrame implements ActionListener {
         //Array manipulation stuff
         for (int x = 0; x < 5; x++) {
             graphicPanels[x] = new JPanel(new BorderLayout());
-            graphicImageLabels[x] = new JLabel("", 0);
+            graphicImageLabels[x] = new JLabel("", SwingConstants.CENTER);
             graphicImageLabels[x].setIcon(new ImageIcon("Resources/" + graphicStrings[x] + "_Image.png"));
             graphicPanels[x].add(graphicImageLabels[x], BorderLayout.CENTER);
             graphicImageLabels[x].setBorder(compound);
