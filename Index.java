@@ -61,7 +61,6 @@ public class Index {
         this.taken = taken;
     }
 
-    @Override
     public String toString(){
         return "(x,y) of Index: ("+this.location[0]+","+this.location[1]+")";
     }
