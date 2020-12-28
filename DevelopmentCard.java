@@ -71,9 +71,10 @@ public class DevelopmentCard implements ActionListener {
         this.cbReference = cbReference;
         this.otherPlayers = otherPlayers;
         this.boughtThisTurn=boughtThisTurn;
-
         readyYearOfPlentyFrame();
     }
+
+    public DevelopmentCard(){}
 
     public void playCard() {
         if (type.equals("Knight"))
