@@ -1367,7 +1367,15 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() != KeyEvent.VK_C || doingStartup) {
+        if ((e.getKeyCode() != KeyEvent.VK_C && e.getKeyCode()!=KeyEvent.VK_X) || doingStartup) {
+            return;
+        }
+        else if(e.getKeyCode()==KeyEvent.VK_X){
+            int quit = JOptionPane.showConfirmDialog(this,"Would you like to stop playing Settlers of Catan®?","Quit Game",JOptionPane.YES_NO_OPTION);
+            if(quit==JOptionPane.YES_OPTION){
+                JOptionPane.showMessageDialog(this,"Thank you for playing.","See you next time",JOptionPane.INFORMATION_MESSAGE);
+                System.exit(1);
+            }
             return;
         }
         int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION);
