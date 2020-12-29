@@ -20,9 +20,9 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     String[] types = {"Mountain", "Mountain", "Mountain", "Brick", "Brick", "Brick", "Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains", "Grain", "Grain", "Grain", "Grain", "Desert"};
     int[] rollNums = {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
     int[][] coords1 = {{267, 87}, {267 + 134, 87}, {267 + 2 * 134, 87}, {200, 200}, {334, 200}, {200 + 2 * 134, 200}, {200 + 3 * 134, 200}, {133, 313}, {133 + 134, 313}, {133 + 2 * 134, 313}, {133 + 3 * 134, 313}, {666, 313}, {200, 426}, {200 + 134, 426}, {200 + 134 * 2, 426}, {200 + 134 * 3, 426}, {267, 426 + 113}, {267 + 134, 426 + 113}, {267 + 134 * 2, 426 + 113}};
-    ArrayList<String> typeList = new ArrayList<String>();
-    ArrayList<Integer> rollNumList = new ArrayList<Integer>();
-    ArrayList<int[]> coordList = new ArrayList<int[]>();
+    ArrayList<String> typeList = new ArrayList<>();
+    ArrayList<Integer> rollNumList = new ArrayList<>();
+    ArrayList<int[]> coordList = new ArrayList<>();
     Tile[] tiles = new Tile[19];
     PlayerView[] statusViewer;
     ArrayList<String> turnNameList;
@@ -175,19 +175,27 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             outline_y[x] = (int) outLinePoints[x].getY();
         }
 
-        //Methods to take care of things before startup; the method names are pretty self-explanatory on what they are doing
+        //Methods to take care of things before startup
         constructPorts();
         getPortsReady();
         givePlayersCatanBoardReference();
         initializeAwardOptionPanes();
         workAround();
+        frameAround();
     }
 
     public void workAround(){
         JDialog dummy = new JDialog();
-        dummy.dispose();
+        dummy.setBounds(-500,-500,0,0);
         dummy.setVisible(true);
         dummy.setVisible(false);
+    }
+
+    public void frameAround(){
+        JFrame dummyFrame = new JFrame();
+        dummyFrame.setBounds(-500,-500,0,0);
+        dummyFrame.setVisible(true);
+        dummyFrame.setVisible(false);
     }
 
     public void initializeAwardOptionPanes(){
@@ -497,6 +505,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     g.drawImage(road, (int) indexConnection.getPosition().getX(), (int) indexConnection.getPosition().getY(), null);
                 }
 
+                frameAround();
                 redrawEverything = false;
             }
         }
@@ -517,9 +526,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public void mousePressed(MouseEvent e) {
         int xLoc = e.getX();
         int yLoc = e.getY();
-
-        //Testing
-        //System.out.println("(X,Y): ( "+xLoc+" , "+yLoc+" )");
 
         //Code to draw ports
         if (bgReference.usablePorts && !doingStartup) {
@@ -747,7 +753,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public ArrayList<Player> getOtherPlayers() {
-        ArrayList<Player> others = new ArrayList<Player>();
+        ArrayList<Player> others = new ArrayList<>();
         for (Player player : catanPlayerList)
             if (player != getCurrentPlayer())
                 others.add(player);
@@ -755,7 +761,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public ArrayList<Integer> getIndexIDs() {
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ArrayList<Integer> ids = new ArrayList<>();
         for (Road indexConnection : indexConnections) {
             ids.add(indexConnection.getIndexA());
             ids.add(indexConnection.getIndexB());
@@ -780,7 +786,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public ArrayList<Player> turnOrder(ArrayList<String> nameList) {
-        ArrayList<Player> players = new ArrayList<Player>();
+        ArrayList<Player> players = new ArrayList<>();
         for (String s : nameList)
             for (Player player : catanPlayerList)
                 if (s.equals(player.getName()))
@@ -829,7 +835,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     //Gets resources that would be obtained for an index at start of game
     public ArrayList<String> getAdjacentResources(int xLoc, int yLoc) {
-        ArrayList<String> adjacentResources = new ArrayList<String>();
+        ArrayList<String> adjacentResources = new ArrayList<>();
         for (Index index : indexes) {
             if (Math.abs(index.getLocation()[0] - xLoc) < 20 && Math.abs(index.getLocation()[1] - yLoc) < 20) {
                 for (Tile tile : tiles) {
@@ -893,8 +899,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         }
 
         //Construct starting pick order
-        ArrayList<Integer> startPickOrder = new ArrayList<Integer>();
-        ArrayList<Integer> turnOrder = new ArrayList<Integer>();
+        ArrayList<Integer> startPickOrder = new ArrayList<>();
+        ArrayList<Integer> turnOrder;
         for (int x = 0; x < catanPlayerList.size(); x++) {
             startPickOrder.add((startingPlayer + x) % catanPlayerList.size());
         }
@@ -907,7 +913,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
         startPickOrder.addAll(reverse(startPickOrder));
         StringBuilder buildingOrder = new StringBuilder("With that in mind, the starting order placement will be: ");
-        turnNameList = new ArrayList<String>();
+        turnNameList = new ArrayList<>();
 
         for (int x = 0; x < startPickOrder.size(); x++)
             for (Player player : catanPlayerList)
@@ -991,7 +997,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public ArrayList<Index> getOwnedIndexes(Player player) {
-        ArrayList<Index> ownedIndexes = new ArrayList<Index>();
+        ArrayList<Index> ownedIndexes = new ArrayList<>();
         for (Index index : indexes)
             if (index.getOwner() == player)
                 ownedIndexes.add(index);
@@ -1034,7 +1040,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public String giveRandomResource(Player player) {
-        ArrayList<String> resources = new ArrayList<String>();
+        ArrayList<String> resources = new ArrayList<>();
         if (player.getLumberNum() > 0)
             resources.add("Lumber");
         if (player.getBrickNum() > 0)
@@ -1241,7 +1247,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                             if (resourceChoice.equalsIgnoreCase("Lumber"))
                                 checkOptions[4].setEnabled(false);
 
-                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange for:", checkOptions}, "Generic Exchange", 1);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange for:", checkOptions}, "Generic Exchange", JOptionPane.INFORMATION_MESSAGE);
                             if (numberChecked() > 1)
                                 JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
                         }
@@ -1275,7 +1281,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         if (resourceChoice.equalsIgnoreCase("Lumber"))
                             getCurrentPlayer().monoLumber(-3);
                     }
-                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", JOptionPane.INFORMATION_MESSAGE);
 
                     break;
             }
@@ -1283,7 +1289,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             resetPortBoxes();
             getPlayerStatusMenu(getCurrentPlayer()).update();
         } catch (NullPointerException e) {
-            JOptionPane.showMessageDialog(this, "The port use has been cancelled for declining to follow the instructions.", "Port Error", 3);
+            JOptionPane.showMessageDialog(this, "The port use has been cancelled for declining to follow the instructions.", "Port Error", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -1315,8 +1321,8 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     //Longest road algorithm using recursion; I think this will work, but there is something going on here that the program doesn't like
     public boolean runRoadAlgorithm(){
-        ArrayList<Road> singleConnections = new ArrayList<Road>();
-        ArrayList<Integer> lengths = new ArrayList<Integer>();
+        ArrayList<Road> singleConnections = new ArrayList<>();
+        ArrayList<Integer> lengths = new ArrayList<>();
 
         for (Road indexConnection : indexConnections) {
             if (indexConnection.getOwner() == getCurrentPlayer())
@@ -1374,7 +1380,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         }
         int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION);
         if (confirmCancellation != 0) {
-            JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", 1);
+            JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         if (!doingStartup && isPlayerActing) {
@@ -1413,7 +1419,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
         getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
         updateAllStatusMenus();
-        JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", 1);
+        JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public java.util.List<Road> getPlayerRoads(Player player){
