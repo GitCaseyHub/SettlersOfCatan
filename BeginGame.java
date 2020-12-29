@@ -11,7 +11,7 @@ public class BeginGame extends JFrame implements ActionListener {
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
     JCheckBox activePorts = new JCheckBox("Active Ports");
-    JCheckBox classicVersion =new JCheckBox("Classic Catan");
+    JCheckBox friendlyRobber = new JCheckBox("Friendly Robber");
     JComboBox<String> players = new JComboBox<String>();
     JPanel options = new JPanel(new GridLayout(1,3));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
@@ -37,13 +37,13 @@ public class BeginGame extends JFrame implements ActionListener {
             options.add(players);
                 players.setBorder(compound);
             options.add(activePorts);
-            options.add(classicVersion);
+            options.add(friendlyRobber);
                 activePorts.setBorderPainted(true);
                 activePorts.setBorder(compound);
                 activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports will be identified by red 'x's and green 'o's.");
-                classicVersion.setBorder(compound);
-                classicVersion.setBorderPainted(true);
-                classicVersion.setToolTipText("Select this checkbox if you want to remove classes from the game.");
+                friendlyRobber.setBorderPainted(true);
+                friendlyRobber.setBorder(compound);
+                friendlyRobber.setToolTipText("Select this checkbox to disable The Robber from stealing from players with less than 4 victory points.");
         this.add(charGenerate,BorderLayout.SOUTH);
             charGenerate.setBorder(new TitledBorder("Game Generation"));
             charGenerate.add(generateChars);
@@ -76,13 +76,7 @@ public class BeginGame extends JFrame implements ActionListener {
                 playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
                 playerCreation[x].setVisible(true);
                 playerCreation[x].setTitle("Player Select Screen");
-
-                if (classicVersion.isSelected()){
-                    playerCreation[x].classBox.setSelectedIndex(1);
-                    playerCreation[x].classBox.setEnabled(false);
-                }
             }
-            classicVersion.setEnabled(false);
             playerCreation[0].nameField.requestFocus();
         }
 
@@ -92,6 +86,7 @@ public class BeginGame extends JFrame implements ActionListener {
                 usablePorts=true;
 
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
+            cbMain.friendlyRobber=friendlyRobber.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
