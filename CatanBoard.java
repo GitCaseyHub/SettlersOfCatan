@@ -41,6 +41,10 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     int chosen_x = 0;
     int chosen_y = 0;
 
+    //Cataclysm Objects
+    String[] cataclysms = {"Famine","Locust","Fire","Strike","Monsoon"};
+    boolean cataclysmsActive=false;
+
     //Booleans for conditions on when MouseListeners should activate
     boolean isRoadBuilding = false, isSettlementBuilding = false;
     boolean isDoneRoadBuilding = false, isDoneSettlementBuilding = false;
@@ -49,7 +53,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     boolean roadDevCard = false, finishedRoadCard = false;
     boolean isCityUpgrading = false;
     boolean redrawEverything = false;
-    boolean usablePorts = false;
     boolean isPlayerActing = false;
     int count = 0;
 
@@ -67,8 +70,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     TradingFrame firstFrame;
     TradingFrame secondFrame;
 
-    //Index Creation
-    ArrayList<int[]> coord = new ArrayList<int[]>();
     int[][] indexCoords1 = {{264, 122}, {330, 87}, {398, 122}, {461, 87}, {533, 121}, {599, 87}, {658, 122}, {663, 200}, {599, 234}, {532, 200}, {463, 233}, {396, 201}, {329, 235}, {262, 202}, {196, 235}, {197, 312}, {262, 347}, {329, 312}, {394, 348}, {461, 311}, {528, 346}, {599, 312}, {665, 350}, {727, 313}, {729, 237}, {797, 346}, {798, 425}, {725, 461}, {660, 423}, {597, 457}, {527, 424}, {462, 459}, {393, 422}, {327, 460}, {258, 421}, {198, 459}, {132, 423}, {130, 345}, {200, 536}, {263, 572}, {329, 537}, {393, 574}, {464, 534}, {526, 574}, {599, 536}, {655, 646}, {594, 683}, {461, 687}, {392, 646}, {526, 654}, {266, 647}, {332, 686}, {664, 577}, {731, 536}};
     Index[] indexes = new Index[indexCoords1.length];
     Index checked;
@@ -1434,6 +1435,39 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     counter++;
 
         return counter>0;
+    }
+
+    public void cataclysm(){
+        String chosenCataclysm = cataclysms[new Random().nextInt(cataclysms.length)];
+        switch(chosenCataclysm) {
+            case "Famine":
+                JOptionPane.showMessageDialog(this,"A famine sweeps over Catan and all players resort to eating their sheep to stay alive. Players lose all sheep resources.","Ravaging Famine",3);
+                for (Player player: catanPlayerList)
+                    player.setWoolNum(0);
+                break;
+            case "Locust":
+                JOptionPane.showMessageDialog(this,"A swarm of locust escape from the desert and ravage all the wheat fields in Catan. Players lose all wheat resources.","Locust Invasion",3);
+                for (Player player: catanPlayerList)
+                    player.setGrainNum(0);
+                break;
+            case "Fire":
+                JOptionPane.showMessageDialog(this,"A terrible drought reigns over Catan and causes massive forest fires all across the land. Players lose all lumber resources.","Massive Drought",3);
+                for (Player player: catanPlayerList)
+                    player.setLumberNum(0);
+                break;
+            case "Strike":
+                JOptionPane.showMessageDialog(this,"The serf laborers of Catan revolt and take all their building supplies with them. Players lose all brick resources.","Labor Revolt",3);
+                for (Player player: catanPlayerList)
+                    player.setBrickNum(0);
+                break;
+            case "Monsoon":
+                JOptionPane.showMessageDialog(this,"There is a massive monsoon that strikes all of Catan and instigates a quick-erosion on all ore. Players lose all ore resources.","Labor Revolt",3);
+                for (Player player: catanPlayerList)
+                    player.setOreNum(0);
+                break;
+        }
+        updateAllStatusMenus();
+
     }
 
 
