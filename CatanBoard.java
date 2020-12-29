@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CatanBoard extends JFrame implements MouseListener, KeyListener {
-    //Fancy Border
+    //Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     //Objects for Board Generation
@@ -97,16 +97,16 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     //Building Variables
     int roadCondition = 0;
-    ArrayList<Index> checkedIndexes = new ArrayList<Index>();
+    ArrayList<Index> checkedIndexes = new ArrayList<>();
     Object[] roadInfo;
-    ArrayList<Road> indexConnections = new ArrayList<Road>();
+    ArrayList<Road> indexConnections = new ArrayList<>();
     int settlementIndex = 0;
 
     //Constructor Variables
     ArrayList<Player> catanPlayerList;
     Point[] statusGenerationalPoints;
     PlayerSelect[] playerCreation;
-    ArrayList<Player> duplicates = new ArrayList<Player>();
+    ArrayList<Player> duplicates = new ArrayList<>();
     BeginGame bgReference;
 
     //Duplicates
@@ -221,7 +221,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 g2.setColor(new Color(0,0,255));
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
-                
+
                 if(bgReference.usablePorts) {
                     for (Port value : ports) {
                         BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
@@ -438,7 +438,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 g2.setColor(new Color(0, 0, 255));
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
-                    
+
                 //Redraws Port Ships
                 if(bgReference.usablePorts) {
                     for (Port value : ports) {
@@ -1432,29 +1432,28 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         String chosenCataclysm = cataclysms[new Random().nextInt(cataclysms.length)];
         switch(chosenCataclysm) {
             case "Famine":
-                JOptionPane.showMessageDialog(this,"A famine sweeps over Catan and people resort to eating all their sheep to stay alive. Players lose all sheep resources.","Ravaging Famine",3);
-                for (Player player: catanPlayerList)
-                    player.setWoolNum(0);
+                JOptionPane.showMessageDialog(this,"A famine sweeps over "+getCurrentPlayer().getName()+"'s  lands, forcing them to eat all their sheep to stay alive. "+getCurrentPlayer().getName()+" loses all sheep resources.","Ravaging Famine",3);
+                getCurrentPlayer().setWoolNum(0);
                 break;
+
             case "Locust":
-                JOptionPane.showMessageDialog(this,"A swarm of locust flood from the desert and ravage all the wheat fields in Catan. Players lose all wheat resources.","Locust Invasion",3);
-                for (Player player: catanPlayerList)
-                    player.setGrainNum(0);
+                JOptionPane.showMessageDialog(this,"A swarm of locusts flood from the desert and ravage all of "+getCurrentPlayer().getName()+"'s wheat fields. "+getCurrentPlayer().getName()+" loses all wheat resources.","Locust Invasion",3);
+                getCurrentPlayer().setGrainNum(0);
                 break;
+
             case "Fire":
-                JOptionPane.showMessageDialog(this,"A terrible drought engulfs Catan and causes massive forest fires all across the land. Players lose all lumber resources.","Massive Drought",3);
-                for (Player player: catanPlayerList)
-                    player.setLumberNum(0);
+                JOptionPane.showMessageDialog(this,"A terrible drought engulfs "+getCurrentPlayer().getName()+"'s woodlands and causes massive fires, burning down their forests. "+getCurrentPlayer().getName()+" loses all lumber resources.","Massive Drought",3);
+                getCurrentPlayer().setLumberNum(0);
                 break;
+
             case "Strike":
-                JOptionPane.showMessageDialog(this,"The serf laborers of Catan revolt and take all their building supplies with them. Players lose all brick resources.","Labor Revolt",3);
-                for (Player player: catanPlayerList)
-                    player.setBrickNum(0);
+                JOptionPane.showMessageDialog(this,getCurrentPlayer().getName()+"'s serf laborers revolt because of poor treatment and take all their building supplies with them. "+getCurrentPlayer().getName()+" loses all brick resources.","Labor Revolt",3);
+                getCurrentPlayer().setBrickNum(0);
                 break;
+
             case "Monsoon":
-                JOptionPane.showMessageDialog(this,"There is a massive monsoon that strikes all of Catan and instigates quick-erosion on all mountains. Players lose all ore resources.","Labor Revolt",3);
-                for (Player player: catanPlayerList)
-                    player.setOreNum(0);
+                JOptionPane.showMessageDialog(this,"There are massive rainstorms emerging over "+getCurrentPlayer().getName()+"'s mountains, instigating quick-erosion of their ore. "+getCurrentPlayer().getName()+" loses all ore resources.","Labor Revolt",3);
+                getCurrentPlayer().setOreNum(0);
                 break;
         }
         updateAllStatusMenus();
