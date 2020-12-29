@@ -10,19 +10,18 @@ public class BeginGame extends JFrame implements ActionListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
-    JCheckBox activePorts = new JCheckBox("Active Ports");
+    JCheckBox activePorts = new JCheckBox("Active Port Trading");
     JCheckBox friendlyRobber = new JCheckBox("Friendly Robber");
-    JComboBox<String> players = new JComboBox<String>();
-    JPanel options = new JPanel(new GridLayout(1,3));
+    JCheckBox cataclysms = new JCheckBox("Active Cataclysms");
+    JComboBox<String> players = new JComboBox<>();
+    JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
     Point[] generationPoints = new Point[]{new Point(550,100),new Point(550,455), new Point(1035,100), new Point(1035,455)};
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
     PlayerSelect[] playerCreation;
 
-    ArrayList<Player> catanPlayerList = new ArrayList<Player>();
-    ArrayList<Integer> startPickOrder;
-    ArrayList<Integer> turnOrder;
+    ArrayList<Player> catanPlayerList = new ArrayList<>();
 
     boolean usablePorts=false;
 
@@ -37,13 +36,17 @@ public class BeginGame extends JFrame implements ActionListener {
             options.add(players);
                 players.setBorder(compound);
             options.add(activePorts);
+            options.add(cataclysms);
             options.add(friendlyRobber);
                 activePorts.setBorderPainted(true);
                 activePorts.setBorder(compound);
                 activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports will be identified by red 'x's and green 'o's.");
                 friendlyRobber.setBorderPainted(true);
                 friendlyRobber.setBorder(compound);
-                friendlyRobber.setToolTipText("Select this checkbox to disable The Robber from stealing from players with less than 4 victory points.");
+                friendlyRobber.setToolTipText("Select this checkbox to disable the robber from stealing from players with less than 4 victory points.");
+                cataclysms.setBorderPainted(true);
+                cataclysms.setBorder(compound);
+                cataclysms.setToolTipText("Select this checkbox to activate weather events that inflict damages upon the players at random intervals.");
         this.add(charGenerate,BorderLayout.SOUTH);
             charGenerate.setBorder(new TitledBorder("Game Generation"));
             charGenerate.add(generateChars);
@@ -57,7 +60,7 @@ public class BeginGame extends JFrame implements ActionListener {
                 generateChars.addActionListener(this);
                 startGame.addActionListener(this);
 
-            this.setBounds(100,100,400,142);
+            this.setBounds(100,100,560,142);
             this.setVisible(true);
             this.setTitle("Options and Generation");
     }
@@ -82,11 +85,11 @@ public class BeginGame extends JFrame implements ActionListener {
 
         else if(e.getSource()==startGame) {
             this.setVisible(false);
-            if(activePorts.isSelected())
-                usablePorts=true;
 
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
             cbMain.friendlyRobber=friendlyRobber.isSelected();
+            cbMain.cataclysmsActive=cataclysms.isSelected();
+            usablePorts=activePorts.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
@@ -136,8 +139,8 @@ public class BeginGame extends JFrame implements ActionListener {
         }
 
         if(catanPlayerList.size()==playerCreation.length){
-            for(int x=0; x<playerCreation.length; x++)
-                playerCreation[x].setVisible(false);
+            for (PlayerSelect playerSelect : playerCreation)
+                playerSelect.setVisible(false);
 
             startGame.setEnabled(true);
         }
