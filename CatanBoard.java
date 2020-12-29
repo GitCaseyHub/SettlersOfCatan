@@ -1430,30 +1430,31 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     public void cataclysm(){
         String chosenCataclysm = cataclysms[new Random().nextInt(cataclysms.length)];
+        Player afflictedPlayer = catanPlayerList.get(new Random().nextInt(catanPlayerList.size()));
         switch(chosenCataclysm) {
             case "Famine":
-                JOptionPane.showMessageDialog(this,"A famine sweeps over "+getCurrentPlayer().getName()+"'s  lands, forcing them to eat all their sheep to stay alive. "+getCurrentPlayer().getName()+" loses all sheep resources.","Ravaging Famine",3);
-                getCurrentPlayer().setWoolNum(0);
+                JOptionPane.showMessageDialog(this,"A famine sweeps over "+afflictedPlayer.getName()+"'s  lands, forcing them to eat all their sheep to stay alive. "+afflictedPlayer.getName()+" loses all sheep resources.","Ravaging Famine",3);
+                afflictedPlayer.setWoolNum(0);
                 break;
 
             case "Locust":
-                JOptionPane.showMessageDialog(this,"A swarm of locusts flood from the desert and ravage all of "+getCurrentPlayer().getName()+"'s wheat fields. "+getCurrentPlayer().getName()+" loses all wheat resources.","Locust Invasion",3);
-                getCurrentPlayer().setGrainNum(0);
+                JOptionPane.showMessageDialog(this,"A swarm of locusts flood from the desert and ravage all of "+afflictedPlayer.getName()+"'s wheat fields. "+afflictedPlayer.getName()+" loses all wheat resources.","Locust Invasion",3);
+                afflictedPlayer.setGrainNum(0);
                 break;
 
             case "Fire":
-                JOptionPane.showMessageDialog(this,"A terrible drought engulfs "+getCurrentPlayer().getName()+"'s woodlands and causes massive fires, burning down their forests. "+getCurrentPlayer().getName()+" loses all lumber resources.","Massive Drought",3);
-                getCurrentPlayer().setLumberNum(0);
+                JOptionPane.showMessageDialog(this,"A terrible drought engulfs "+afflictedPlayer.getName()+"'s woodlands and causes massive fires, burning down their forests. "+afflictedPlayer.getName()+" loses all lumber resources.","Massive Drought",3);
+                afflictedPlayer.setLumberNum(0);
                 break;
 
             case "Strike":
-                JOptionPane.showMessageDialog(this,getCurrentPlayer().getName()+"'s serf laborers revolt because of poor treatment and take all their building supplies with them. "+getCurrentPlayer().getName()+" loses all brick resources.","Labor Revolt",3);
-                getCurrentPlayer().setBrickNum(0);
+                JOptionPane.showMessageDialog(this,afflictedPlayer.getName()+"'s serf laborers revolt because of poor treatment and take all their building supplies with them. "+afflictedPlayer.getName()+" loses all brick resources.","Labor Revolt",3);
+                afflictedPlayer.setBrickNum(0);
                 break;
 
             case "Monsoon":
-                JOptionPane.showMessageDialog(this,"There are massive rainstorms emerging over "+getCurrentPlayer().getName()+"'s mountains, instigating quick-erosion of their ore. "+getCurrentPlayer().getName()+" loses all ore resources.","Labor Revolt",3);
-                getCurrentPlayer().setOreNum(0);
+                JOptionPane.showMessageDialog(this,"There are massive rainstorms emerging over "+afflictedPlayer.getName()+"'s mountains, instigating quick-erosion of their ore. "+afflictedPlayer.getName()+" loses all ore resources.","Labor Revolt",3);
+                afflictedPlayer.setOreNum(0);
                 break;
         }
         updateAllStatusMenus();
