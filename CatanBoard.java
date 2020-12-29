@@ -92,6 +92,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     Tile robberTile;
     JCheckBox[] possibleTargets;
     int checkCounter = 0;
+    boolean friendlyRobber=false;
 
     //Building Variables
     int roadCondition = 0;
@@ -264,6 +265,10 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     JOptionPane.showMessageDialog(this, "The robber has been moved.", "Robber Moved", 1);
 
                 ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
+                
+                if(friendlyRobber)
+                    availablePlayers.removeIf(player -> player.getVictoryPointTotal() < 4);
+
                 if (availablePlayers.size() != 0) {
                     possibleTargets = new JCheckBox[availablePlayers.size()];
                     for (int x = 0; x < availablePlayers.size(); x++)
@@ -1313,13 +1318,13 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         ArrayList<Road> singleConnections = new ArrayList<Road>();
         ArrayList<Integer> lengths = new ArrayList<Integer>();
 
-        for(int x=0; x<indexConnections.size(); x++) {
-            if (indexConnections.get(x).getOwner() == getCurrentPlayer())
-                singleConnections.add(indexConnections.get(x));
+        for (Road indexConnection : indexConnections) {
+            if (indexConnection.getOwner() == getCurrentPlayer())
+                singleConnections.add(indexConnection);
         }
 
-        for(int x=0; x<singleConnections.size(); x++)
-            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()),new ArrayList<Road>(),0,singleConnections.get(x)));
+        for (Road singleConnection : singleConnections)
+            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()), new ArrayList<Road>(), 0, singleConnection));
 
         int previous = this.currentLongestRoad;
         this.currentLongestRoad = (Collections.max(lengths)>this.currentLongestRoad)?Collections.max(lengths):this.currentLongestRoad;
@@ -1339,16 +1344,16 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             stillHasConnections=false;
             possibleSplittings.clear();
             subConnections=0;
-            for (int x = 0; x < potential.size(); x++)
-                if (currentRoad.isConnectedTo(potential.get(x)) && currentRoad!=potential.get(x)) {
+            for (Road road : potential)
+                if (currentRoad.isConnectedTo(road) && currentRoad != road) {
                     subConnections++;
-                    possibleSplittings.add(potential.get(x));
+                    possibleSplittings.add(road);
                 }
 
             if (subConnections > 1) {
                 usedAlready.addAll(possibleSplittings);
-                for (int y = 0; y < possibleSplittings.size(); y++)
-                    splits.add(roadRecursion(potential, usedAlready, 0, possibleSplittings.get(y)));
+                for (Road possibleSplitting : possibleSplittings)
+                    splits.add(roadRecursion(potential, usedAlready, 0, possibleSplitting));
 
                 currentLength += Collections.max(splits);
                 return currentLength;
@@ -1417,9 +1422,9 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     public boolean sharesLocation(Point point){
         int counter=0;
-        for(int x=0; x<indexes.length; x++)
-            if(Math.abs(point.getX()-indexes[x].getLocation()[0])<10 && Math.abs(point.getY()-indexes[x].getLocation()[1])<10)
-                if(indexes[x].isTaken())
+        for (Index index : indexes)
+            if (Math.abs(point.getX() - index.getLocation()[0]) < 10 && Math.abs(point.getY() - index.getLocation()[1]) < 10)
+                if (index.isTaken())
                     counter++;
 
         return counter>0;
