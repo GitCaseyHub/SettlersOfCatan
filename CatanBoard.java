@@ -101,7 +101,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     Object[] roadInfo;
     ArrayList<Road> indexConnections = new ArrayList<Road>();
     int settlementIndex = 0;
-    boolean gated = false;
 
     //Constructor Variables
     ArrayList<Player> catanPlayerList;
@@ -182,7 +181,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         givePlayersCatanBoardReference();
         initializeAwardOptionPanes();
         workAround();
-        frameAround();
     }
 
     public void workAround(){
@@ -190,13 +188,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         dummy.setBounds(-500,-500,0,0);
         dummy.setVisible(true);
         dummy.setVisible(false);
-    }
-
-    public void frameAround(){
-        JFrame dummyFrame = new JFrame();
-        dummyFrame.setBounds(-500,-500,0,0);
-        dummyFrame.setVisible(true);
-        dummyFrame.setVisible(false);
     }
 
     public void initializeAwardOptionPanes(){
@@ -230,6 +221,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 g2.setColor(new Color(0,0,255));
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
+                
                 if(bgReference.usablePorts) {
                     for (Port value : ports) {
                         BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
@@ -446,9 +438,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                 g2.setColor(new Color(0, 0, 255));
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
-
-                workAround();
-
+                    
                 //Redraws Port Ships
                 if(bgReference.usablePorts) {
                     for (Port value : ports) {
@@ -480,17 +470,16 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         if (!sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
                             g.drawImage(circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
-                }
-                /*else {
+                } else {
                     //Port Indexes if Inactive; option to draw x's still available if I change my mind
-                    BufferedImage cross = ImageIO.read(new File("Pieces/Cross_Ports.png"));
+                    /* BufferedImage cross = ImageIO.read(new File("Pieces/Cross_Ports.png"));
                     for (Point[] portPoint : portPoints) {
                         if (!sharesLocation(new Point((int) portPoint[0].getX(), (int) portPoint[0].getY())))
                             g.drawImage(cross, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
                         if (!sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
                             g.drawImage(cross, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
-                    }
-                }*/
+                    }*/
+                }
 
                 //Draws Cities/Settlements
                 for (Index index : indexes) {
@@ -511,7 +500,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     g.drawImage(road, (int) indexConnection.getPosition().getX(), (int) indexConnection.getPosition().getY(), null);
                 }
 
-                frameAround();
                 redrawEverything = false;
             }
         }
@@ -526,8 +514,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         }
         updateAllStatusMenus();
     }
-
-    public void mouseClicked(MouseEvent e) {}
 
     public void mousePressed(MouseEvent e) {
         int xLoc = e.getX();
@@ -1446,17 +1432,17 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         String chosenCataclysm = cataclysms[new Random().nextInt(cataclysms.length)];
         switch(chosenCataclysm) {
             case "Famine":
-                JOptionPane.showMessageDialog(this,"A famine sweeps over Catan and all players resort to eating their sheep to stay alive. Players lose all sheep resources.","Ravaging Famine",3);
+                JOptionPane.showMessageDialog(this,"A famine sweeps over Catan and people resort to eating all their sheep to stay alive. Players lose all sheep resources.","Ravaging Famine",3);
                 for (Player player: catanPlayerList)
                     player.setWoolNum(0);
                 break;
             case "Locust":
-                JOptionPane.showMessageDialog(this,"A swarm of locust escape from the desert and ravage all the wheat fields in Catan. Players lose all wheat resources.","Locust Invasion",3);
+                JOptionPane.showMessageDialog(this,"A swarm of locust flood from the desert and ravage all the wheat fields in Catan. Players lose all wheat resources.","Locust Invasion",3);
                 for (Player player: catanPlayerList)
                     player.setGrainNum(0);
                 break;
             case "Fire":
-                JOptionPane.showMessageDialog(this,"A terrible drought reigns over Catan and causes massive forest fires all across the land. Players lose all lumber resources.","Massive Drought",3);
+                JOptionPane.showMessageDialog(this,"A terrible drought engulfs Catan and causes massive forest fires all across the land. Players lose all lumber resources.","Massive Drought",3);
                 for (Player player: catanPlayerList)
                     player.setLumberNum(0);
                 break;
@@ -1466,19 +1452,19 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     player.setBrickNum(0);
                 break;
             case "Monsoon":
-                JOptionPane.showMessageDialog(this,"There is a massive monsoon that strikes all of Catan and instigates a quick-erosion on all ore. Players lose all ore resources.","Labor Revolt",3);
+                JOptionPane.showMessageDialog(this,"There is a massive monsoon that strikes all of Catan and instigates quick-erosion on all mountains. Players lose all ore resources.","Labor Revolt",3);
                 for (Player player: catanPlayerList)
                     player.setOreNum(0);
                 break;
         }
         updateAllStatusMenus();
-
     }
 
-
+    //Excess overridden methods
     public void keyTyped(KeyEvent e){}
     public void keyReleased(KeyEvent e){}
     public void mouseReleased(MouseEvent e){}
     public void mouseEntered(MouseEvent e){}
     public void mouseExited(MouseEvent e){}
+    public void mouseClicked(MouseEvent e) {}
 }
