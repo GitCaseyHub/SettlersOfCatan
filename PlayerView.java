@@ -312,13 +312,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                             }
                         }
                         JCheckBox[] optionResources = new JCheckBox[]{new JCheckBox("Sheep"), new JCheckBox("Lumber"), new JCheckBox("Ore"), new JCheckBox("Brick"), new JCheckBox("Wheat")};
-                        for (int x = 0; x < optionResources.length; x++)
-                            if (optionResources[x].getText().equalsIgnoreCase(exchangeResource))
-                                optionResources[x].setEnabled(false);
-                        while (!findNumSelected(optionResources)) {
+                        for (JCheckBox optionResource : optionResources)
+                            if (optionResource.getText().equalsIgnoreCase(exchangeResource))
+                                optionResource.setEnabled(false);
+                        while (findNumSelected(optionResources)) {
                             JOptionPane.showMessageDialog(this, new Object[]{"Select the resource you'd like to exchange for:", optionResources}, "Exchanging Resources", 1);
 
-                            if (!findNumSelected(optionResources))
+                            if (findNumSelected(optionResources))
                                 JOptionPane.showMessageDialog(this, "You must select a single resource to trade in for.", "Invalid Selection", 3);
                         }
 
@@ -464,23 +464,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     playCard.setEnabled(false);
                 }
                 else {
-                    if (playedCard.isBoughtThisTurn())
-                        JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", 3);
-
-                    else {
-                        reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                        JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
-                        playedCard.playCard();
-                        player.addDevelopmentCardToPlayed(playedCard);
-                        unplayed.removeItem(playedCard.getType());
-                        played.addItem(playedCard.getType());
-                        player.removeDevelopmentCardFromUnplayed(playedCard);
-                        reference.updateAllStatusMenus();
-                        unplayed.setSelectedIndex(0);
-                        playCard.setEnabled(false);
-                    }
+                    JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", 3);
                 }
             }
         }
@@ -496,6 +480,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==endTurn){
+            if(reference.cataclysmsActive){
+                int cataclysmOccurrence = new Random().nextInt(20);
+                if(cataclysmOccurrence==0)
+                    reference.cataclysm();
+            }
+
             ArrayList<Player> turnOrder = new ArrayList<Player>();
             String name="";
 
@@ -570,10 +560,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public boolean findNumSelected(JCheckBox[] checkboxes){
         int val=0;
-        for(int x=0; x<checkboxes.length; x++)
-            val+=(checkboxes[x].isSelected()?1:0);
+        for (JCheckBox checkbox : checkboxes)
+            val += (checkbox.isSelected() ? 1 : 0);
 
-        return (val>1 || val==0)?false:true;
+        return val <= 1 && val != 0;
     }
 
     public boolean boughtAllOnSameTurn(String type){
