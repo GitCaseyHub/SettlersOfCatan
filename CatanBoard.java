@@ -18,7 +18,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
 
     //Objects for Board Generation
     String[] types = {"Mountain", "Mountain", "Mountain", "Brick", "Brick", "Brick", "Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains", "Grain", "Grain", "Grain", "Grain", "Desert"};
-    int[] rollNums = {8, 4, 11, 12, 3, 11, 10, 9, 6, 9, 5, 2, 4, 5, 10, 8, 3, 6};
+    int[] rollNums = {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
     int[][] coords1 = {{267, 87}, {267 + 134, 87}, {267 + 2 * 134, 87}, {200, 200}, {334, 200}, {200 + 2 * 134, 200}, {200 + 3 * 134, 200}, {133, 313}, {133 + 134, 313}, {133 + 2 * 134, 313}, {133 + 3 * 134, 313}, {666, 313}, {200, 426}, {200 + 134, 426}, {200 + 134 * 2, 426}, {200 + 134 * 3, 426}, {267, 426 + 113}, {267 + 134, 426 + 113}, {267 + 134 * 2, 426 + 113}};
     ArrayList<String> typeList = new ArrayList<String>();
     ArrayList<Integer> rollNumList = new ArrayList<Integer>();
@@ -265,7 +265,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     JOptionPane.showMessageDialog(this, "The robber has been moved.", "Robber Moved", 1);
 
                 ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
-                
+
                 if(friendlyRobber)
                     availablePlayers.removeIf(player -> player.getVictoryPointTotal() < 4);
 
