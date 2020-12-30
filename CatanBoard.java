@@ -244,14 +244,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         g.drawImage(circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 }
-                /*else {
-                    //Port Indexes if Inactive; option to redraw x's still available if I change my mind
-                    BufferedImage cross = ImageIO.read(new File("Pieces/Cross_Ports.png"));
-                    for (Point[] portPoint : portPoints) {
-                        g.drawImage(cross, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
-                        g.drawImage(cross, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
-                    }
-                }*/
                 loaded = true;
             }
             if (isDoneMovingRobber) {
@@ -470,15 +462,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         if (!sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
                             g.drawImage(circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
-                } else {
-                    //Port Indexes if Inactive; option to draw x's still available if I change my mind
-                    /* BufferedImage cross = ImageIO.read(new File("Pieces/Cross_Ports.png"));
-                    for (Point[] portPoint : portPoints) {
-                        if (!sharesLocation(new Point((int) portPoint[0].getX(), (int) portPoint[0].getY())))
-                            g.drawImage(cross, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
-                        if (!sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
-                            g.drawImage(cross, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
-                    }*/
                 }
 
                 //Draws Cities/Settlements
