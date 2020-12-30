@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -17,15 +18,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JPanel graphicHolder = new JPanel(new GridLayout(1, 5));
     String[] graphicStrings = {"Brick", "Ore", "Sheep", "Wheat", "Wood"};
     JLabel[] graphicImageLabels = new JLabel[5];
-    JLabel brickNum = new JLabel("0", 0);
-    JLabel oreNum = new JLabel("0", 0);
-    JLabel wheatNum = new JLabel("0", 0);
-    JLabel sheepNum = new JLabel("0", 0);
-    JLabel woodNum = new JLabel("0", 0);
+    JLabel brickNum = new JLabel("0", SwingConstants.CENTER);
+    JLabel oreNum = new JLabel("0", SwingConstants.CENTER);
+    JLabel wheatNum = new JLabel("0", SwingConstants.CENTER);
+    JLabel sheepNum = new JLabel("0", SwingConstants.CENTER);
+    JLabel woodNum = new JLabel("0", SwingConstants.CENTER);
     JPanel borderNorth = new JPanel(new BorderLayout());
     JPanel infoPanel = new JPanel(new GridLayout(1,1));
     JPanel borderInfoPanel = new JPanel(new GridLayout(1,1));
-    JLabel colorDisplayLabel = new JLabel("",0);
+    JLabel colorDisplayLabel = new JLabel("", SwingConstants.CENTER);
     JPanel devPanel = new JPanel(new GridLayout(1,2));
     JComboBox unplayed = new JComboBox();
     JComboBox played = new JComboBox();
@@ -34,7 +35,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JCheckBox largestArmyBox = new JCheckBox("Largest Army");
     JPanel vpPointHolder = new JPanel();
     JPanel borderSouth = new JPanel(new BorderLayout());
-    JLabel victoryPointLabel = new JLabel("0",0);
+    JLabel victoryPointLabel = new JLabel("0", SwingConstants.CENTER);
     JPanel turnBorderPanel = new JPanel();
     JPanel turnHolder = new JPanel(new BorderLayout());
     JCheckBox turnBox = new JCheckBox("");
@@ -68,7 +69,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     //Building Costs Frame
     JFrame costFrame = new JFrame();
-    JLabel imageCostLabel = new JLabel("",0);
+    JLabel imageCostLabel = new JLabel("", SwingConstants.CENTER);
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
@@ -167,7 +168,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         //Array manipulation stuff
         for (int x = 0; x < 5; x++) {
             graphicPanels[x] = new JPanel(new BorderLayout());
-            graphicImageLabels[x] = new JLabel("", 0);
+            graphicImageLabels[x] = new JLabel("", SwingConstants.CENTER);
             graphicImageLabels[x].setIcon(new ImageIcon("Resources/" + graphicStrings[x] + "_Image.png"));
             graphicPanels[x].add(graphicImageLabels[x], BorderLayout.CENTER);
             graphicImageLabels[x].setBorder(compound);
@@ -266,7 +267,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     reference.isPlayerActing=true;
                     this.player.changeVictoryPoints(1);
-                    JOptionPane.showMessageDialog(this,"Select the index you'd like to build a new settlement on.","Settlement Building",1);
+                    JOptionPane.showMessageDialog(this,"Select the index you'd like to build a new settlement on.","Settlement Building", JOptionPane.INFORMATION_MESSAGE);
                     reference.isSettlementBuilding=true;
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
                     reference.getPlayerStatusMenu(player).build.setEnabled(false);
@@ -287,13 +288,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     update();
                 }
                 else
-                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to build a new settlement.","Settlement Building Error",3);
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to build a new settlement.","Settlement Building Error", JOptionPane.QUESTION_MESSAGE);
             }
         }
 
         else if(e.getSource()==fourForOne) {
             if(player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4)
-                JOptionPane.showMessageDialog(this,"You don't have four or more of a single resource. You cannot use this 'option'.","Insufficient Resources",3);
+                JOptionPane.showMessageDialog(this,"You don't have four or more of a single resource. You cannot use this 'option'.","Insufficient Resources", JOptionPane.QUESTION_MESSAGE);
             else{
                 int confirm = JOptionPane.showConfirmDialog(this,"Would you like to trade in four of a resource for one of another resource?","Generic Resource Exchange",JOptionPane.YES_NO_OPTION);
 
@@ -301,13 +302,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     try {
                         String exchangeResource = "";
                         while (!exchangeResource.equalsIgnoreCase("Sheep") && !exchangeResource.equalsIgnoreCase("Lumber") && !exchangeResource.equalsIgnoreCase("Ore") && !exchangeResource.equalsIgnoreCase("Brick") && !exchangeResource.equalsIgnoreCase("Wheat")) {
-                            exchangeResource = JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade four in of: Sheep - Lumber - Ore - Brick - Wheat", "Resource Exchange", 1);
+                            exchangeResource = JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade four in of: Sheep - Lumber - Ore - Brick - Wheat", "Resource Exchange", JOptionPane.INFORMATION_MESSAGE);
 
                             if (!exchangeResource.equalsIgnoreCase("Sheep") && !exchangeResource.equalsIgnoreCase("Lumber") && !exchangeResource.equalsIgnoreCase("Ore") && !exchangeResource.equalsIgnoreCase("Brick") && !exchangeResource.equalsIgnoreCase("Wheat"))
-                                JOptionPane.showMessageDialog(this, "That is not one of the resource choices. Please choose again.", "Invalid Resource", 3);
+                                JOptionPane.showMessageDialog(this, "That is not one of the resource choices. Please choose again.", "Invalid Resource", JOptionPane.QUESTION_MESSAGE);
 
                             if ((exchangeResource.equalsIgnoreCase("Sheep") && player.getWoolNum() < 4) || (exchangeResource.equalsIgnoreCase("Lumber") && player.getLumberNum() < 4) || (exchangeResource.equalsIgnoreCase("Ore") && player.getOreNum() < 4) || (exchangeResource.equalsIgnoreCase("Bric") && player.getBrickNum() < 4) || (exchangeResource.equalsIgnoreCase("Wheat") && player.getGrainNum() < 4)) {
-                                JOptionPane.showMessageDialog(this, "You do not have at least four of that resource to complete an exchange.", "Invalid Resource", 3);
+                                JOptionPane.showMessageDialog(this, "You do not have at least four of that resource to complete an exchange.", "Invalid Resource", JOptionPane.QUESTION_MESSAGE);
                                 exchangeResource = "";
                             }
                         }
@@ -316,10 +317,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                             if (optionResource.getText().equalsIgnoreCase(exchangeResource))
                                 optionResource.setEnabled(false);
                         while (findNumSelected(optionResources)) {
-                            JOptionPane.showMessageDialog(this, new Object[]{"Select the resource you'd like to exchange for:", optionResources}, "Exchanging Resources", 1);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Select the resource you'd like to exchange for:", optionResources}, "Exchanging Resources", JOptionPane.INFORMATION_MESSAGE);
 
                             if (findNumSelected(optionResources))
-                                JOptionPane.showMessageDialog(this, "You must select a single resource to trade in for.", "Invalid Selection", 3);
+                                JOptionPane.showMessageDialog(this, "You must select a single resource to trade in for.", "Invalid Selection", JOptionPane.QUESTION_MESSAGE);
                         }
 
                         if (optionResources[0].isSelected())
@@ -344,9 +345,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         else if (exchangeResource.equalsIgnoreCase("Wheat"))
                             player.monoWheat(-4);
 
-                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Exchange Complete", 1);
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Exchange Complete", JOptionPane.INFORMATION_MESSAGE);
                     } catch (NullPointerException cancelCaught) {
-                        JOptionPane.showMessageDialog(this, "An invalid input has been received. This operation has been cancelled", "Cancellation", 3);
+                        JOptionPane.showMessageDialog(this, "An invalid input has been received. This operation has been cancelled", "Cancellation", JOptionPane.QUESTION_MESSAGE);
                     }
                 }
             }
@@ -359,7 +360,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     if(playerHasSettlements()) {
                         reference.isPlayerActing=true;
                         this.player.changeVictoryPoints(1);
-                        JOptionPane.showMessageDialog(null, "Select the settlement you'd like to upgrade.", "City Building", 1);
+                        JOptionPane.showMessageDialog(null, "Select the settlement you'd like to upgrade.", "City Building", JOptionPane.INFORMATION_MESSAGE);
                         reference.isCityUpgrading = true;
                         reference.getPlayerStatusMenu(player).options.setEnabled(false);
                         reference.getPlayerStatusMenu(player).build.setEnabled(false);
@@ -376,10 +377,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         update();
                     }
                     else
-                        JOptionPane.showMessageDialog(null,"You have no settlements left to upgrade into cities.","Failure To Find Settlement",3);
+                        JOptionPane.showMessageDialog(null,"You have no settlements left to upgrade into cities.","Failure To Find Settlement", JOptionPane.QUESTION_MESSAGE);
                 }
                 else
-                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to upgrade a settlement.","City Building Error",3);
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to upgrade a settlement.","City Building Error", JOptionPane.QUESTION_MESSAGE);
 
             }
         }
@@ -389,7 +390,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if(roadInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))) {
                     reference.isPlayerActing=true;
-                    JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building",1);
+                    JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building", JOptionPane.INFORMATION_MESSAGE);
                     reference.isRoadBuilding=true;
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
                     reference.getPlayerStatusMenu(player).build.setEnabled(false);
@@ -407,7 +408,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     update();
                 }
                 else
-                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to build a road.","Road Building Error",3);
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to build a road.","Road Building Error", JOptionPane.QUESTION_MESSAGE);
             }
         }
 
@@ -416,7 +417,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION);
             if(devInput==0){
                 if((player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getOreNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
-                    JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card",1);
+                    JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card", JOptionPane.INFORMATION_MESSAGE);
                     player.addDevelopmentCardToUnplayed(newDc);
                     unplayed.addItem(newDc.getType());
 
@@ -433,17 +434,17 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     update();
                 }
                 else
-                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to purchase a development card.","Cannot Purchase Development Card",3);
+                    JOptionPane.showMessageDialog(this,"You do not have the necessary resources to purchase a development card.","Cannot Purchase Development Card", JOptionPane.QUESTION_MESSAGE);
             }
         }
 
         else if(e.getSource()==playCard){
             if(unplayed.getSelectedIndex()==0)
-                JOptionPane.showMessageDialog(this,"You must select a card name from your 'Hidden Cards' list. The name you have selected will be the card that is played.","Unplayable Card",3);
+                JOptionPane.showMessageDialog(this,"You must select a card name from your 'Hidden Cards' list. The name you have selected will be the card that is played.","Unplayable Card", JOptionPane.QUESTION_MESSAGE);
             else {
                 DevelopmentCard playedCard = new DevelopmentCard();
                 for (int x = 0; x < player.getUnPlayedCards().size(); x++)
-                    if (unplayed.getSelectedItem().toString().equals(player.getUnPlayedCards().get(x).getType())) {
+                    if (Objects.requireNonNull(unplayed.getSelectedItem()).toString().equals(player.getUnPlayedCards().get(x).getType())) {
                         playedCard = player.getUnPlayedCards().get(x);
                         break;
                     }
@@ -453,7 +454,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
                     reference.getPlayerStatusMenu(player).build.setEnabled(false);
                     reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                    JOptionPane.showMessageDialog(this, "You are playing a '" + unplayed.getSelectedItem().toString() + " Card'. Its effects are now being activated.", "Development Card Played", 1);
+                    JOptionPane.showMessageDialog(this, "You are playing a '" + Objects.requireNonNull(unplayed.getSelectedItem()).toString() + " Card'. Its effects are now being activated.", "Development Card Played", JOptionPane.INFORMATION_MESSAGE);
                     playedCard.playCard();
                     player.addDevelopmentCardToPlayed(playedCard);
                     unplayed.removeItem(playedCard.getType());
@@ -464,15 +465,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     playCard.setEnabled(false);
                 }
                 else {
-                    JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", 3);
+                    JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", JOptionPane.QUESTION_MESSAGE);
                 }
             }
-        }
-
-
+        }       
+        
         else if(e.getSource()==exchange){
             if(tf.isVisible())
-                JOptionPane.showMessageDialog(this,"You already have your trading frame open.","Already Open",3);
+                JOptionPane.showMessageDialog(this,"You already have your trading frame open.","Already Open", JOptionPane.QUESTION_MESSAGE);
             else {
                 this.tf.setVisible(true);
                 this.tf.updateComboBoxes();
@@ -486,7 +486,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.cataclysm();
             }
 
-            ArrayList<Player> turnOrder = new ArrayList<Player>();
+            ArrayList<Player> turnOrder = new ArrayList<>();
             String name="";
 
             for(int x=0; x<reference.catanPlayerList.size(); x++)
@@ -503,7 +503,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         name=turnOrder.get(0).getName();
                     }
 
-            JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn",1);
+            JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn", JOptionPane.INFORMATION_MESSAGE);
             this.player.setTurn(false);
             this.turnBox.setSelected(false);
             reference.getPlayerStatusMenu(player).options.setEnabled(false);
@@ -520,7 +520,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
-            JOptionPane.showMessageDialog(this,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn",1);
+            JOptionPane.showMessageDialog(this,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn", JOptionPane.INFORMATION_MESSAGE);
             if(diceRoll==7) {
                 reference.getPlayerStatusMenu(player).options.setEnabled(false);
                 reference.getPlayerStatusMenu(player).build.setEnabled(false);
