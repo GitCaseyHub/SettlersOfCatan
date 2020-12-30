@@ -1294,7 +1294,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         return counter;
     }
 
-    //Longest road algorithm using recursion; I think this will work, but there is something going on here that the program doesn't like
+    //Longest road algorithm
     public boolean runRoadAlgorithm(){
         ArrayList<Road> singleConnections = new ArrayList<>();
         ArrayList<Integer> lengths = new ArrayList<>();
