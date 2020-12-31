@@ -79,7 +79,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         openingFrame.setSize(715,716);
         openingFrame.setLocation(dim.width/2-openingFrame.getSize().width/2, dim.height/2-openingFrame.getSize().height/2);
         openingFrame.setVisible(true);
-        JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan. Click on the opening screen to begin character creation.","Welcome",JOptionPane.PLAIN_MESSAGE);
     }
 
     public void actionPerformed(ActionEvent e){
@@ -136,7 +135,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             boolean playerRegistration=false;
             for (Player player : catanPlayerList)
                 if (player.getName().equals(addedPlayer.getName())) {
-                    JOptionPane.showMessageDialog(this, "Another player has already registered that name. Choose another name.", "Name Error", 3);
+                    JOptionPane.showMessageDialog(this, "Another player has already registered that name. Choose another name.", "Name Error", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
                     playerRegistration = true;
                     break;
                 }
@@ -164,6 +163,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
     public void mousePressed(MouseEvent e) {
         if(e.getSource()==openingLabel){
+            JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan","Welcome",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
             this.setSize(560,142);
             this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2-300);
