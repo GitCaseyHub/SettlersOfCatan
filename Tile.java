@@ -15,16 +15,8 @@ public class Tile {
         return position;
     }
 
-    public void setPosition(int[] position) {
-        this.position = position;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public int getNum() {
