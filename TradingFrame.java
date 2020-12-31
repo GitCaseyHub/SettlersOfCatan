@@ -90,7 +90,7 @@ public class TradingFrame extends JFrame implements ActionListener {
 
             if(playerCounter==0){
                 askButton.setEnabled(true);
-                JOptionPane.showMessageDialog(this,"There is no player with "+playerName+" as a name. Please type their name correctly.","No Such Player Exists",3);
+                JOptionPane.showMessageDialog(this,"There is no player with "+playerName+" as a name. Please type their name correctly.","No Such Player Exists",3, new ImageIcon("Resources/Catan_Icon.png"));
             }
 
             else if(playerCounter==1 && !rejections.contains(playerName)){
@@ -107,18 +107,18 @@ public class TradingFrame extends JFrame implements ActionListener {
                     cbRef.secondFrame = cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf;
                 }
                 else {
-                    JOptionPane.showMessageDialog(this, "Your trade request has been denied.", "Trade Failed", 3);
+                    JOptionPane.showMessageDialog(this, "Your trade request has been denied.", "Trade Failed", 3, new ImageIcon("Resources/Catan_Icon.png"));
                     rejections.add(playerName);
                     askButton.setEnabled(true);
                 }
             }
             else{
                 askButton.setEnabled(true);
-                JOptionPane.showMessageDialog(this,"This player has already rejected your trade request this turn. Try again on your next turn.","Already Rejected",3);
+                JOptionPane.showMessageDialog(this,"This player has already rejected your trade request this turn. Try again on your next turn.","Already Rejected",3, new ImageIcon("Resources/Catan_Icon.png"));
             }
         }
         else if(e.getSource()==confirmButton){
-            JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade",1);
+            JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade",1, new ImageIcon("Resources/Catan_Icon.png"));
             TradingFrame firstFrame = cbRef.firstFrame;
             TradingFrame secondFrame = cbRef.secondFrame;
             //Adding Resources
