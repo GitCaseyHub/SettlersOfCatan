@@ -116,10 +116,6 @@ public class Player {
         return color;
     }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
-
     public String getName() {
         return name;
     }
@@ -142,7 +138,7 @@ public class Player {
 
     public void changeBrick(int brickNum) {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
-            //Pass
+            ;
         }
         else if(this.classTitle.equals("Mountaineer"))
             this.brickNum+=2*brickNum;
@@ -158,7 +154,7 @@ public class Player {
         if(this.classTitle.equals("Woodsman"))
             this.lumberNum+=4*lumberNum;
         else if(this.classTitle.equals("Shepard")) {
-            //Pass
+            ;
         }
         else
             this.lumberNum += lumberNum;
@@ -170,7 +166,7 @@ public class Player {
 
     public void changeGrain(int grainNum) {
         if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard")) {
-            //Pass
+            ;
         }
         else if(this.classTitle.equals("Farmer"))
             this.grainNum+=2*grainNum;
@@ -206,6 +202,7 @@ public class Player {
 
     public void changeOre(int oreNum) {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
+            ;
         }
         else if(this.classTitle.equals("Mountaineer"))
             this.oreNum+=2*oreNum;
@@ -236,10 +233,6 @@ public class Player {
 
     public void addIndex(Index newIndex){
         this.ownedIndexes.add(newIndex);
-    }
-
-    public boolean equals(Player player){
-        return this.getName().equals(player.getName());
     }
 
     public void winTheGame(){
