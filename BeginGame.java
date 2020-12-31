@@ -4,9 +4,11 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class BeginGame extends JFrame implements ActionListener {
+public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
@@ -17,11 +19,16 @@ public class BeginGame extends JFrame implements ActionListener {
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
-    Point[] generationPoints = new Point[]{new Point(550,100),new Point(550,455), new Point(1035,100), new Point(1035,455)};
+    Point[] generationPoints = new Point[]{new Point(195,169), new Point(195,524), new Point(1290,169), new Point(1290,524)};
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
     PlayerSelect[] playerCreation;
 
     ArrayList<Player> catanPlayerList = new ArrayList<>();
+
+    //Opening Frame
+    JFrame openingFrame = new JFrame();
+    JLabel openingLabel = new JLabel("",SwingConstants.CENTER);
+    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
     boolean usablePorts=false;
 
@@ -60,9 +67,19 @@ public class BeginGame extends JFrame implements ActionListener {
                 generateChars.addActionListener(this);
                 startGame.addActionListener(this);
 
-            this.setBounds(100,100,560,142);
-            this.setVisible(true);
-            this.setTitle("Options and Generation");
+        commencementFrameInitiation();
+    }
+
+    public void commencementFrameInitiation(){
+        openingFrame.add(openingLabel);
+        openingLabel.setIcon(new ImageIcon("Resources/CatanOpening.png"));
+        openingLabel.setBorder(compound);
+        openingFrame.setUndecorated(true);
+        openingLabel.addMouseListener(this);
+        openingFrame.setSize(715,716);
+        openingFrame.setLocation(dim.width/2-openingFrame.getSize().width/2, dim.height/2-openingFrame.getSize().height/2);
+        openingFrame.setVisible(true);
+        JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan. Click on the opening screen to begin character creation.","Welcome",JOptionPane.PLAIN_MESSAGE);
     }
 
     public void actionPerformed(ActionEvent e){
@@ -145,4 +162,18 @@ public class BeginGame extends JFrame implements ActionListener {
             startGame.setEnabled(true);
         }
     }
+    public void mousePressed(MouseEvent e) {
+        if(e.getSource()==openingLabel){
+            openingFrame.setVisible(false);
+            this.setSize(560,142);
+            this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2-300);
+            this.setVisible(true);
+            this.setTitle("Options and Game Creation");
+        }
+    }
+
+    public void mouseReleased(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {}
 }
