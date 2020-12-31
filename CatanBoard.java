@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class CatanBoard extends JFrame implements KeyListener {
+public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     //Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
@@ -76,14 +76,14 @@ public class CatanBoard extends JFrame implements KeyListener {
 
     //Port Creation
     Point[][] portPoints1 = new Point[][]{new Point[]{new Point(264, 122), new Point(330, 87), new Point(219, 18)},
-                                          new Point[]{new Point(461, 87), new Point(533, 121), new Point(486, 18)},
-                                          new Point[]{new Point(663, 200), new Point(729, 237), new Point(681, 132)},
-                                          new Point[]{new Point(797, 346), new Point(798, 425), new Point(810, 351)},
-                                          new Point[]{new Point(731, 536), new Point(664, 577), new Point(681, 556)},
-                                          new Point[]{new Point(526, 654), new Point(461, 687), new Point(486, 685)},
-                                          new Point[]{new Point(332, 686), new Point(266, 647), new Point(219, 685)},
-                                          new Point[]{new Point(200, 536), new Point(198, 459), new Point(88, 468)},
-                                          new Point[]{new Point(198, 235), new Point(197, 312), new Point(88, 244)}};
+            new Point[]{new Point(461, 87), new Point(533, 121), new Point(486, 18)},
+            new Point[]{new Point(663, 200), new Point(729, 237), new Point(681, 132)},
+            new Point[]{new Point(797, 346), new Point(798, 425), new Point(810, 351)},
+            new Point[]{new Point(731, 536), new Point(664, 577), new Point(681, 556)},
+            new Point[]{new Point(526, 654), new Point(461, 687), new Point(486, 685)},
+            new Point[]{new Point(332, 686), new Point(266, 647), new Point(219, 685)},
+            new Point[]{new Point(200, 536), new Point(198, 459), new Point(88, 468)},
+            new Point[]{new Point(198, 235), new Point(197, 312), new Point(88, 244)}};
     String[] portTypes = {"Generic", "Generic", "Generic", "Generic", "Sheep", "Wheat", "Ore", "Brick", "Wood"};
     Port[] ports = new Port[9];
     int portCount = 0;
@@ -122,6 +122,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                 setShape(new Polygon(outline_x,outline_y,outLinePoints.length));
             }
         });
+        this.addMouseListener(this);
 
         for (int x = 0; x < coords1.length; x++)
             coords[x] = new int[]{coords1[x][0], coords1[x][1] + 50};
@@ -254,7 +255,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                     }
 
                 if (checkCounter != 0)
-                    JOptionPane.showMessageDialog(this, "The robber has been moved.", "Robber Moved", 1);
+                    JOptionPane.showMessageDialog(this, "The robber has been moved.", "Robber Moved", 1,new ImageIcon("Resources/Catan_Icon.png"));
 
                 ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
 
@@ -272,20 +273,20 @@ public class CatanBoard extends JFrame implements KeyListener {
                     int selectCounter = 0;
                     while (selectCounter == 0 || (selectCounter == possibleTargets.length && possibleTargets.length != 1)) {
                         selectCounter = 0;
-                        JOptionPane.showMessageDialog(this, params, "Robber Action", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, params, "Robber Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
                         for (JCheckBox possibleTarget : possibleTargets)
                             if (possibleTarget.isSelected())
                                 selectCounter++;
 
                         if (selectCounter == 0)
-                            JOptionPane.showMessageDialog(this, "You have to steal from someone. You cannot elect out of this.", "Try Again", 3);
+                            JOptionPane.showMessageDialog(this, "You have to steal from someone. You cannot elect out of this.", "Try Again",3, new ImageIcon("Resources/Catan_Icon.png"));
 
                         if (selectCounter == possibleTargets.length && possibleTargets.length != 1) {
                             for (JCheckBox possibleTarget : possibleTargets)
                                 possibleTarget.setSelected(false);
 
-                            JOptionPane.showMessageDialog(this, "You may only steal from one player.", "Try Again", 3);
+                            JOptionPane.showMessageDialog(this, "You may only steal from one player.", "Try Again",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
                     }
 
@@ -301,7 +302,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                     Player playerToStealFrom = getPlayerViaName(playerName);
                     String stolenResource = giveRandomResource(playerToStealFrom);
                     if (stolenResource.equals(""))
-                        JOptionPane.showMessageDialog(this, "Unfortunately, " + playerToStealFrom.getName() + " has no resources. So, you've stolen nothing.", "Robber Failure", 3);
+                        JOptionPane.showMessageDialog(this, "Unfortunately, " + playerToStealFrom.getName() + " has no resources. So, you've stolen nothing.", "Robber Failure",3, new ImageIcon("Resources/Catan_Icon.png"));
 
                     else {
                         if (stolenResource.equals("Sheep")) {
@@ -324,7 +325,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                             getCurrentPlayer().monoWheat(1);
                             playerToStealFrom.monoWheat(-1);
                         }
-                        JOptionPane.showMessageDialog(this, "You've stolen " + stolenResource + " from " + playerToStealFrom.getName() + ".", "Robber Success", 1);
+                        JOptionPane.showMessageDialog(this, "You've stolen " + stolenResource + " from " + playerToStealFrom.getName() + ".", "Robber Success", 1,new ImageIcon("Resources/Catan_Icon.png"));
                         updateAllStatusMenus();
                     }
                 }
@@ -362,7 +363,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                     }
                     getCurrentPlayer().setLongestRoad(true);
                     getCurrentPlayer().changeVictoryPoints(2);
-                    JOptionPane.showMessageDialog(this, (currentLongestRoad != 4) ? "There is a new longest road comprised of " + currentLongestRoad + " segments by " + getCurrentPlayer().getName() + "." : "The longest road award has been claimed by " + getCurrentPlayer().getName() + ", who has a road of " + currentLongestRoad + " continuous segments.", "New Longest Road", 1);
+                    JOptionPane.showMessageDialog(this, (currentLongestRoad != 4) ? "There is a new longest road comprised of " + currentLongestRoad + " segments by " + getCurrentPlayer().getName() + "." : "The longest road award has been claimed by " + getCurrentPlayer().getName() + ", who has a road of " + currentLongestRoad + " continuous segments.", "New Longest Road", 1,new ImageIcon("Resources/Catan_Icon.png"));
                     this.longestRoadPlayer = getCurrentPlayer();
                     updateAllStatusMenus();
                 }
@@ -374,7 +375,7 @@ public class CatanBoard extends JFrame implements KeyListener {
 
                         if (duplicates.size() > 0) {
                             duplicates.get(0).setTurn(true);
-                            JOptionPane.showMessageDialog(this, "Now, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building", 1);
+                            JOptionPane.showMessageDialog(this, "Now, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             isSettlementBuilding = true;
                         }
                     }
@@ -387,20 +388,20 @@ public class CatanBoard extends JFrame implements KeyListener {
 
                         getPlayerStatusMenu(catanPlayerList.get(0)).update();
                         isDoneSettlementBuilding = true;
-                        JOptionPane.showMessageDialog(this, "The game is ready to officially start. Based on your first settlement placements, you will be given the appropriate resources. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play", 1);
+                        JOptionPane.showMessageDialog(this, "The game is ready to officially start. Based on your first settlement placements, you will be given the appropriate resources. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play",1, new ImageIcon("Resources/Catan_Icon.png"));
                         givePlayersStartingResources();
                     }
                 } else {
                     if (!roadDevCard && !finishedRoadCard)
-                        JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building", 1);
+                        JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
 
                     else if (roadDevCard) {
-                        JOptionPane.showMessageDialog(this, "You've built a new road. Now, create your second road.", "Road Building", 1);
+                        JOptionPane.showMessageDialog(this, "You've built a new road. Now, create your second road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
                         isRoadBuilding = true;
                         roadDevCard = false;
                         finishedRoadCard = true;
                     } else {
-                        JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action", 1);
+                        JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action",1, new ImageIcon("Resources/Catan_Icon.png"));
                         getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
                         getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
                         getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
@@ -517,7 +518,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                         usePort(port);
 
                     else
-                        JOptionPane.showMessageDialog(this, "You don't have access to this port.", "Port inaccessible", JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "You don't have access to this port.", "Port inaccessible", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 }
             }
         }
@@ -541,17 +542,17 @@ public class CatanBoard extends JFrame implements KeyListener {
                 found = false;
                 if (indexConnections.size() == 0) {
                     if (checkedIndexes.get(0).getOwner() != getCurrentPlayer() && checkedIndexes.get(1).getOwner() != getCurrentPlayer()) {
-                        JOptionPane.showMessageDialog(this, "You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.", "Road Error", 3);
+                        JOptionPane.showMessageDialog(this, "You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.", "Road Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                         roadCondition = 0;
                         checkedIndexes.clear();
                         found = true;
                     } else if (distance(new Point(checkedIndexes.get(0).getLocation()[0], checkedIndexes.get(0).getLocation()[1]), new Point(checkedIndexes.get(1).getLocation()[0], checkedIndexes.get(1).getLocation()[1])) > 100) {
-                        JOptionPane.showMessageDialog(this, "Your road can only extend one space. Choose road indices that are next to one another.", "Road Error", 3);
+                        JOptionPane.showMessageDialog(this, "Your road can only extend one space. Choose road indices that are next to one another.", "Road Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                         roadCondition = 0;
                         checkedIndexes.clear();
                         found = true;
                     } else if (distance(new Point(checkedIndexes.get(0).getLocation()[0], checkedIndexes.get(0).getLocation()[1]), new Point(checkedIndexes.get(1).getLocation()[0], checkedIndexes.get(1).getLocation()[1])) == 0) {
-                        JOptionPane.showMessageDialog(this, "You cannot choose the same index twice. Your road needs to connect two indices.", "Same Index Error", 3);
+                        JOptionPane.showMessageDialog(this, "You cannot choose the same index twice. Your road needs to connect two indices.", "Same Index Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                         roadCondition = 0;
                         checkedIndexes.clear();
                         found = true;
@@ -563,7 +564,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                 } else {
                     for (Road indexConnection : indexConnections) {
                         if ((indexConnection.getIndexA() == checkedIndexes.get(0).getIndexID() && indexConnection.getIndexB() == checkedIndexes.get(1).getIndexID()) || (indexConnection.getIndexA() == checkedIndexes.get(1).getIndexID() && indexConnection.getIndexB() == checkedIndexes.get(0).getIndexID())) {
-                            JOptionPane.showMessageDialog(this, "There is already a road here. Choose two different indexes that do not contain a road between them.", "Road Error", 3);
+                            JOptionPane.showMessageDialog(this, "There is already a road here. Choose two different indexes that do not contain a road between them.", "Road Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                             roadCondition = 0;
                             checkedIndexes.clear();
                             found = true;
@@ -591,22 +592,22 @@ public class CatanBoard extends JFrame implements KeyListener {
                         }
                     }
                     if (!doingStartup && count == 0) {
-                        JOptionPane.showMessageDialog(this, "If you want to build a road, attach it to another road you own or another settlement/city you own.", "Road Building Error", 3);
+                        JOptionPane.showMessageDialog(this, "If you want to build a road, attach it to another road you own or another settlement/city you own.", "Road Building Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                         roadCondition = 0;
                         checkedIndexes.clear();
                         found = true;
                     } else if (checkedIndexes.get(0).getOwner() != getCurrentPlayer() && checkedIndexes.get(1).getOwner() != getCurrentPlayer() && count == 0) {
-                        JOptionPane.showMessageDialog(this, "You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.", "Road Error", 3);
+                        JOptionPane.showMessageDialog(this, "You need to attach a road to a settlement/city you own. Choose indices that touch at least one of your buildings.", "Road Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                         roadCondition = 0;
                         checkedIndexes.clear();
                         found = true;
                     } else if (distance(new Point(checkedIndexes.get(0).getLocation()[0], checkedIndexes.get(0).getLocation()[1]), new Point(checkedIndexes.get(1).getLocation()[0], checkedIndexes.get(1).getLocation()[1])) == 0) {
-                        JOptionPane.showMessageDialog(this, "You cannot choose the same index twice. Your road needs to connect two indices.", "Same Index Error", 3);
+                        JOptionPane.showMessageDialog(this, "You cannot choose the same index twice. Your road needs to connect two indices.", "Same Index Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                         roadCondition = 0;
                         checkedIndexes.clear();
                         found = true;
                     } else if (distance(new Point(checkedIndexes.get(0).getLocation()[0], checkedIndexes.get(0).getLocation()[1]), new Point(checkedIndexes.get(1).getLocation()[0], checkedIndexes.get(1).getLocation()[1])) > 100 && !found) {
-                        JOptionPane.showMessageDialog(this, "Your road can only extend one space. Choose road indices that are next to one another.", "Road Error", 3);
+                        JOptionPane.showMessageDialog(this, "Your road can only extend one space. Choose road indices that are next to one another.", "Road Error",3, new ImageIcon("Resources/Catan_Icon.png"));
                         roadCondition = 0;
                         checkedIndexes.clear();
                         found = true;
@@ -638,13 +639,13 @@ public class CatanBoard extends JFrame implements KeyListener {
                         }
                     }
                     if (checkedIndex.isTaken() && breakCheck)
-                        JOptionPane.showMessageDialog(this, "This spot has already been built upon. Please choose again..", "Spot Taken", 3);
+                        JOptionPane.showMessageDialog(this, "This spot has already been built upon. Please choose again..", "Spot Taken",3, new ImageIcon("Resources/Catan_Icon.png"));
 
                     else if (!buildable(checkedIndex))
-                        JOptionPane.showMessageDialog(this, "You are within one road-length of another settlement/city. Please choose again.", "Spot Proximity Too Close", 3);
+                        JOptionPane.showMessageDialog(this, "You are within one road-length of another settlement/city. Please choose again.", "Spot Proximity Too Close",3, new ImageIcon("Resources/Catan_Icon.png"));
 
                     else if (!settlementBuildable(checkedIndex) && !doingStartup)
-                        JOptionPane.showMessageDialog(this, "You cannot build here as you aren't connecting this settlement to a road you own.", "Spot Unconnected", 3);
+                        JOptionPane.showMessageDialog(this, "You cannot build here as you aren't connecting this settlement to a road you own.", "Spot Unconnected",3, new ImageIcon("Resources/Catan_Icon.png"));
 
                     else {
                         indexes[settlementIndex].setTaken(true);
@@ -680,7 +681,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                 }
             redrawEverything = true;
             if (checkCounter == 0)
-                JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning", 3);
+                JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning",3, new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         if (isCityUpgrading) {
@@ -702,9 +703,24 @@ public class CatanBoard extends JFrame implements KeyListener {
                 getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
                 getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
                 repaint();
-                JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful", 1);
+                JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
             }
         }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 
     public void constructPorts() {
@@ -884,8 +900,8 @@ public class CatanBoard extends JFrame implements KeyListener {
                     buildingOrder.append(player.getName()).append((x != turnOrder.size() - 1) ? ", " : ".");
                     turnNameList.add(player.getName());
                 }
-        JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Beginning Game", 1);
-        JOptionPane.showMessageDialog(this, turnOrderString.toString() + buildingOrder, "Turn and Building Order", 1);
+        JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Beginning Game",1, new ImageIcon("Resources/Catan_Icon.png"));
+        JOptionPane.showMessageDialog(this, turnOrderString.toString() + buildingOrder, "Turn and Building Order",1, new ImageIcon("Resources/Catan_Icon.png"));
 
         for (PlayerView playerView : statusViewer) {
             playerView.options.setEnabled(false);
@@ -898,7 +914,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                 if (s.equals(player.getName()))
                     duplicates.add(player);
 
-        JOptionPane.showMessageDialog(this, "So, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building", 1);
+        JOptionPane.showMessageDialog(this, "So, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building",1, new ImageIcon("Resources/Catan_Icon.png"));
         this.isSettlementBuilding = true;
         duplicates.get(0).setTurn(true);
     }
@@ -1035,7 +1051,7 @@ public class CatanBoard extends JFrame implements KeyListener {
             player.changeVictoryPoints(2);
             largestArmyPlayer = player;
             currentLargestArmy = knightCounter;
-            JOptionPane.showMessageDialog(this, "There is a new largest army of size " + knightCounter + " controlled by " + player.getName() + ".", "New Largest Army", 1);
+            JOptionPane.showMessageDialog(this, "There is a new largest army of size " + knightCounter + " controlled by " + player.getName() + ".", "New Largest Army",1, new ImageIcon("Resources/Catan_Icon.png"));
             updateAllStatusMenus();
         }
     }
@@ -1046,13 +1062,13 @@ public class CatanBoard extends JFrame implements KeyListener {
             switch (port.getType()) {
                 case "Wheat":
                     while (use.equals(""))
-                        use = JOptionPane.showInputDialog(this, "Would you like to trade two wheat for a single resource?", "Wheat Port", 1);
+                        use = JOptionPane.showInputDialog(this, "Would you like to trade two wheat for a single resource?", "Wheat Port",1);
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[1].setEnabled(false);
-                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange wheat for:", checkOptions}, "Wheat Exchange", 1);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange wheat for:", checkOptions}, "Wheat Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
-                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
                         if (checkOptions[0].isSelected())
@@ -1068,7 +1084,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                             getCurrentPlayer().monoLumber(1);
 
                         getCurrentPlayer().monoWheat(-2);
-                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     }
                     break;
 
@@ -1078,9 +1094,9 @@ public class CatanBoard extends JFrame implements KeyListener {
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[0].setEnabled(false);
-                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange sheep for:", checkOptions}, "Sheep Exchange", 1);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange sheep for:", checkOptions}, "Sheep Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
-                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
                         if (checkOptions[1].isSelected())
@@ -1096,7 +1112,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                             getCurrentPlayer().monoLumber(1);
 
                         getCurrentPlayer().monoWool(-2);
-                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     }
                     break;
 
@@ -1106,9 +1122,9 @@ public class CatanBoard extends JFrame implements KeyListener {
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[2].setEnabled(false);
-                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange ore for:", checkOptions}, "Ore Exchange", 1);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange ore for:", checkOptions}, "Ore Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
-                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
                         if (checkOptions[0].isSelected())
@@ -1124,7 +1140,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                             getCurrentPlayer().monoLumber(1);
 
                         getCurrentPlayer().monoOre(-2);
-                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                        JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     }
                     break;
 
@@ -1134,9 +1150,9 @@ public class CatanBoard extends JFrame implements KeyListener {
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[3].setEnabled(false);
-                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange brick for:", checkOptions}, "Brick Exchange", 1);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange brick for:", checkOptions}, "Brick Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
-                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
                         if (checkOptions[1].isSelected())
@@ -1153,7 +1169,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                     }
 
                     getCurrentPlayer().monoBrick(-2);
-                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
+                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     break;
 
                 case "Wood":
@@ -1162,9 +1178,9 @@ public class CatanBoard extends JFrame implements KeyListener {
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[4].setEnabled(false);
-                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange lumber for:", checkOptions}, "Lumber Exchange", 1);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange lumber for:", checkOptions}, "Lumber Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
-                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
                         if (checkOptions[1].isSelected())
@@ -1191,7 +1207,7 @@ public class CatanBoard extends JFrame implements KeyListener {
                             resourceChoice = JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade three in of: Sheep - Lumber - Ore - Brick - Wheat", "Generic Action", 1);
 
                             if (!(resourceChoice.equalsIgnoreCase("Sheep") || resourceChoice.equalsIgnoreCase("Lumber") || resourceChoice.equalsIgnoreCase("Brick") || resourceChoice.equalsIgnoreCase("Ore") || resourceChoice.equalsIgnoreCase("Wheat")))
-                                JOptionPane.showMessageDialog(this, "That is not an accepted resource. Try again.", "Improper Choice", 3);
+                                JOptionPane.showMessageDialog(this, "That is not an accepted resource. Try again.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             if (resourceChoice.equalsIgnoreCase("Sheep"))
@@ -1205,9 +1221,9 @@ public class CatanBoard extends JFrame implements KeyListener {
                             if (resourceChoice.equalsIgnoreCase("Lumber"))
                                 checkOptions[4].setEnabled(false);
 
-                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange for:", checkOptions}, "Generic Exchange", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange for:", checkOptions}, "Generic Exchange", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
-                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3);
+                                JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
                         if (checkOptions[0].isSelected())
                             getCurrentPlayer().monoWool(1);
@@ -1239,14 +1255,14 @@ public class CatanBoard extends JFrame implements KeyListener {
                         if (resourceChoice.equalsIgnoreCase("Lumber"))
                             getCurrentPlayer().monoLumber(-3);
                     }
-                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     break;
             }
 
             resetPortBoxes();
             getPlayerStatusMenu(getCurrentPlayer()).update();
         } catch (NullPointerException e) {
-            JOptionPane.showMessageDialog(this, "The port use has been cancelled for declining to follow the instructions.", "Port Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "The port use has been cancelled for declining to follow the instructions.", "Port Error", JOptionPane.WARNING_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
@@ -1276,7 +1292,7 @@ public class CatanBoard extends JFrame implements KeyListener {
         return counter;
     }
 
-    //Longest road algorithm using recursion; I think this will work, but there is something going on here that the program doesn't like
+    //Longest road algorithm using recursion
     public boolean runRoadAlgorithm(){
         ArrayList<Road> singleConnections = new ArrayList<>();
         ArrayList<Integer> lengths = new ArrayList<>();
@@ -1338,14 +1354,14 @@ public class CatanBoard extends JFrame implements KeyListener {
         else if(e.getKeyCode()==KeyEvent.VK_X){
             int quit = JOptionPane.showConfirmDialog(this,"Would you like to stop playing Settlers of Catan®?","Quit Game",JOptionPane.YES_NO_OPTION);
             if(quit==JOptionPane.YES_OPTION){
-                JOptionPane.showMessageDialog(this,"Thank you for playing.","See you next time",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Thank you for playing.","See you next time",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 System.exit(1);
             }
             return;
         }
         int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION);
         if (confirmCancellation != 0) {
-            JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             return;
         }
         if (!doingStartup && isPlayerActing) {
@@ -1384,7 +1400,7 @@ public class CatanBoard extends JFrame implements KeyListener {
         getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
         getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
         updateAllStatusMenus();
-        JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
     }
 
     public java.util.List<Road> getPlayerRoads(Player player){
@@ -1406,27 +1422,27 @@ public class CatanBoard extends JFrame implements KeyListener {
         Player afflictedPlayer = catanPlayerList.get(new Random().nextInt(catanPlayerList.size()));
         switch(chosenCataclysm) {
             case "Famine":
-                JOptionPane.showMessageDialog(this,"A famine sweeps over "+afflictedPlayer.getName()+"'s  lands, forcing them to eat all their sheep to stay alive. "+afflictedPlayer.getName()+" loses all sheep resources.","Ravaging Famine",3);
+                JOptionPane.showMessageDialog(this,"A famine sweeps over "+afflictedPlayer.getName()+"'s  lands, forcing them to eat all their sheep to stay alive. "+afflictedPlayer.getName()+" loses all sheep resources.","Ravaging Famine",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setWoolNum(0);
                 break;
 
             case "Locust":
-                JOptionPane.showMessageDialog(this,"A swarm of locusts flood from the desert and ravage all of "+afflictedPlayer.getName()+"'s wheat fields. "+afflictedPlayer.getName()+" loses all wheat resources.","Locust Invasion",3);
+                JOptionPane.showMessageDialog(this,"A swarm of locusts flood from the desert and ravage all of "+afflictedPlayer.getName()+"'s wheat fields. "+afflictedPlayer.getName()+" loses all wheat resources.","Locust Invasion",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setGrainNum(0);
                 break;
 
             case "Fire":
-                JOptionPane.showMessageDialog(this,"A terrible drought engulfs "+afflictedPlayer.getName()+"'s woodlands and causes massive fires, burning down their forests. "+afflictedPlayer.getName()+" loses all lumber resources.","Massive Drought",3);
+                JOptionPane.showMessageDialog(this,"A terrible drought engulfs "+afflictedPlayer.getName()+"'s woodlands and causes massive fires, burning down their forests. "+afflictedPlayer.getName()+" loses all lumber resources.","Massive Drought",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setLumberNum(0);
                 break;
 
             case "Strike":
-                JOptionPane.showMessageDialog(this,afflictedPlayer.getName()+"'s serf laborers revolt because of poor treatment and take all their building supplies with them. "+afflictedPlayer.getName()+" loses all brick resources.","Labor Revolt",3);
+                JOptionPane.showMessageDialog(this,afflictedPlayer.getName()+"'s serf laborers revolt because of poor treatment and take all their building supplies with them. "+afflictedPlayer.getName()+" loses all brick resources.","Labor Revolt",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setBrickNum(0);
                 break;
 
             case "Monsoon":
-                JOptionPane.showMessageDialog(this,"There are massive rainstorms emerging over "+afflictedPlayer.getName()+"'s mountains, instigating quick-erosion of their ore. "+afflictedPlayer.getName()+" loses all ore resources.","Labor Revolt",3);
+                JOptionPane.showMessageDialog(this,"There are massive rainstorms emerging over "+afflictedPlayer.getName()+"'s mountains, instigating quick-erosion of their ore. "+afflictedPlayer.getName()+" loses all ore resources.","Labor Revolt",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setOreNum(0);
                 break;
         }
@@ -1436,8 +1452,5 @@ public class CatanBoard extends JFrame implements KeyListener {
     //Excess overridden methods
     public void keyTyped(KeyEvent e){}
     public void keyReleased(KeyEvent e){}
-    public void mouseReleased(MouseEvent e){}
-    public void mouseEntered(MouseEvent e){}
-    public void mouseExited(MouseEvent e){}
     public void mouseClicked(MouseEvent e) {}
 }
