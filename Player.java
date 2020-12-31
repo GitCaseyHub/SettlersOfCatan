@@ -238,7 +238,7 @@ public class Player {
     public void winTheGame(){
         cb.updateAllStatusMenus();
         if(this.getVictoryPointTotal()>=10){
-            JOptionPane.showMessageDialog(null,this.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1);
+            JOptionPane.showMessageDialog(null,this.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 }
