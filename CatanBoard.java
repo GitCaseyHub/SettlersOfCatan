@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class CatanBoard extends JFrame implements MouseListener, KeyListener {
+public class CatanBoard extends JFrame implements KeyListener {
     //Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
@@ -138,7 +138,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         for (int x = 0; x < portPoints1.length; x++)
             portPoints[x] = new Point[]{new Point((int) portPoints1[x][0].getX(), (int) portPoints1[x][0].getY() + 50), new Point((int) portPoints1[x][1].getX(), (int) portPoints1[x][1].getY() + 50), new Point((int) portPoints1[x][2].getX(), (int) portPoints1[x][2].getY() + 50)};
 
-        this.addMouseListener(this);
         this.addKeyListener(this);
         this.catanPlayerList = catanPlayerList;
         this.statusGenerationalPoints = statusGenerationalPoints;
@@ -193,9 +192,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     public void initializeAwardOptionPanes(){
         longestRoadLabel.setIcon(new ImageIcon("Resources/Awards/Longest_Road.png"));
         longestRoadLabel.setBorder(compound);
-        longestRoadLabel.addMouseListener(this);
         largestArmyLabel.setIcon(new ImageIcon("Resources/Awards/Largest_Army.png"));
-        largestArmyLabel.addMouseListener(this);
         longestRoadLabel.setBorder(compound);
     }
 
@@ -331,7 +328,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         updateAllStatusMenus();
                     }
                 }
-                largestArmy(getCurrentPlayer(), currentLargestArmy);
+                largestArmy(getCurrentPlayer());
                 isDoneMovingRobber = false;
             }
             if (settlementPaintCondition) {
@@ -520,7 +517,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         usePort(port);
 
                     else
-                        JOptionPane.showMessageDialog(this, "You don't have access to this port.", "Port inaccessible", 3);
+                        JOptionPane.showMessageDialog(this, "You don't have access to this port.", "Port inaccessible", JOptionPane.QUESTION_MESSAGE);
                 }
             }
         }
@@ -735,15 +732,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         return others;
     }
 
-    public ArrayList<Integer> getIndexIDs() {
-        ArrayList<Integer> ids = new ArrayList<>();
-        for (Road indexConnection : indexConnections) {
-            ids.add(indexConnection.getIndexA());
-            ids.add(indexConnection.getIndexB());
-        }
-        return ids;
-    }
-
     public Index returnAppropIndex(int chosen_x, int chosen_y) {
         for (Index index : indexes)
             if (index.getLocation()[0] == chosen_x && index.getLocation()[1] == chosen_y)
@@ -880,11 +868,11 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             startPickOrder.add((startingPlayer + x) % catanPlayerList.size());
         }
         turnOrder = startPickOrder;
-        String turnOrderString = "The turn order is as follows: ";
+        StringBuilder turnOrderString = new StringBuilder("The turn order is as follows: ");
         for (int x = 0; x < turnOrder.size(); x++)
             for (Player player : catanPlayerList)
                 if (player.getRefNumber() == turnOrder.get(x))
-                    turnOrderString += player.getName() + ((x != turnOrder.size() - 1) ? ", " : ". ");
+                    turnOrderString.append(player.getName()).append((x != turnOrder.size() - 1) ? ", " : ". ");
 
         startPickOrder.addAll(reverse(startPickOrder));
         StringBuilder buildingOrder = new StringBuilder("With that in mind, the starting order placement will be: ");
@@ -897,7 +885,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     turnNameList.add(player.getName());
                 }
         JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Beginning Game", 1);
-        JOptionPane.showMessageDialog(this, turnOrderString + buildingOrder, "Turn and Building Order", 1);
+        JOptionPane.showMessageDialog(this, turnOrderString.toString() + buildingOrder, "Turn and Building Order", 1);
 
         for (PlayerView playerView : statusViewer) {
             playerView.options.setEnabled(false);
@@ -916,14 +904,14 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
     }
 
     public ArrayList<Integer> reverse(ArrayList<Integer> list) {
-        ArrayList<Integer> reversed = new ArrayList<Integer>();
+        ArrayList<Integer> reversed = new ArrayList<>();
         for (int x = list.size() - 1; x > -1; x--)
             reversed.add(list.get(x));
         return reversed;
     }
 
     public ArrayList<Player> getPlayersOnTile(Tile t) {
-        ArrayList<Player> players = new ArrayList<Player>();
+        ArrayList<Player> players = new ArrayList<>();
         for (int x = 0; x < t.getVertices().size(); x++) {
             for (Index index : indexes) {
                 if (Math.abs(t.getVertices().get(x).getX() - index.getLocation()[0]) < 30 && Math.abs(t.getVertices().get(x).getY() - index.getLocation()[1]) < 30)
@@ -1034,7 +1022,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             return "";
     }
 
-    public void largestArmy(Player player, int largestArmy) {
+    public void largestArmy(Player player) {
         int knightCounter = 0;
         for (int x = 0; x < player.getPlayedCards().size(); x++)
             if (player.getPlayedCards().get(x).getType().equals("Knight"))
@@ -1050,16 +1038,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
             JOptionPane.showMessageDialog(this, "There is a new largest army of size " + knightCounter + " controlled by " + player.getName() + ".", "New Largest Army", 1);
             updateAllStatusMenus();
         }
-    }
-
-    public int commonIndex(Road roadA, Road roadB) {
-        if (roadA.getIndexA() == roadB.getIndexA() || roadA.getIndexA() == roadB.getIndexB())
-            return roadA.getIndexA();
-
-        else if (roadA.getIndexB() == roadB.getIndexA() || roadA.getIndexB() == roadB.getIndexB())
-            return roadA.getIndexB();
-
-        return 0;
     }
 
     public void usePort(Port port) {
@@ -1093,6 +1071,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
                     }
                     break;
+
                 case "Sheep":
                     while (use.equals(""))
                         use = JOptionPane.showInputDialog(this, "Would you like to trade two sheep for a single resource?", "Sheep Port", 1);
@@ -1120,6 +1099,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
                     }
                     break;
+
                 case "Ore":
                     while (use.equals(""))
                         use = JOptionPane.showInputDialog(this, "Would you like to trade two ore for a single resource?", "Ore Port", 1);
@@ -1147,6 +1127,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
                     }
                     break;
+
                 case "Brick":
                     while (use.equals(""))
                         use = JOptionPane.showInputDialog(this, "Would you like to trade two brick for a single resource?", "Brick Port", 1);
@@ -1174,6 +1155,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     getCurrentPlayer().monoBrick(-2);
                     JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1);
                     break;
+
                 case "Wood":
                     while (use.equals(""))
                         use = JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1);
@@ -1199,6 +1181,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                     }
                     getCurrentPlayer().monoLumber(-2);
                     break;
+
                 case "Generic":
                     while (use.equals(""))
                         use = JOptionPane.showInputDialog(this, "Would you like to trade three of a resource for another single resource?", "Generic Port", 1);
@@ -1257,7 +1240,6 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
                             getCurrentPlayer().monoLumber(-3);
                     }
                     JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", JOptionPane.INFORMATION_MESSAGE);
-
                     break;
             }
 
@@ -1294,7 +1276,7 @@ public class CatanBoard extends JFrame implements MouseListener, KeyListener {
         return counter;
     }
 
-    //Longest road algorithm
+    //Longest road algorithm using recursion; I think this will work, but there is something going on here that the program doesn't like
     public boolean runRoadAlgorithm(){
         ArrayList<Road> singleConnections = new ArrayList<>();
         ArrayList<Integer> lengths = new ArrayList<>();
