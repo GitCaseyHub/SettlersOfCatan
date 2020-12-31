@@ -13,15 +13,7 @@ public class Port {
         return locations;
     }
 
-    public void setLocations(Point[] locations) {
-        this.locations = locations;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }
