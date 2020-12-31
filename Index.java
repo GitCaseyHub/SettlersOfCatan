@@ -40,17 +40,9 @@ public class Index {
     public int getIndexID() {
         return indexID;
     }
-
-    public void setIndexID(int indexID) {
-        this.indexID = indexID;
-    }
-
+    
     public int[] getLocation() {
         return location;
-    }
-
-    public void setLocation(int[] location) {
-        this.location = location;
     }
 
     public boolean isTaken() {
