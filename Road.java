@@ -28,26 +28,14 @@ public class Road {
         return indexA;
     }
 
-    public void setIndexA(int indexA) {
-        this.indexA = indexA;
-    }
-
     public int getIndexB() {
         return indexB;
     }
-
-    public void setIndexB(int indexB) {
-        this.indexB = indexB;
-    }
-
+    
     public Player getOwner() {
         return owner;
     }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
-    }
-
+    
     @Override
     public String toString(){
         return "Index (A,B): ("+getIndexA()+","+getIndexB()+")";
