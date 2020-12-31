@@ -76,14 +76,14 @@ public class CatanBoard extends JFrame implements KeyListener {
 
     //Port Creation
     Point[][] portPoints1 = new Point[][]{new Point[]{new Point(264, 122), new Point(330, 87), new Point(219, 18)},
-            new Point[]{new Point(461, 87), new Point(533, 121), new Point(486, 18)},
-            new Point[]{new Point(663, 200), new Point(729, 237), new Point(681, 132)},
-            new Point[]{new Point(797, 346), new Point(798, 425), new Point(810, 351)},
-            new Point[]{new Point(731, 536), new Point(664, 577), new Point(681, 556)},
-            new Point[]{new Point(526, 654), new Point(461, 687), new Point(486, 685)},
-            new Point[]{new Point(332, 686), new Point(266, 647), new Point(219, 685)},
-            new Point[]{new Point(200, 536), new Point(198, 459), new Point(88, 468)},
-            new Point[]{new Point(198, 235), new Point(197, 312), new Point(88, 244)}};
+                                          new Point[]{new Point(461, 87), new Point(533, 121), new Point(486, 18)},
+                                          new Point[]{new Point(663, 200), new Point(729, 237), new Point(681, 132)},
+                                          new Point[]{new Point(797, 346), new Point(798, 425), new Point(810, 351)},
+                                          new Point[]{new Point(731, 536), new Point(664, 577), new Point(681, 556)},
+                                          new Point[]{new Point(526, 654), new Point(461, 687), new Point(486, 685)},
+                                          new Point[]{new Point(332, 686), new Point(266, 647), new Point(219, 685)},
+                                          new Point[]{new Point(200, 536), new Point(198, 459), new Point(88, 468)},
+                                          new Point[]{new Point(198, 235), new Point(197, 312), new Point(88, 244)}};
     String[] portTypes = {"Generic", "Generic", "Generic", "Generic", "Sheep", "Wheat", "Ore", "Brick", "Wood"};
     Port[] ports = new Port[9];
     int portCount = 0;
