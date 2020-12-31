@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class DevelopmentCard implements ActionListener {
+    //References
     String type = "";
     Player player;
     CatanBoard cbReference;
@@ -38,30 +39,6 @@ public class DevelopmentCard implements ActionListener {
 
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public CatanBoard getCbReference() {
-        return cbReference;
-    }
-
-    public void setCbReference(CatanBoard cbReference) {
-        this.cbReference = cbReference;
-    }
-
-    public ArrayList<Player> getOtherPlayers() {
-        return otherPlayers;
     }
 
     public DevelopmentCard(String type, Player player, ArrayList<Player> otherPlayers, CatanBoard cbReference, boolean boughtThisTurn) {
