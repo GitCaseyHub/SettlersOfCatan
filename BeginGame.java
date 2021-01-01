@@ -30,6 +30,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JLabel openingLabel = new JLabel("",SwingConstants.CENTER);
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
+    //Bonus space filling objects when on player select screen
+    JFrame imageFrame = new JFrame();
+    JLabel imageLabel = new JLabel();
+
     boolean usablePorts=false;
 
     public BeginGame(){
@@ -47,7 +51,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             options.add(friendlyRobber);
                 activePorts.setBorderPainted(true);
                 activePorts.setBorder(compound);
-                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports will be identified by red 'x's and green 'o's.");
+                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports will be identified by hollow green circles.");
                 friendlyRobber.setBorderPainted(true);
                 friendlyRobber.setBorder(compound);
                 friendlyRobber.setToolTipText("Select this checkbox to disable the robber from stealing from players with less than 4 victory points.");
@@ -79,6 +83,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         openingFrame.setSize(715,716);
         openingFrame.setLocation(dim.width/2-openingFrame.getSize().width/2, dim.height/2-openingFrame.getSize().height/2);
         openingFrame.setVisible(true);
+        imageLabel.setIcon(new ImageIcon("Resources/BonusOpening.png"));
+        imageFrame.add(imageLabel);
+        imageLabel.setBorder(compound);
     }
 
     public void actionPerformed(ActionEvent e){
@@ -169,6 +176,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2-300);
             this.setVisible(true);
             this.setTitle("Options and Game Creation");
+            imageFrame.setUndecorated(true);
+            imageFrame.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300+150);
+            imageFrame.setSize(544,502);
+            imageFrame.setVisible(true);
         }
     }
 
