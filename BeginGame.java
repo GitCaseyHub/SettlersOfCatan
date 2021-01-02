@@ -108,7 +108,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
         else if(e.getSource()==startGame) {
             this.setVisible(false);
-
+            imageFrame.setVisible(false);
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
             cbMain.friendlyRobber=friendlyRobber.isSelected();
             cbMain.cataclysmsActive=cataclysms.isSelected();
@@ -119,7 +119,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.setTitle("Settlers of Catan®");
             cbMain.setVisible(true);
             cbMain.performStartingOperations();
-            this.setVisible(false);
         }
     }
 
