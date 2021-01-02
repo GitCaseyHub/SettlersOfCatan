@@ -47,7 +47,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     //Booleans for conditions on when MouseListeners should activate
     boolean isRoadBuilding = false, isSettlementBuilding = false;
-    boolean isDoneRoadBuilding = false, isDoneSettlementBuilding = false;
+    boolean isDoneRoadBuilding = false;
     boolean doingStartup = false, found = false;
     boolean isMovingRobber = false, isDoneMovingRobber = false;
     boolean roadDevCard = false, finishedRoadCard = false;
@@ -116,6 +116,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     Point[] outLinePoints = new Point[outLinePoints1.length];
     Point[][] portPoints = new Point[portPoints1.length][];
 
+    //Frame for appropriate image reveal when building
+    JFrame buildFrame = new JFrame();
+    JLabel buildLabel = new JLabel();
+
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
@@ -180,6 +184,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         getPortsReady();
         givePlayersCatanBoardReference();
         initializeAwardOptionPanes();
+        constructBuildingPreviewFrame();
         workAround();
     }
 
@@ -188,6 +193,15 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         dummy.setBounds(-500,-500,0,0);
         dummy.setVisible(true);
         dummy.setVisible(false);
+    }
+
+    public void constructBuildingPreviewFrame(){
+        buildFrame.add(buildLabel);
+        buildFrame.isAlwaysOnTop();
+        buildLabel.setBorder(compound);
+        buildFrame.setSize(433,312);
+        buildFrame.setLocation(309,389);
+        buildLabel.addMouseListener(this);
     }
 
     public void initializeAwardOptionPanes(){
@@ -333,13 +347,16 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 isDoneMovingRobber = false;
             }
             if (settlementPaintCondition) {
-                //Drawing Settlements Test
+                //Drawing Settlements
                 BufferedImage settlement = ImageIO.read(new File("Pieces/" + getCurrentPlayer().getColor() + "_Settlement.png"));
                 g.drawImage(settlement, chosen_x, chosen_y, null);
                 getCurrentPlayer().changeVictoryPoints(1);
                 settlementPaintCondition = false;
-                isDoneSettlementBuilding = true;
-                if (doingStartup)
+                if(!doingStartup){
+                    JOptionPane.showMessageDialog(this,"You've built a new settlement.","Settlement Construction",1,new ImageIcon("Resources/Catan_Icon.png"));
+                    showBuiltImage("Resources/Preview_Images/Settlement.png","Settlement Construction");
+                }
+                else
                     isRoadBuilding = true;
             }
 
@@ -347,6 +364,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 Point testPoint = (Point) roadInfo[0];
                 BufferedImage road = ImageIO.read(new File("Pieces/" + roadInfo[1] + "_" + getCurrentPlayer().getColor() + "_Road.png"));
                 g.drawImage(road, (int) testPoint.getX(), (int) testPoint.getY(), null);
+
                 roadCondition = 0;
                 checkedIndexes.clear();
                 isDoneRoadBuilding = true;
@@ -387,19 +405,20 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                 player.setTurn(true);
 
                         getPlayerStatusMenu(catanPlayerList.get(0)).update();
-                        isDoneSettlementBuilding = true;
                         JOptionPane.showMessageDialog(this, "The game is ready to officially start. Based on your first settlement placements, you will be given the appropriate resources. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play",1, new ImageIcon("Resources/Catan_Icon.png"));
                         givePlayersStartingResources();
                     }
                 } else {
-                    if (!roadDevCard && !finishedRoadCard)
-                        JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    if (!roadDevCard && !finishedRoadCard) {
+                        JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                        showBuiltImage("Resources/Preview_Images/Road.png","Road Construction");
+                    }
 
                     else if (roadDevCard) {
-                        JOptionPane.showMessageDialog(this, "You've built a new road. Now, create your second road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
-                        isRoadBuilding = true;
-                        roadDevCard = false;
-                        finishedRoadCard = true;
+                    JOptionPane.showMessageDialog(this, "You've built a new road. Now, create your second road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    isRoadBuilding = true;
+                    roadDevCard = false;
+                    finishedRoadCard = true;
                     } else {
                         JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action",1, new ImageIcon("Resources/Catan_Icon.png"));
                         getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
@@ -704,24 +723,17 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
                 repaint();
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                showBuiltImage("Resources/Preview_Images/City.jpg","City Construction");
             }
         }
+
+        if(e.getSource()==buildLabel)
+            buildFrame.setVisible(false);
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseReleased(MouseEvent e){}
+    public void mouseEntered(MouseEvent e){}
+    public void mouseExited(MouseEvent e){}
 
     public void constructPorts() {
         ArrayList<Point[]> portPointList = new ArrayList<Point[]>();
@@ -1367,7 +1379,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         if (!doingStartup && isPlayerActing) {
             if (isSettlementBuilding) {
                 isSettlementBuilding = false;
-                isDoneSettlementBuilding = false;
                 getCurrentPlayer().changeWool(1);
                 getCurrentPlayer().changeBrick(1);
                 getCurrentPlayer().changeGrain(1);
@@ -1447,6 +1458,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 break;
         }
         updateAllStatusMenus();
+    }
+
+    public void showBuiltImage(String name, String title){
+        buildLabel.setIcon(new ImageIcon(name));
+        buildFrame.setTitle(title);
+        buildFrame.setVisible(true);
     }
 
     //Excess overridden methods
