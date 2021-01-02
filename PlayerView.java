@@ -8,8 +8,6 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 public class PlayerView extends JFrame implements ActionListener, MouseMotionListener {
-    //Added JOptionPanes that appear when the player hovers over the award boxes (but the listener only activates if that player has the award)
-    
     //Fancy Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
@@ -259,7 +257,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==settlement){
-            int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Building",JOptionPane.YES_NO_OPTION);
+            int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Building",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(settlementInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     reference.isPlayerActing=true;
@@ -293,13 +291,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if(player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4)
                 JOptionPane.showMessageDialog(this,"You don't have four or more of a single resource. You cannot use this 'option'.","Insufficient Resources", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             else{
-                int confirm = JOptionPane.showConfirmDialog(this,"Would you like to trade in four of a resource for one of another resource?","Generic Resource Exchange",JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(this,"Would you like to trade in four of a resource for one of another resource?","Generic Resource Exchange",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
 
                 if(confirm==JOptionPane.YES_OPTION) {
                     try {
                         String exchangeResource = "";
                         while (!exchangeResource.equalsIgnoreCase("Sheep") && !exchangeResource.equalsIgnoreCase("Lumber") && !exchangeResource.equalsIgnoreCase("Ore") && !exchangeResource.equalsIgnoreCase("Brick") && !exchangeResource.equalsIgnoreCase("Wheat")) {
-                            exchangeResource = JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade four in of: Sheep - Lumber - Ore - Brick - Wheat", "Resource Exchange", JOptionPane.QUESTION_MESSAGE);
+                            exchangeResource = (String)JOptionPane.showInputDialog(this, "Type in the resource you'd like to trade four in of: Sheep - Lumber - Ore - Brick - Wheat", "Resource Exchange", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"),null,null);
 
                             if (!exchangeResource.equalsIgnoreCase("Sheep") && !exchangeResource.equalsIgnoreCase("Lumber") && !exchangeResource.equalsIgnoreCase("Ore") && !exchangeResource.equalsIgnoreCase("Brick") && !exchangeResource.equalsIgnoreCase("Wheat"))
                                 JOptionPane.showMessageDialog(this, "That is not one of the resource choices. Please choose again.", "Invalid Resource", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -351,7 +349,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==city){
-            int cityInput = JOptionPane.showConfirmDialog(this,"Would you like to upgrade one of your settlements into a city?","Settlement Upgrade",JOptionPane.YES_NO_OPTION);
+            int cityInput = JOptionPane.showConfirmDialog(this,"Would you like to upgrade one of your settlements into a city?","Settlement Upgrade",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(cityInput==0){
                 if((player.getGrainNum()>=2 && player.getOreNum()>=3 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getGrainNum()>=4 && player.getOreNum()>=6 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     if(playerHasSettlements()) {
@@ -378,12 +376,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 }
                 else
                     JOptionPane.showMessageDialog(this,"You do not have the necessary resources to upgrade a settlement.","City Building Error", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-
             }
         }
 
         else if(e.getSource()==road){
-            int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION);
+            int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(roadInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))) {
                     reference.isPlayerActing=true;
@@ -411,7 +408,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         else if(e.getSource()==buyCard){
             DevelopmentCard newDc = new DevelopmentCard(devCardTypes[new Random().nextInt(25)],player,getOtherPlayers(),reference,true);
-            int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION);
+            int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(devInput==0){
                 if((player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getOreNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -445,7 +442,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         playedCard = player.getUnPlayedCards().get(x);
                         break;
                     }
-
 
                 if ((multiples(playedCard.getType()) && !boughtAllOnSameTurn(playedCard.getType())) || !playedCard.isBoughtThisTurn()) {
                     reference.getPlayerStatusMenu(player).options.setEnabled(false);
@@ -518,6 +514,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
             JOptionPane.showMessageDialog(this,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+
             if(diceRoll==7) {
                 reference.getPlayerStatusMenu(player).options.setEnabled(false);
                 reference.getPlayerStatusMenu(player).build.setEnabled(false);
