@@ -198,7 +198,7 @@ public class DevelopmentCard implements ActionListener {
         }
 
         if (counter == 2 && yearOfPlenty) {
-            int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if (confirmation == 0) {
                 JOptionPane.showMessageDialog(null, "Okay. You will be given your chosen resources.", "Resources Chosen", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 player.changeBrick((brickCheck.isSelected() ? 1 : 0));
@@ -218,7 +218,7 @@ public class DevelopmentCard implements ActionListener {
         }
 
         if(counter==1 && monopoly){
-            int confirm = JOptionPane.showConfirmDialog(null,"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(null,"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(confirm==0) {
                 JOptionPane.showMessageDialog(null, "Okay. You will be given all resources of that type from other players.", "Monopoly Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 for (int x = 0; x < otherPlayers.size(); x++) {
