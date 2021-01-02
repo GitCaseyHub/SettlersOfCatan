@@ -32,7 +32,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
     //Bonus space filling objects when on player select screen
     JFrame imageFrame = new JFrame();
-    JLabel imageLabel = new JLabel();
+    JLabel imageLabel = new JLabel("",SwingConstants.CENTER);
 
     boolean usablePorts=false;
 
