@@ -95,13 +95,13 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             if (!nameField.getText().equals("Name Your Player")){
                 //Generate new player
                 if (classBox.getSelectedIndex() == 0 && colorBox.getSelectedIndex() != 0)
-                    JOptionPane.showMessageDialog(this, "You can't be a default combobox title and you know that! Pick an actual class.", "Class Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this, "That isn't a valid class. Choose a class.", "Class Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
 
                 else if (classBox.getSelectedIndex() != 0 && colorBox.getSelectedIndex() == 0)
-                    JOptionPane.showMessageDialog(this, "That isn't a valid color. Pick an actual color option before I force-quit the game!", "Color Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this, "That isn't a valid color. Choose a color.", "Color Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
 
                 else if (classBox.getSelectedIndex() == 0 && colorBox.getSelectedIndex() == 0)
-                    JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Stop wasting time and decide!", "Color & Class Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Choose both.", "Color & Class Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
 
                 else {
                     //Testing Player
@@ -112,7 +112,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                 }
             }
             else
-                JOptionPane.showMessageDialog(this,"You didn't name your character. That's the most important information that is needed!","Naming Error",3, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this,"You didn't name your character. Choose an appropriate name.","Name Error",3, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
