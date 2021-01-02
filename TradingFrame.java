@@ -82,7 +82,7 @@ public class TradingFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==askButton){
             askButton.setEnabled(false);
-            String playerName = JOptionPane.showInputDialog(this,"Which player would you like to trade with?","Trading Player",1);
+            String playerName = (String)JOptionPane.showInputDialog(this,"Which player would you like to trade with?","Trading Player",1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
             int playerCounter=0;
             for(int x=0; x<cbRef.catanPlayerList.size(); x++)
                 if(cbRef.catanPlayerList.get(x).getName().equals(playerName))
@@ -96,7 +96,7 @@ public class TradingFrame extends JFrame implements ActionListener {
             else if(playerCounter==1 && !rejections.contains(playerName)){
                 String accept="";
                 while (accept.equals(""))
-                    accept = JOptionPane.showInputDialog(this,playerName+", would you like to trade with "+this.player.getName()+"?","Trade Request",1);
+                    accept = (String)JOptionPane.showInputDialog(this,playerName+", would you like to trade with "+this.player.getName()+"?","Trade Request",1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
 
                 if(accept.equalsIgnoreCase("Yes")) {
                     cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.asker = false;
