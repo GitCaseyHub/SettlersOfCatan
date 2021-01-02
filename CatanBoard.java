@@ -723,7 +723,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
                 repaint();
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
-                showBuiltImage("Resources/Preview_Images/City.jpg","City Construction");
+                showBuiltImage("Resources/Preview_Images/City.png","City Construction");
             }
         }
 
@@ -1074,7 +1074,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             switch (port.getType()) {
                 case "Wheat":
                     while (use.equals(""))
-                        use = JOptionPane.showInputDialog(this, "Would you like to trade two wheat for a single resource?", "Wheat Port",1);
+                        use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two wheat for a single resource?", "Wheat Port",JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[1].setEnabled(false);
@@ -1102,7 +1102,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 case "Sheep":
                     while (use.equals(""))
-                        use = JOptionPane.showInputDialog(this, "Would you like to trade two sheep for a single resource?", "Sheep Port", 1);
+                        use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two sheep for a single resource?", "Sheep Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[0].setEnabled(false);
@@ -1130,7 +1130,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 case "Ore":
                     while (use.equals(""))
-                        use = JOptionPane.showInputDialog(this, "Would you like to trade two ore for a single resource?", "Ore Port", 1);
+                        use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two ore for a single resource?", "Ore Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[2].setEnabled(false);
@@ -1158,7 +1158,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 case "Brick":
                     while (use.equals(""))
-                        use = JOptionPane.showInputDialog(this, "Would you like to trade two brick for a single resource?", "Brick Port", 1);
+                        use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two brick for a single resource?", "Brick Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[3].setEnabled(false);
@@ -1186,7 +1186,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 case "Wood":
                     while (use.equals(""))
-                        use = JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1);
+                        use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[4].setEnabled(false);
@@ -1212,7 +1212,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 case "Generic":
                     while (use.equals(""))
-                        use = JOptionPane.showInputDialog(this, "Would you like to trade three of a resource for another single resource?", "Generic Port", 1);
+                        use = (String)JOptionPane.showInputDialog(this, "Would you like to trade three of a resource for another single resource?", "Generic Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
                         String resourceChoice = "";
                         while (!(resourceChoice.equalsIgnoreCase("Sheep") || resourceChoice.equalsIgnoreCase("Lumber") || resourceChoice.equalsIgnoreCase("Brick") || resourceChoice.equalsIgnoreCase("Ore") || resourceChoice.equalsIgnoreCase("Wheat"))) {
@@ -1364,14 +1364,14 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             return;
         }
         else if(e.getKeyCode()==KeyEvent.VK_X){
-            int quit = JOptionPane.showConfirmDialog(this,"Would you like to stop playing Settlers of Catan®?","Quit Game",JOptionPane.YES_NO_OPTION);
+            int quit = JOptionPane.showConfirmDialog(this,"Would you like to stop playing Settlers of Catan®?","Quit Game",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(quit==JOptionPane.YES_OPTION){
                 JOptionPane.showMessageDialog(this,"Thank you for playing.","See you next time",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 System.exit(1);
             }
             return;
         }
-        int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION);
+        int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
         if (confirmCancellation != 0) {
             JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             return;
