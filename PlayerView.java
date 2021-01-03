@@ -473,8 +473,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==endTurn){
+            int cataclysmOccurrence = 69;
             if(reference.cataclysmsActive){
-                int cataclysmOccurrence = new Random().nextInt(20);
+                cataclysmOccurrence = new Random().nextInt(20);
                 if(cataclysmOccurrence==0)
                     reference.cataclysm();
             }
@@ -495,8 +496,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         turnOrder.get(0).setTurn(true);
                         name=turnOrder.get(0).getName();
                     }
+            if((cataclysmOccurrence!=0 && reference.cataclysmsActive) || cataclysmOccurrence==69)
+                JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
-            JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             this.player.setTurn(false);
             this.turnBox.setSelected(false);
             reference.getPlayerStatusMenu(player).options.setEnabled(false);
