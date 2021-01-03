@@ -3,9 +3,11 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class DevelopmentCard implements ActionListener {
+public class DevelopmentCard implements ActionListener, MouseListener {
     //References
     String type = "";
     Player player;
@@ -29,6 +31,10 @@ public class DevelopmentCard implements ActionListener {
     boolean monopoly=false;
     boolean boughtThisTurn;
 
+    //Card Frame
+    JFrame cardFrame = new JFrame();
+    JLabel cardLabel = new JLabel("",SwingConstants.CENTER);
+
     public boolean isBoughtThisTurn() {
         return boughtThisTurn;
     }
@@ -49,9 +55,16 @@ public class DevelopmentCard implements ActionListener {
         this.otherPlayers = otherPlayers;
         this.boughtThisTurn=boughtThisTurn;
         readyYearOfPlentyFrame();
+        initializeCardFrame();
     }
 
     public DevelopmentCard(){}
+
+    public void initializeCardFrame(){
+        cardFrame.setBounds(422,392,210,315);
+        cardFrame.add(cardLabel);
+        cardLabel.addMouseListener(this);
+    }
 
     public void playCard() {
         if (type.equals("Knight"))
@@ -79,16 +92,19 @@ public class DevelopmentCard implements ActionListener {
     }
 
     public void performKnightAction() {
+        showDevelopmentImage("Resources/Preview_Images/Knight.png");
         JOptionPane.showMessageDialog(null,"Move the robber to a tile. Note that you may keep the robber in the same position by click on the tile it is already located on.","Knight Card Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         cbReference.isMovingRobber=true;
         cbReference.isPlayerActing=true;
     }
 
     public void performVictoryPoints() {
+        showDevelopmentImage("Resources/Preview_Images/University.png");
         player.changeVictoryPoints(1);
     }
 
     public void performRoadBuilding() {
+        showDevelopmentImage("Resources/Preview_Images/Road_Building.png");
         cbReference.roadDevCard=true;
         cbReference.finishedRoadCard=false;
         cbReference.isRoadBuilding=true;
@@ -96,6 +112,7 @@ public class DevelopmentCard implements ActionListener {
     }
 
     public void performYearOfPlenty() {
+        showDevelopmentImage("Resources/Preview_Images/Year_Of_Plenty.png");
         counter = 0;
         yearOfPlenty=true;
         choiceFrame.setTitle("Year of Plenty Resource Choices");
@@ -103,6 +120,7 @@ public class DevelopmentCard implements ActionListener {
     }
 
     public void performMonopoly() {
+        showDevelopmentImage("Resources/Preview_Images/Monopoly.png");
         counter=0;
         monopoly=true;
         choiceFrame.setTitle("Monopoly Resource Choice");
@@ -213,6 +231,7 @@ public class DevelopmentCard implements ActionListener {
                 cbReference.getPlayerStatusMenu(player).build.setEnabled(true);
                 cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
                 yearOfPlenty=false;
+
             } else
                 JOptionPane.showMessageDialog(null, "Okay. Reselect the resources you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         }
@@ -280,4 +299,20 @@ public class DevelopmentCard implements ActionListener {
         wheatCheck.setSelected(false);
         woodCheck.setSelected(false);
     }
+
+    public void showDevelopmentImage(String name){
+        cardLabel.setIcon(new ImageIcon(name));
+        cardFrame.setVisible(true);
+    }
+
+    public void mousePressed(MouseEvent e) {
+        if(e.getSource()==cardLabel)
+            cardFrame.setVisible(false);
+    }
+
+
+    public void mouseClicked(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
 }
