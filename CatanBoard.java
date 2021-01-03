@@ -1435,26 +1435,31 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             case "Famine":
                 JOptionPane.showMessageDialog(this,"A famine sweeps over "+afflictedPlayer.getName()+"'s  lands, forcing them to eat all their sheep to stay alive. "+afflictedPlayer.getName()+" loses all sheep resources.","Ravaging Famine",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setWoolNum(0);
+                showBuiltImage("Resources/Preview_Images/Famine.png","Famine");
                 break;
 
             case "Locust":
                 JOptionPane.showMessageDialog(this,"A swarm of locusts flood from the desert and ravage all of "+afflictedPlayer.getName()+"'s wheat fields. "+afflictedPlayer.getName()+" loses all wheat resources.","Locust Invasion",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setGrainNum(0);
+                showBuiltImage("Resources/Preview_Images/Locust.png","Swarm of Locust");
                 break;
 
             case "Fire":
                 JOptionPane.showMessageDialog(this,"A terrible drought engulfs "+afflictedPlayer.getName()+"'s woodlands and causes massive fires, burning down their forests. "+afflictedPlayer.getName()+" loses all lumber resources.","Massive Drought",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setLumberNum(0);
+                showBuiltImage("Resources/Preview_Images/Fires.png","Forest Fires");
                 break;
 
             case "Strike":
                 JOptionPane.showMessageDialog(this,afflictedPlayer.getName()+"'s serf laborers revolt because of poor treatment and take all their building supplies with them. "+afflictedPlayer.getName()+" loses all brick resources.","Labor Revolt",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setBrickNum(0);
+                showBuiltImage("Resources/Preview_Images/Revolt.jpg","Serf Uprising");
                 break;
 
             case "Monsoon":
                 JOptionPane.showMessageDialog(this,"There are massive rainstorms emerging over "+afflictedPlayer.getName()+"'s mountains, instigating quick-erosion of their ore. "+afflictedPlayer.getName()+" loses all ore resources.","Labor Revolt",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setOreNum(0);
+                showBuiltImage("Resources/Preview_Images/Monsoon.png","Rainstorms");
                 break;
         }
         updateAllStatusMenus();
