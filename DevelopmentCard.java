@@ -61,7 +61,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     public DevelopmentCard(){}
 
     public void initializeCardFrame(){
-        cardFrame.setBounds(422,392,210,315);
+        cardFrame.setBounds(422,392,215,325);
         cardFrame.add(cardLabel);
         cardLabel.addMouseListener(this);
     }
