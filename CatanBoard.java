@@ -1371,47 +1371,49 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             }
             return;
         }
-        int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
-        if (confirmCancellation != 0) {
-            JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-            return;
-        }
-        if (!doingStartup && isPlayerActing) {
-            if (isSettlementBuilding) {
-                isSettlementBuilding = false;
-                getCurrentPlayer().changeWool(1);
-                getCurrentPlayer().changeBrick(1);
-                getCurrentPlayer().changeGrain(1);
-                getCurrentPlayer().changeLumber(1);
-                getCurrentPlayer().changeVictoryPoints(-1);
-            } else if (isMovingRobber) {
-                isMovingRobber = false;
-                isDoneMovingRobber = false;
-                getCurrentPlayer().addDevelopmentCardToUnplayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
-                getCurrentPlayer().removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
-                getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem("Knight");
-                getPlayerStatusMenu(getCurrentPlayer()).played.removeItem("Knight");
-            } else if (isRoadBuilding) {
-                isRoadBuilding = false;
-                isDoneRoadBuilding = false;
-                roadCondition = 0;
-                checkedIndexes.clear();
-                getCurrentPlayer().changeLumber(1);
-                getCurrentPlayer().changeBrick(1);
-
-            } else if (isCityUpgrading) {
-                isCityUpgrading = false;
-                getCurrentPlayer().changeGrain(2);
-                getCurrentPlayer().changeOre(3);
-                getCurrentPlayer().changeVictoryPoints(-1);
+        if(isPlayerActing) {
+            int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png"));
+            if (confirmCancellation != 0) {
+                JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
             }
+            if (!doingStartup && isPlayerActing) {
+                if (isSettlementBuilding) {
+                    isSettlementBuilding = false;
+                    getCurrentPlayer().changeWool(1);
+                    getCurrentPlayer().changeBrick(1);
+                    getCurrentPlayer().changeGrain(1);
+                    getCurrentPlayer().changeLumber(1);
+                    getCurrentPlayer().changeVictoryPoints(-1);
+                } else if (isMovingRobber) {
+                    isMovingRobber = false;
+                    isDoneMovingRobber = false;
+                    getCurrentPlayer().addDevelopmentCardToUnplayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
+                    getCurrentPlayer().removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
+                    getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem("Knight");
+                    getPlayerStatusMenu(getCurrentPlayer()).played.removeItem("Knight");
+                } else if (isRoadBuilding) {
+                    isRoadBuilding = false;
+                    isDoneRoadBuilding = false;
+                    roadCondition = 0;
+                    checkedIndexes.clear();
+                    getCurrentPlayer().changeLumber(1);
+                    getCurrentPlayer().changeBrick(1);
+
+                } else if (isCityUpgrading) {
+                    isCityUpgrading = false;
+                    getCurrentPlayer().changeGrain(2);
+                    getCurrentPlayer().changeOre(3);
+                    getCurrentPlayer().changeVictoryPoints(-1);
+                }
+            }
+            isPlayerActing = false;
+            getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
+            getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+            getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+            updateAllStatusMenus();
+            JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         }
-        isPlayerActing = false;
-        getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
-        getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
-        getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-        updateAllStatusMenus();
-        JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
     }
 
     public java.util.List<Road> getPlayerRoads(Player player){
