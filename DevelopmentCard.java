@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class DevelopmentCard implements ActionListener, MouseListener {
     //References
@@ -64,6 +65,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
         cardFrame.setBounds(422,392,215,325);
         cardFrame.add(cardLabel);
         cardLabel.addMouseListener(this);
+        cardLabel.setBorder(compound);
     }
 
     public void playCard() {
@@ -99,7 +101,20 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     }
 
     public void performVictoryPoints() {
-        showDevelopmentImage("Resources/Preview_Images/University.png");
+        int victoryPointRandomize = new Random().nextInt(3);
+        switch(victoryPointRandomize){
+            case 0:
+                showDevelopmentImage("Resources/Preview_Images/University.png");
+                break;
+                
+            case 1:
+                showDevelopmentImage("Resources/Preview_Images/Chapel.png");
+                break;
+                
+            case 2:
+                showDevelopmentImage("Resources/Preview_Images/Governors_House.png");
+                break;
+        }
         player.changeVictoryPoints(1);
     }
 
