@@ -474,9 +474,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     //Port Indexes if Active
                     BufferedImage circle = ImageIO.read(new File("Pieces/Active_Ports.png"));
                     for (Point[] portPoint : portPoints) {
-                        if (!sharesLocation(new Point((int) portPoint[0].getX(), (int) portPoint[0].getY())))
+                        if (sharesLocation(new Point((int) portPoint[0].getX(), (int) portPoint[0].getY())))
                             g.drawImage(circle, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
-                        if (!sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
+                        if (sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
                             g.drawImage(circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 }
@@ -1069,6 +1069,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void usePort(Port port) {
+        showBuiltImage("Resources/Preview_Images/Port.png","Port Usage");
         try {
             String use = "";
             switch (port.getType()) {
@@ -1427,7 +1428,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 if (index.isTaken())
                     counter++;
 
-        return counter>0;
+        return counter <= 0;
     }
 
     public void cataclysm(){
