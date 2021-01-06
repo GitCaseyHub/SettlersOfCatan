@@ -467,7 +467,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if(tf.isVisible())
                 JOptionPane.showMessageDialog(this,"You already have your trading frame open.","Already Open", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             else {
-                showBuiltImage("Resources/Preview_Images/Trade.png","Resource Exchange");
+                reference.showBuiltImage("Resources/Preview_Images/Trade.png","Resource Exchange");
                 this.tf.setVisible(true);
                 this.tf.updateComboBoxes();
             }
@@ -572,12 +572,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 counter--;
         }
         return counter==0;
-    }
-
-    public void showBuiltImage(String name, String title){
-        reference.buildLabel.setIcon(new ImageIcon(name));
-        reference.buildFrame.setTitle(title);
-        reference.buildFrame.setVisible(true);
     }
 
     public void mouseDragged(MouseEvent e) {}
