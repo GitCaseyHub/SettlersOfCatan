@@ -121,31 +121,20 @@ public class TradingFrame extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade",1, new ImageIcon("Resources/Catan_Icon.png"));
             TradingFrame firstFrame = cbRef.firstFrame;
             TradingFrame secondFrame = cbRef.secondFrame;
-            //Adding Resources
-            firstFrame.player.monoBrick((int)secondFrame.brickCheck.getSelectedItem());
-            firstFrame.player.monoLumber((int)secondFrame.woodCheck.getSelectedItem());
-            firstFrame.player.monoOre((int)secondFrame.oreCheck.getSelectedItem());
-            firstFrame.player.monoWheat((int)secondFrame.wheatCheck.getSelectedItem());
-            firstFrame.player.monoWool((int)secondFrame.sheepCheck.getSelectedItem());
-
-            secondFrame.player.monoBrick((int)firstFrame.brickCheck.getSelectedItem());
-            secondFrame.player.monoLumber((int)firstFrame.woodCheck.getSelectedItem());
-            secondFrame.player.monoOre((int)firstFrame.oreCheck.getSelectedItem());
-            secondFrame.player.monoWheat((int)firstFrame.wheatCheck.getSelectedItem());
-            secondFrame.player.monoWool((int)firstFrame.sheepCheck.getSelectedItem());
             
-            //Subtracting Resources
-            firstFrame.player.monoBrick(-1*(int)firstFrame.brickCheck.getSelectedItem());
-            firstFrame.player.monoLumber(-1*(int)firstFrame.woodCheck.getSelectedItem());
-            firstFrame.player.monoOre(-1*(int)firstFrame.oreCheck.getSelectedItem());
-            firstFrame.player.monoWheat(-1*(int)firstFrame.wheatCheck.getSelectedItem());
-            firstFrame.player.monoWool(-1*(int)firstFrame.sheepCheck.getSelectedItem());
+            //Changing resource totals
+            firstFrame.player.monoBrick((int)secondFrame.brickCheck.getSelectedItem()- (int) firstFrame.brickCheck.getSelectedItem());
+            firstFrame.player.monoLumber((int)secondFrame.woodCheck.getSelectedItem()-(int)firstFrame.woodCheck.getSelectedItem());
+            firstFrame.player.monoOre((int)secondFrame.oreCheck.getSelectedItem()-(int)firstFrame.oreCheck.getSelectedItem());
+            firstFrame.player.monoWheat((int)secondFrame.wheatCheck.getSelectedItem()-(int)firstFrame.wheatCheck.getSelectedItem());
+            firstFrame.player.monoWool((int)secondFrame.sheepCheck.getSelectedItem()-(int)firstFrame.sheepCheck.getSelectedItem());
 
-            secondFrame.player.monoBrick(-1*(int)secondFrame.brickCheck.getSelectedItem());
-            secondFrame.player.monoLumber(-1*(int)secondFrame.woodCheck.getSelectedItem());
-            secondFrame.player.monoOre(-1*(int)secondFrame.oreCheck.getSelectedItem());
-            secondFrame.player.monoWheat(-1*(int)secondFrame.wheatCheck.getSelectedItem());
-            secondFrame.player.monoWool(-1*(int)secondFrame.sheepCheck.getSelectedItem());
+            secondFrame.player.monoBrick((int)firstFrame.brickCheck.getSelectedItem()-(int)secondFrame.brickCheck.getSelectedItem());
+            secondFrame.player.monoLumber((int)firstFrame.woodCheck.getSelectedItem()-(int)secondFrame.woodCheck.getSelectedItem());
+            secondFrame.player.monoOre((int)firstFrame.oreCheck.getSelectedItem()-(int)secondFrame.oreCheck.getSelectedItem());
+            secondFrame.player.monoWheat((int)firstFrame.wheatCheck.getSelectedItem()-(int)secondFrame.wheatCheck.getSelectedItem());
+            secondFrame.player.monoWool((int)firstFrame.sheepCheck.getSelectedItem()- (int) secondFrame.sheepCheck.getSelectedItem());
+            
             firstFrame.setVisible(false);
             secondFrame.setVisible(false);
             secondFrame.cbRef.updateAllStatusMenus();
