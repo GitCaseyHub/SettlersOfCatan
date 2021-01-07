@@ -94,6 +94,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     JCheckBox[] possibleTargets;
     int checkCounter = 0;
     boolean friendlyRobber=false;
+    boolean previewFrames=false;
+    boolean isUsingMotionFrame =false;
 
     //Building Variables
     int roadCondition = 0;
@@ -1469,9 +1471,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void showBuiltImage(String name, String title){
-        buildLabel.setIcon(new ImageIcon(name));
-        buildFrame.setTitle(title);
-        buildFrame.setVisible(true);
+        if(previewFrames) {
+            buildLabel.setIcon(new ImageIcon(name));
+            buildFrame.setTitle(title);
+            buildFrame.setVisible(true);
+        }
     }
 
     //Excess overridden methods
