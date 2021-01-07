@@ -96,6 +96,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean friendlyRobber=false;
     boolean previewFrames=false;
     boolean isUsingMotionFrame =false;
+    boolean usablePorts=false;
 
     //Building Variables
     int roadCondition = 0;
@@ -236,7 +237,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
 
-                if(bgReference.usablePorts) {
+                if(usablePorts) {
                     for (Port value : ports) {
                         BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
                         g.drawImage(port, (int) value.getLocations()[2].getX(), (int) value.getLocations()[2].getY(), null);
@@ -250,7 +251,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     }
 
                 //Draws Ports
-                if (bgReference.usablePorts) {
+                if (usablePorts) {
                     //Port Indexes if Active
                     BufferedImage circle = ImageIO.read(new File("Pieces/Active_Ports.png"));
                     for (Point[] portPoint : portPoints) {
@@ -451,7 +452,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
 
                 //Redraws Port Ships
-                if(bgReference.usablePorts) {
+                if(usablePorts) {
                     for (Port value : ports) {
                         BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
                         g.drawImage(port, (int) value.getLocations()[2].getX(), (int) value.getLocations()[2].getY(), null);
@@ -472,7 +473,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     }
 
                 //Redraws Ports
-                if (bgReference.usablePorts) {
+                if (usablePorts) {
                     //Port Indexes if Active
                     BufferedImage circle = ImageIO.read(new File("Pieces/Active_Ports.png"));
                     for (Point[] portPoint : portPoints) {
@@ -522,7 +523,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         int yLoc = e.getY();
 
         //Code to draw ports
-        if (bgReference.usablePorts && !doingStartup) {
+        if (usablePorts && !doingStartup) {
             portCount = 0;
             for (Port port : ports) {
                 if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) port.getLocations()[2].getX() + 25, (int) port.getLocations()[2].getY() + 25, 50, 50))) {
