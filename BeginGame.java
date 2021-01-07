@@ -12,14 +12,14 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
-    JCheckBox activePorts = new JCheckBox("Active Port Trading");
+    JCheckBox activePorts = new JCheckBox("Active Ports");
     JCheckBox friendlyRobber = new JCheckBox("Friendly Robber");
     JCheckBox cataclysms = new JCheckBox("Active Cataclysms");
     JComboBox<String> players = new JComboBox<>();
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
-    Point[] generationPoints = new Point[]{new Point(195,169), new Point(195,524), new Point(1290,169), new Point(1290,524)};
+    Point[] generationPoints = new Point[]{new Point(195,177), new Point(195,533), new Point(1290,177), new Point(1290,533)};
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
     PlayerSelect[] playerCreation;
 
@@ -36,14 +36,28 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
     boolean usablePorts=false;
 
+    //JMenuBar
+    JMenuBar mb = new JMenuBar();
+    JMenu optionMenu = new JMenu("Misc Options");
+    JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
+    JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Award Frame");
+
     public BeginGame(){
+        this.setUndecorated(true);
         for (String comboOption : comboOptions)
             players.addItem(comboOption);
+
+        this.setJMenuBar(mb);
+        mb.add(optionMenu);
+        optionMenu.add(previewMenu);
+        previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
+        optionMenu.add(motionMenu);
+        motionMenu.setToolTipText("A frame showing what award a player has should they hover over the checkbox in their player status screen will be enabled.");
 
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.add(options,BorderLayout.CENTER);
-            options.setBorder(new TitledBorder("Game Options"));
+            options.setBorder(new TitledBorder("In-Game Options"));
             options.add(players);
                 players.setBorder(compound);
             options.add(activePorts);
@@ -101,7 +115,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 playerCreation[x] = new PlayerSelect(this, x);
                 playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
                 playerCreation[x].setVisible(true);
-                playerCreation[x].setTitle("Player Select Screen");
+                playerCreation[x].setTitle("Player "+(playerCreation[x].referenceNumber+1)+" Select Screen");
             }
             playerCreation[0].nameField.requestFocus();
         }
@@ -112,6 +126,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
             cbMain.friendlyRobber=friendlyRobber.isSelected();
             cbMain.cataclysmsActive=cataclysms.isSelected();
+            cbMain.previewFrames=previewMenu.isSelected();
+            cbMain.isUsingMotionFrame = motionMenu.isSelected();
             usablePorts=activePorts.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
@@ -141,7 +157,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             boolean playerRegistration=false;
             for (Player player : catanPlayerList)
                 if (player.getName().equals(addedPlayer.getName())) {
-                    JOptionPane.showMessageDialog(this, "Another player has already registered that name. Choose another name.", "Name Error", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this, "That name has already been registered. Choose another name.", "Name Error", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
                     playerRegistration = true;
                     break;
                 }
@@ -169,12 +185,11 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
     public void mousePressed(MouseEvent e) {
         if(e.getSource()==openingLabel){
-            JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan","Welcome",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
-            this.setSize(560,142);
-            this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2-300);
+            this.setSize(543,125);
+            this.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300);
             this.setVisible(true);
-            this.setTitle("Options and Game Creation");
             imageFrame.setUndecorated(true);
             imageFrame.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300+150);
             imageFrame.setSize(544,502);
