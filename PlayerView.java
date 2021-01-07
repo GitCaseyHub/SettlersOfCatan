@@ -577,10 +577,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void mouseDragged(MouseEvent e) {}
 
     public void mouseMoved(MouseEvent e) {
-        if(e.getSource()==largestArmyBox && largestArmyBox.isSelected())
-            JOptionPane.showOptionDialog(null, null, "Largest Army Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), new Object[]{reference.largestArmyLabel}, null);
+        if (reference.isUsingMotionFrame) {
+            if (e.getSource() == largestArmyBox && largestArmyBox.isSelected())
+                JOptionPane.showOptionDialog(null, null, "Largest Army Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), new Object[]{reference.largestArmyLabel}, null);
 
-        else if(e.getSource() == longestRoadBox && longestRoadBox.isSelected())
-            JOptionPane.showOptionDialog(null, null, "Longest Road Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE , new ImageIcon("Resources/Catan_Icon.png"), new Object[]{reference.longestRoadLabel}, null);
+            else if (e.getSource() == longestRoadBox && longestRoadBox.isSelected())
+                JOptionPane.showOptionDialog(null, null, "Longest Road Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), new Object[]{reference.longestRoadLabel}, null);
+
+        }
     }
 }
