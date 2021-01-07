@@ -120,16 +120,8 @@ public class Player {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getClassTitle() {
         return classTitle;
-    }
-
-    public void setClassTitle(String classTitle) {
-        this.classTitle=classTitle;
     }
 
     public int getBrickNum() {
@@ -140,7 +132,7 @@ public class Player {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
             ;
         }
-        else if(this.classTitle.equals("Mountaineer"))
+        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King"))
             this.brickNum+=2*brickNum;
         else
             this.brickNum+=brickNum;
@@ -156,6 +148,9 @@ public class Player {
         else if(this.classTitle.equals("Shepard")) {
             ;
         }
+        else if(this.classTitle.equals("King")){
+            this.lumberNum+=2*lumberNum;
+        }
         else
             this.lumberNum += lumberNum;
     }
@@ -168,7 +163,7 @@ public class Player {
         if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard")) {
             ;
         }
-        else if(this.classTitle.equals("Farmer"))
+        else if(this.classTitle.equals("Farmer") || this.classTitle.equals("King"))
             this.grainNum+=2*grainNum;
         else
             this.grainNum+= grainNum;
@@ -184,6 +179,7 @@ public class Player {
                 this.woolNum += 4 * woolNum;
                 break;
             case "Farmer":
+            case "King":
                 this.woolNum += 2 * woolNum;
                 break;
             case "Woodsman":
@@ -204,13 +200,12 @@ public class Player {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
             ;
         }
-        else if(this.classTitle.equals("Mountaineer"))
+        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King"))
             this.oreNum+=2*oreNum;
         else
             this.oreNum+= oreNum;
     }
 
-    //Specifically for Monopoly Development Card
     public void monoOre(int num){
         this.oreNum+=num;
     }
@@ -235,10 +230,15 @@ public class Player {
         this.ownedIndexes.add(newIndex);
     }
 
+    public int returnTotalResources(){
+        return grainNum+brickNum+lumberNum+woolNum+oreNum;
+    }
+
     public void winTheGame(){
         cb.updateAllStatusMenus();
         if(this.getVictoryPointTotal()>=10){
             JOptionPane.showMessageDialog(null,this.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1, new ImageIcon("Resources/Catan_Icon.png"));
+            System.exit(0);
         }
     }
 }
