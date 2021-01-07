@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class DevelopmentCard implements ActionListener, MouseListener {
-    //References
+    //Different class references
     String type = "";
     Player player;
     CatanBoard cbReference;
@@ -69,27 +69,26 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     }
 
     public void playCard() {
-        if (type.equals("Knight"))
-            performKnightAction();
-
-        else if (type.equals("Victory Points")) {
-            JOptionPane.showMessageDialog(null, "You are awarded one victory point. This will now be reflected in your status screen.", "Victory Point Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-            performVictoryPoints();
-        }
-
-        else if (type.equals("Road Builder")) {
-            JOptionPane.showMessageDialog(null,"You will now select two sets of indices to build roads on.","Road Building Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-            performRoadBuilding();
-        }
-
-        else if (type.equals("Year of Plenty")) {
-            JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-            performYearOfPlenty();
-        }
-
-        else {
-            JOptionPane.showMessageDialog(null,"Select one of the following five resources. You will be given all of that resource from each player. Your class will not affect the amount given.","Monopoly Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-            performMonopoly();
+        switch (type) {
+            case "Knight":
+                performKnightAction();
+                break;
+            case "Victory Points":
+                JOptionPane.showMessageDialog(null, "You are awarded one victory point. This will now be reflected in your status screen.", "Victory Point Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                performVictoryPoints();
+                break;
+            case "Road Builder":
+                JOptionPane.showMessageDialog(null, "You will now select two sets of indices to build roads on.", "Road Building Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                performRoadBuilding();
+                break;
+            case "Year of Plenty":
+                JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                performYearOfPlenty();
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Select one of the following five resources. You will be given all of that resource from each player. Your class will not affect the amount given.", "Monopoly Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                performMonopoly();
+                break;
         }
     }
 
@@ -106,11 +105,11 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             case 0:
                 showDevelopmentImage("Resources/Preview_Images/University.png");
                 break;
-                
+
             case 1:
                 showDevelopmentImage("Resources/Preview_Images/Chapel.png");
                 break;
-                
+
             case 2:
                 showDevelopmentImage("Resources/Preview_Images/Governors_House.png");
                 break;
@@ -255,29 +254,25 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             int confirm = JOptionPane.showConfirmDialog(null,"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(confirm==0) {
                 JOptionPane.showMessageDialog(null, "Okay. You will be given all resources of that type from other players.", "Monopoly Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                for (int x = 0; x < otherPlayers.size(); x++) {
+                for (Player otherPlayer : otherPlayers) {
                     if (brickCheck.isSelected()) {
-                        player.monoBrick(otherPlayers.get(x).getBrickNum());
-                        otherPlayers.get(x).setBrickNum(0);
-                    }
-                    else if (sheepCheck.isSelected()) {
-                        player.monoWool(otherPlayers.get(x).getWoolNum());
-                        otherPlayers.get(x).setWoolNum(0);
-                    }
-                    else if (oreCheck.isSelected()) {
-                        player.monoOre(otherPlayers.get(x).getOreNum());
-                        otherPlayers.get(x).setOreNum(0);
-                    }
-                    else if (woodCheck.isSelected()) {
-                        player.monoLumber(otherPlayers.get(x).getLumberNum());
-                        otherPlayers.get(x).setLumberNum(0);
-                    }
-                    else if (wheatCheck.isSelected()) {
-                        player.monoWheat(otherPlayers.get(x).getGrainNum());
-                        otherPlayers.get(x).setGrainNum(0);
+                        player.monoBrick(otherPlayer.getBrickNum());
+                        otherPlayer.setBrickNum(0);
+                    } else if (sheepCheck.isSelected()) {
+                        player.monoWool(otherPlayer.getWoolNum());
+                        otherPlayer.setWoolNum(0);
+                    } else if (oreCheck.isSelected()) {
+                        player.monoOre(otherPlayer.getOreNum());
+                        otherPlayer.setOreNum(0);
+                    } else if (woodCheck.isSelected()) {
+                        player.monoLumber(otherPlayer.getLumberNum());
+                        otherPlayer.setLumberNum(0);
+                    } else if (wheatCheck.isSelected()) {
+                        player.monoWheat(otherPlayer.getGrainNum());
+                        otherPlayer.setGrainNum(0);
                     }
                     cbReference.getPlayerStatusMenu(player).update();
-                    cbReference.getPlayerStatusMenu(otherPlayers.get(x)).update();
+                    cbReference.getPlayerStatusMenu(otherPlayer).update();
                 }
                 choiceFrame.setVisible(false);
                 deselectAll();
