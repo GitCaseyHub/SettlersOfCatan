@@ -13,16 +13,17 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     //Class reveal functionality
-    String[] classTitles = {"Class","Settler","Farmer","Mountaineer","Shepard","Pirate","Woodsman","Serf"};
+    String[] classTitles = {"Class","Settler","Farmer","Mountaineer","Shepard","Pirate","Woodsman","King","Serf"};
     String[] colors = {"Building Color","Orange","Red","Blue","White"};
     String[] classDescriptions = {"A description of your class choice will be here.",
-                                  "The standard character: you have access to all ports, can trade as normal, and build as normal. No bonuses or penalties here.",
+                                  "The standard character: you have access to all ports, can trade as normal, and build as normal. No bonuses or penalties here. (Normal Mode)",
                                   "You have devoted yourself to the farm, and as a result, you produce twice as much grain and wool as normal. However, you are a stranger to building, and so you cannot produce brick or ore.",
                                   "You live in the mountains. Rocks and stones are more familiar than your family and friends. As a result, you produce twice as much brick and ore as normal. However, you cannot relate to the civilized world, and so you cannot produce grain and wool.",
                                   "You live amongst the sheep; you know nothing but sheep. You forgot common language, but you have sheep. As a result, you produce four times normal wool; but given your status as a depraved sheep-loving-hermit, you can produce nothing else.",
                                   "You've relegated yourself to seafaring and pillaging. That's right: you're a pirate. So, you are accustomed to haggling and barbarism; as a result, any time you would trade resources into the communal pool, it is a 1-for-1 deal. However, people don't trust you, so you must pay double for everything.",
                                   "You left society long ago to live in the woods. It's where you belong, and you would rather forsake your kind than to ever return. All you need is an axe and a forest. As a result, you produce four times lumber than normal, but you can produce nothing else.",
-                                  "You are the lowest of the low. Society has long held you down, and today is no different. You're a serf, and everyone looks down on you. You are a laborer and people see you as such; as a result, no one goes easy on you. Everything costs you double as normal."};
+                                  "You are a tyrant with a mercurial temper and as such, your servile population fears you. To avoid death, they contribute to your resource stores frequently to ensure you are sated and pacified. As a result, when you produce resources, you produce twice as much. (Easy Mode)",
+                                  "You are the lowest of the low. Society has long held you down, and today is no different. You're a serf, and everyone looks down on you. You are a laborer and people see you as such; as a result, no one goes easy on you. Everything costs you double as normal. (Hard Mode)"};
 
     //Frame Assets
     JPanel upperPanel = new JPanel(new GridLayout(1,2));
@@ -37,7 +38,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     JTextField nameField = new JTextField("Name Your Player",SwingConstants.CENTER);
     JButton confirmButton = new JButton("    Confirm Character    ");
     JPanel southPanel = new JPanel(new BorderLayout());
-    JLabel fillout = new JLabel("",0);
+    JLabel fillout = new JLabel("",SwingConstants.CENTER);
     Color color = new Color(100,100,100);
 
     //Global Variables
@@ -89,7 +90,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==classBox) {
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
-            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() + (Objects.equals(classBox.getSelectedItem(), "Settler") || Objects.equals(classBox.getSelectedItem(), "Pirate") ||classBox.getSelectedItem().equals("Class")?".png":".jpg")));
+            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() +".jpg"));
         }
         else if(e.getSource()==confirmButton) {
             if (!nameField.getText().equals("Name Your Player")){
@@ -105,7 +106,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
                 else {
                     //Testing Player
-                    //Player newPlayer = new Player(colorBox.getSelectedItem().toString(), nameField.getText(), classBox.getSelectedItem().toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber);
+                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber);
 
                     Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
                     bgReference.addPlayer(newPlayer,referenceNumber);
