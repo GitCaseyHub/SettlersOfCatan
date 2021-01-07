@@ -155,7 +155,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             rollNumList.add(x);
 
         for (int x = 0; x < indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false, 69), false, false);
+            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, false, false, false, 69), false, false);
 
         for (int x = 0; x < types.length; x++) {
             int typeIndex = new Random().nextInt(typeList.size());
@@ -546,7 +546,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (roadCondition != 2) {
                 for (int[] indexCoord : indexCoords) {
                     if (Math.abs(indexCoord[0] - xLoc) < 20 && Math.abs(indexCoord[1] - yLoc) < 20) {
-                        Index checkedIndex = returnAppropIndex(indexCoord[0], indexCoord[1]);
+                        Index checkedIndex = returnAppropriateIndex(indexCoord[0], indexCoord[1]);
                         for (Index index : indexes) {
                             if (index == checkedIndex) {
                                 checkedIndexes.add(index);
@@ -645,7 +645,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             boolean breakCheck = false;
             for (int[] indexCoord : indexCoords) {
                 if (Math.abs(indexCoord[0] - xLoc) < 20 && Math.abs(indexCoord[1] - yLoc) < 20) {
-                    Index checkedIndex = returnAppropIndex(indexCoord[0], indexCoord[1]);
+                    Index checkedIndex = returnAppropriateIndex(indexCoord[0], indexCoord[1]);
                     for (int i = 0; i < indexes.length; i++) {
                         breakCheck = true;
                         if (indexes[i] == checkedIndex && !indexes[i].isTaken()) {
@@ -760,7 +760,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         return others;
     }
 
-    public Index returnAppropIndex(int chosen_x, int chosen_y) {
+    public Index returnAppropriateIndex(int chosen_x, int chosen_y) {
         for (Index index : indexes)
             if (index.getLocation()[0] == chosen_x && index.getLocation()[1] == chosen_y)
                 return index;
@@ -903,7 +903,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     turnOrderString.append(player.getName()).append((x != turnOrder.size() - 1) ? ", " : ". ");
 
         startPickOrder.addAll(reverse(startPickOrder));
-        StringBuilder buildingOrder = new StringBuilder("With that in mind, the starting order placement will be: ");
+        StringBuilder buildingOrder = new StringBuilder("The starting order placement will be: ");
         turnNameList = new ArrayList<>();
 
         for (int x = 0; x < startPickOrder.size(); x++)
@@ -1009,7 +1009,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     for (Index index : indexes)
                         if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
                             for (Player player : catanPlayerList)
-                                if (index.getOwner() == player) {
+                                if (index.getOwner() == player)
                                     switch (tile.getType()) {
                                         case "Grain":
                                             player.changeGrain((index.isSettlement() ? 1 : 2));
@@ -1027,7 +1027,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                             player.changeOre((index.isSettlement() ? 1 : 2));
                                             break;
                                     }
-                                }
+                                
     }
 
     public String giveRandomResource(Player player) {
@@ -1316,7 +1316,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         for (Road singleConnection : singleConnections)
-            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()), new ArrayList<Road>(), 0, singleConnection));
+            lengths.add(roadRecursion(getPlayerRoads(getCurrentPlayer()), new ArrayList<>(), 0, singleConnection));
 
         int previous = this.currentLongestRoad;
         this.currentLongestRoad = (Collections.max(lengths)>this.currentLongestRoad)?Collections.max(lengths):this.currentLongestRoad;
