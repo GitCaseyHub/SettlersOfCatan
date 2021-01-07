@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
+    JPanel borderPanel = new JPanel(new BorderLayout());
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
     JCheckBox activePorts = new JCheckBox("Active Ports");
@@ -19,7 +20,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
-    Point[] generationPoints = new Point[]{new Point(195,177), new Point(195,533), new Point(1290,177), new Point(1290,533)};
+    Point[] generationPoints = new Point[]{new Point(195,172), new Point(195,527), new Point(1290,172), new Point(1290,527)};
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
     PlayerSelect[] playerCreation;
 
@@ -48,15 +49,18 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             players.addItem(comboOption);
 
         this.setJMenuBar(mb);
+        mb.setBorder(compound);
+        mb.setBorderPainted(true);
         mb.add(optionMenu);
         optionMenu.add(previewMenu);
         previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
         optionMenu.add(motionMenu);
         motionMenu.setToolTipText("A frame showing what award a player has should they hover over the checkbox in their player status screen will be enabled.");
 
-        this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.add(options,BorderLayout.CENTER);
+        this.add(borderPanel);
+        borderPanel.setBorder(compound);
+        borderPanel.add(options,BorderLayout.CENTER);
             options.setBorder(new TitledBorder("In-Game Options"));
             options.add(players);
                 players.setBorder(compound);
@@ -72,8 +76,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 cataclysms.setBorderPainted(true);
                 cataclysms.setBorder(compound);
                 cataclysms.setToolTipText("Select this checkbox to activate weather events that inflict damages upon the players at random intervals.");
-        this.add(charGenerate,BorderLayout.SOUTH);
-            charGenerate.setBorder(new TitledBorder("Game Generation"));
+        borderPanel.add(charGenerate,BorderLayout.SOUTH);
+            charGenerate.setBorder(new TitledBorder("Template Generation"));
             charGenerate.add(generateChars);
                 generateChars.setBorder(compound);
                 generateChars.setToolTipText("Click this button to create screens for players to choose their characters.");
@@ -128,7 +132,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.cataclysmsActive=cataclysms.isSelected();
             cbMain.previewFrames=previewMenu.isSelected();
             cbMain.isUsingMotionFrame = motionMenu.isSelected();
-            usablePorts=activePorts.isSelected();
+            cbMain.usablePorts=activePorts.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
@@ -187,7 +191,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if(e.getSource()==openingLabel){
             JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
-            this.setSize(543,125);
+            this.setSize(543,135);
             this.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300);
             this.setVisible(true);
             imageFrame.setUndecorated(true);
