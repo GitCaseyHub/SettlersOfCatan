@@ -42,6 +42,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JMenu optionMenu = new JMenu("Misc Options");
     JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
     JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Award Frame");
+    JMenuItem helpMenu = new JMenuItem("Special Operations Help");
 
     public BeginGame(){
         this.setUndecorated(true);
@@ -52,6 +53,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         mb.setBorder(compound);
         mb.setBorderPainted(true);
         mb.add(optionMenu);
+        optionMenu.add(helpMenu);
+        helpMenu.addActionListener(this);
+        helpMenu.setToolTipText("Click here to learn how to perform certain actions in-game, as well as short-cut keys and special options.");
         optionMenu.add(previewMenu);
         previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
         optionMenu.add(motionMenu);
@@ -140,6 +144,13 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.setVisible(true);
             cbMain.performStartingOperations();
         }
+
+        else if(e.getSource()==helpMenu){
+            JOptionPane.showMessageDialog(this, "Building Settlements - Select an intersection point of three hexagonal tiles (or two hexagonal tiles if you are on the coast).\n\n"+
+                                                                          "Building Roads - Select an index where you own a settlement. Then, select a second index in the direction of the road you'd\n                                like to build that is one hexagonal side-length away.\n\n"+
+                                                                          "Cancelling Operations - Hold ALT+C while the board has focus. Your resources will be refunded accordingly and the menu will\n                                             reactivate until you end your turn. (Note that operations include: road building, settlement building)\n",
+                                                                     "Help Menu for Game Operations",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+        }
     }
 
     public static void main(String[] args){new BeginGame();}
@@ -191,7 +202,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if(e.getSource()==openingLabel){
             JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
-            this.setSize(543,135);
+            this.setSize(543,140);
             this.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300);
             this.setVisible(true);
             imageFrame.setUndecorated(true);
