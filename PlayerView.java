@@ -516,6 +516,16 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
+            
+            if(reference.gamblerIsPresent()){
+                if(new Random().nextInt(100) < 20) {
+                    JOptionPane.showMessageDialog(this,"All gamblers made a poor bet and lose one of every resource.","Bad Gamble",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                    for (Player player : reference.catanPlayerList)
+                        if (player.getClassTitle().equals("Gambler"))
+                            player.failGamble();
+                }
+            }
+
             JOptionPane.showMessageDialog(this,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
             if(diceRoll==7) {
