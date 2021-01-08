@@ -132,7 +132,7 @@ public class Player {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
             ;
         }
-        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King"))
+        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King") || this.classTitle.equals("Gambler"))
             this.brickNum+=2*brickNum;
         else
             this.brickNum+=brickNum;
@@ -148,7 +148,7 @@ public class Player {
         else if(this.classTitle.equals("Shepard")) {
             ;
         }
-        else if(this.classTitle.equals("King")){
+        else if(this.classTitle.equals("King") || this.classTitle.equals("Gambler")){
             this.lumberNum+=2*lumberNum;
         }
         else
@@ -163,7 +163,7 @@ public class Player {
         if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard")) {
             ;
         }
-        else if(this.classTitle.equals("Farmer") || this.classTitle.equals("King"))
+        else if(this.classTitle.equals("Farmer") || this.classTitle.equals("King") || this.classTitle.equals("Gambler"))
             this.grainNum+=2*grainNum;
         else
             this.grainNum+= grainNum;
@@ -179,6 +179,7 @@ public class Player {
                 this.woolNum += 4 * woolNum;
                 break;
             case "Farmer":
+            case "Gambler":
             case "King":
                 this.woolNum += 2 * woolNum;
                 break;
@@ -200,7 +201,7 @@ public class Player {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
             ;
         }
-        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King"))
+        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King") || this.classTitle.equals("Gambler"))
             this.oreNum+=2*oreNum;
         else
             this.oreNum+= oreNum;
@@ -232,6 +233,14 @@ public class Player {
 
     public int returnTotalResources(){
         return grainNum+brickNum+lumberNum+woolNum+oreNum;
+    }
+
+    public void failGamble(){
+        this.lumberNum-=1;
+        this.woolNum-=1;
+        this.brickNum-=1;
+        this.oreNum-=1;
+        this.grainNum-=1;
     }
 
     public void winTheGame(){
