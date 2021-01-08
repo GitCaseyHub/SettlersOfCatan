@@ -1479,6 +1479,13 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
     }
 
+    public boolean gamblerIsPresent(){
+        for(Player player: catanPlayerList)
+            if(player.getClassTitle().equals("Gambler"))
+                return true;
+        return false;
+    }
+
     //Excess overridden methods
     public void keyTyped(KeyEvent e){}
     public void keyReleased(KeyEvent e){}
