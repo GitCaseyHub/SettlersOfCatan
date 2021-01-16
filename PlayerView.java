@@ -69,6 +69,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JFrame costFrame = new JFrame();
     JLabel imageCostLabel = new JLabel("", SwingConstants.CENTER);
 
+    public PlayerView(){}
+
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
         this.player = player;
@@ -516,7 +518,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(10)+2;
-            
+
             if(reference.gamblerIsPresent()){
                 if(new Random().nextInt(100) < 20) {
                     JOptionPane.showMessageDialog(this,"All gamblers made a poor bet and lose one of every resource.","Bad Gamble",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
