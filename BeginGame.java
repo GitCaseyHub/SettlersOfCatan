@@ -42,7 +42,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JMenu optionMenu = new JMenu("Misc Options");
     JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
     JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Award Frame");
-    JMenuItem helpMenu = new JMenuItem("Special Operations Help");
+    JMenuItem helpMenu = new JMenuItem("Operations Help");
 
     public BeginGame(){
         this.setUndecorated(true);
@@ -55,7 +55,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         mb.add(optionMenu);
         optionMenu.add(helpMenu);
         helpMenu.addActionListener(this);
-        helpMenu.setToolTipText("Click here to learn how to perform certain actions in-game, as well as short-cut keys and special options.");
+        helpMenu.setToolTipText("Click here to learn how to perform certain actions in-game and what the short-cut keys are for performing special operations.");
         optionMenu.add(previewMenu);
         previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
         optionMenu.add(motionMenu);
@@ -146,10 +146,11 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
 
         else if(e.getSource()==helpMenu){
-            JOptionPane.showMessageDialog(this, "Building Settlements - Select an intersection point of three hexagonal tiles (or two hexagonal tiles if you are on the coast).\n\n"+
-                                                                          "Building Roads - Select an index where you own a settlement. Then, select a second index in the direction of the road you'd\n                                like to build that is one hexagonal side-length away.\n\n"+
-                                                                          "Cancelling Operations - Hold ALT+C while the board has focus. Your resources will be refunded accordingly and the menu will\n                                             reactivate until you end your turn. (Note that operations include: road building, settlement building)\n",
-                                                                     "Help Menu for Game Operations",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(imageFrame, "Building Settlements - Select an intersection point of three hexagonal tiles (or two hexagonal tiles if you are on the coast).\n\n"+
+                                                               "Building Roads - Select an index where you own a settlement. Then, select a second index in the direction of the road you'd\n                                like to build that is one hexagonal side-length away.\n\n"+
+                                                               "Cancelling Operations - Hold ALT+C while the board has focus. Your resources will be refunded accordingly and the menu\n                                             will reactivate until you end your turn (Note operations include: road building, settlement building,\n                                             playing knight cards).\n\n"+
+                                                               "Exit Game - Hold ALT+X while the board has focus. You will be given an option about whether you'd like to quit.",
+                                                          "Help Menu - Implicit Operations",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
