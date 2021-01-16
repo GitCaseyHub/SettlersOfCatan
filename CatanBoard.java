@@ -6,10 +6,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CatanBoard extends JFrame implements KeyListener,MouseListener {
@@ -19,7 +16,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     //Objects for Board Generation
     String[] types = {"Mountain", "Mountain", "Mountain", "Brick", "Brick", "Brick", "Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains", "Grain", "Grain", "Grain", "Grain", "Desert"};
     int[] rollNums = {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
-    int[][] coords1 = {{267, 87}, {267 + 134, 87}, {267 + 2 * 134, 87}, {200, 200}, {334, 200}, {200 + 2 * 134, 200}, {200 + 3 * 134, 200}, {133, 313}, {133 + 134, 313}, {133 + 2 * 134, 313}, {133 + 3 * 134, 313}, {666, 313}, {200, 426}, {200 + 134, 426}, {200 + 134 * 2, 426}, {200 + 134 * 3, 426}, {267, 426 + 113}, {267 + 134, 426 + 113}, {267 + 134 * 2, 426 + 113}};
+    int[][] coords1 = {{267, 87}, {267 + 134, 87}, {267 + 2 * 134, 87}, {200, 200}, {334, 200}, {200 + 2 * 134, 200}, {200 + 3 * 134, 200}, {133, 313}, {133 + 133, 313}, {133 + 2 * 134, 313}, {133 + 3 * 134, 313}, {666, 313}, {200, 426}, {200 + 134, 426}, {200 + 134 * 2, 426}, {200 + 134 * 3, 426}, {267, 426 + 113}, {267 + 134, 426 + 113}, {267 + 134 * 2, 426 + 113}};
     ArrayList<String> typeList = new ArrayList<>();
     ArrayList<Integer> rollNumList = new ArrayList<>();
     ArrayList<int[]> coordList = new ArrayList<>();
@@ -84,7 +81,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             new Point[]{new Point(332, 686), new Point(266, 647), new Point(219, 685)},
             new Point[]{new Point(200, 536), new Point(198, 459), new Point(88, 468)},
             new Point[]{new Point(198, 235), new Point(197, 312), new Point(88, 244)}};
-    String[] portTypes = {"Generic", "Generic", "Generic", "Generic", "Sheep", "Wheat", "Ore", "Brick", "Wood"};
+    String[] portTypes = {"Generic", "Generic", "Generic", "Generic", "Sheep", "Wheat", "Ore", "Brick", "Lumber"};
     Port[] ports = new Port[9];
     int portCount = 0;
     JCheckBox[] checkOptions;
@@ -224,7 +221,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 for (Tile item : tiles) {
                     BufferedImage dice = ImageIO.read(new File("Rolls/" + item.getNum() + ".png"));
-                    g.drawImage(dice, (int) item.getPosition()[0] + 42, (int) item.getPosition()[1] + 25, null);
+                    g.drawImage(dice, item.getPosition()[0] + 42, item.getPosition()[1] + 25, null);
                 }
 
                 BufferedImage water = ImageIO.read(new File("Tiles/Water_Tile.png"));
@@ -462,7 +459,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 //Redraws Roll Tiles
                 for (Tile tile : tiles) {
                     BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
-                    g.drawImage(dice, (int) tile.getPosition()[0] + 42, (int) tile.getPosition()[1] + 25, null);
+                    g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
                 }
 
                 //Draws Robber
@@ -739,8 +736,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     public void mouseExited(MouseEvent e){}
 
     public void constructPorts() {
-        ArrayList<Point[]> portPointList = new ArrayList<Point[]>();
-        ArrayList<String> portTypesList = new ArrayList<String>();
+        ArrayList<Point[]> portPointList = new ArrayList<>();
+        ArrayList<String> portTypesList = new ArrayList<>();
         for (int x = 0; x < 9; x++) {
             portPointList.add(portPoints[x]);
             portTypesList.add(portTypes[x]);
@@ -822,7 +819,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         return new Object[]{new Point(0, 0), ""};
     }
 
-    //Finds the distance between two points in cartesian space (good-ole-pythagorean theorem)
+    //Finds the distance between two points in cartesian space
     public double distance(Point one, Point two) {
         return Math.sqrt(Math.pow(one.getX() - two.getX(), 2) + Math.pow(one.getY() - two.getY(), 2));
     }
@@ -845,14 +842,14 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     //Returns the player whose turn is currently taking place
-    public Player getCurrentPlayer() {
-        for (Player player : catanPlayerList)
-            if (player.isTurn())
+    public Player getCurrentPlayer(){
+        for(Player player: catanPlayerList)
+            if(player.isTurn())
                 return player;
-
         return null;
     }
 
+    //Building condition for settlements (one of them)
     public boolean buildable(Index newSpot) {
         for (Index index : indexes)
             if ((index.isTaken() && newSpot != index && distance(new Point(index.getLocation()[0], index.getLocation()[1]), new Point(newSpot.getLocation()[0], newSpot.getLocation()[1])) < 100))
@@ -861,6 +858,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         return true;
     }
 
+    //Building condition for settlements (another of them)
     public boolean settlementBuildable(Index newSpot) {
         int counter = 0;
         for (Road indexConnection : indexConnections) {
@@ -934,6 +932,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         duplicates.get(0).setTurn(true);
     }
 
+    //Method to reverse arraylist so as to make a list for placement when game starts
     public ArrayList<Integer> reverse(ArrayList<Integer> list) {
         ArrayList<Integer> reversed = new ArrayList<>();
         for (int x = list.size() - 1; x > -1; x--)
@@ -941,6 +940,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         return reversed;
     }
 
+    //Method for resource dispersement
     public ArrayList<Player> getPlayersOnTile(Tile t) {
         ArrayList<Player> players = new ArrayList<>();
         for (int x = 0; x < t.getVertices().size(); x++) {
@@ -991,17 +991,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public ArrayList<Index> getOwnedIndexes(Player player) {
-        ArrayList<Index> ownedIndexes = new ArrayList<>();
-        for (Index index : indexes)
-            if (index.getOwner() == player)
-                ownedIndexes.add(index);
-
-        return ownedIndexes;
+        return Optional.ofNullable(player).map(p -> Arrays.stream(indexes).filter(index -> index.getOwner().equals(player)).collect(Collectors.toCollection(ArrayList::new))).orElse(new ArrayList<>());
     }
 
     public void updateAllStatusMenus() {
-        for (PlayerView playerView : statusViewer)
-            playerView.update();
+        Arrays.stream(statusViewer).forEach(PlayerView::update);
     }
 
     //This method is an abomination
@@ -1046,11 +1040,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         if (player.getOreNum() > 0)
             resources.add("Ore");
 
-        if (resources.size() != 0)
-            return resources.get(new Random().nextInt(resources.size()));
-
-        else
-            return "";
+        return (resources.size()!=0) ? resources.get(new Random().nextInt(resources.size())) : "";
     }
 
     public void largestArmy(Player player) {
@@ -1188,7 +1178,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     break;
 
-                case "Wood":
+                case "Lumber":
                     while (use.equals(""))
                         use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
@@ -1296,8 +1286,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void givePlayersCatanBoardReference() {
-        for (Player player : catanPlayerList)
-            player.cb = this;
+        catanPlayerList.forEach(player -> player.cb=this);
     }
 
     public int numberChecked() {
@@ -1330,7 +1319,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         ArrayList<Road> possibleSplittings= new ArrayList<>();
         ArrayList<Integer> splits = new ArrayList<>();
         boolean stillHasConnections = true;
-        int subConnections=0;
+        int subConnections;
         usedAlready.add(currentRoad);
         currentLength++;
 
@@ -1480,14 +1469,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public boolean gamblerIsPresent(){
-        for(Player player: catanPlayerList)
-            if(player.getClassTitle().equals("Gambler"))
-                return true;
-        return false;
+        return catanPlayerList.stream().anyMatch(player -> player.getClassTitle().equals("Gambler"));
     }
 
     //Excess overridden methods
+    @Override
     public void keyTyped(KeyEvent e){}
     public void keyReleased(KeyEvent e){}
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e){}
 }
