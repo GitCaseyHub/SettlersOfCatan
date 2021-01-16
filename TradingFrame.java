@@ -13,14 +13,14 @@ public class TradingFrame extends JFrame implements ActionListener {
     JPanel southPanel = new JPanel(new GridLayout(1,2));
     String[] graphicStrings = {"Brick", "Ore", "Sheep", "Wheat", "Wood"};
     JLabel[] graphicImageLabels = new JLabel[5];
-    JComboBox<Integer> brickCheck = new JComboBox<Integer>();
-    JComboBox<Integer> oreCheck = new JComboBox<Integer>();
-    JComboBox<Integer> wheatCheck = new JComboBox<Integer>();
-    JComboBox<Integer> sheepCheck = new JComboBox<Integer>();
-    JComboBox<Integer> woodCheck = new JComboBox<Integer>();
+    JComboBox<Integer> brickCheck = new JComboBox<>();
+    JComboBox<Integer> oreCheck = new JComboBox<>();
+    JComboBox<Integer> wheatCheck = new JComboBox<>();
+    JComboBox<Integer> sheepCheck = new JComboBox<>();
+    JComboBox<Integer> woodCheck = new JComboBox<>();
     JButton confirmButton = new JButton("Confirm Trade");
     JButton askButton = new JButton("Ask Another Player");
-    ArrayList<String> rejections = new ArrayList<String>();
+    ArrayList<String> rejections = new ArrayList<>();
 
     //Constructor variables
     Player player;
@@ -49,13 +49,13 @@ public class TradingFrame extends JFrame implements ActionListener {
         oreCheck.setBorder(compound);
         oreCheck.addActionListener(this);
 
-        graphicPanels[3].add(wheatCheck, BorderLayout.SOUTH);
-        wheatCheck.setBorder(compound);
-        wheatCheck.addActionListener(this);
-
         graphicPanels[2].add(sheepCheck, BorderLayout.SOUTH);
         sheepCheck.setBorder(compound);
         sheepCheck.addActionListener(this);
+
+        graphicPanels[3].add(wheatCheck, BorderLayout.SOUTH);
+        wheatCheck.setBorder(compound);
+        wheatCheck.addActionListener(this);
 
         graphicPanels[4].add(woodCheck, BorderLayout.SOUTH);
         woodCheck.setBorder(compound);
@@ -90,7 +90,7 @@ public class TradingFrame extends JFrame implements ActionListener {
 
             if(playerCounter==0){
                 askButton.setEnabled(true);
-                JOptionPane.showMessageDialog(this,"There is no player with "+playerName+" as a name. Please type their name correctly.","No Such Player Exists",3, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this,(playerName.isBlank())?"You didn't enter in a name. Please type in a player's name if you'd like to proceed with trading.":"There is no player with "+playerName+" as a name. Please type their name correctly.","No Such Player Exists",3, new ImageIcon("Resources/Catan_Icon.png"));
             }
 
             else if(playerCounter==1 && !rejections.contains(playerName)){
@@ -121,7 +121,7 @@ public class TradingFrame extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade",1, new ImageIcon("Resources/Catan_Icon.png"));
             TradingFrame firstFrame = cbRef.firstFrame;
             TradingFrame secondFrame = cbRef.secondFrame;
-            
+
             //Changing resource totals
             firstFrame.player.monoBrick((int)secondFrame.brickCheck.getSelectedItem()- (int) firstFrame.brickCheck.getSelectedItem());
             firstFrame.player.monoLumber((int)secondFrame.woodCheck.getSelectedItem()-(int)firstFrame.woodCheck.getSelectedItem());
@@ -134,7 +134,7 @@ public class TradingFrame extends JFrame implements ActionListener {
             secondFrame.player.monoOre((int)firstFrame.oreCheck.getSelectedItem()-(int)secondFrame.oreCheck.getSelectedItem());
             secondFrame.player.monoWheat((int)firstFrame.wheatCheck.getSelectedItem()-(int)secondFrame.wheatCheck.getSelectedItem());
             secondFrame.player.monoWool((int)firstFrame.sheepCheck.getSelectedItem()- (int) secondFrame.sheepCheck.getSelectedItem());
-            
+
             firstFrame.setVisible(false);
             secondFrame.setVisible(false);
             secondFrame.cbRef.updateAllStatusMenus();
@@ -142,7 +142,7 @@ public class TradingFrame extends JFrame implements ActionListener {
     }
 
     public void updateComboBoxes(){
-        this.asker=(player.isTurn());
+        this.asker=player.isTurn();
         this.setBounds(100, 100, 475, 235);
         confirmButton.setEnabled(true);
         askButton.setEnabled(true);
@@ -166,10 +166,13 @@ public class TradingFrame extends JFrame implements ActionListener {
         for(int x=0; x<player.getWoolNum()+1; x++)
             sheepCheck.addItem(x);
 
-        if(asker)
-            confirmButton.setEnabled(false);
+        brickCheck.setEnabled(brickCheck.getItemCount() != 1);
+        wheatCheck.setEnabled(wheatCheck.getItemCount() != 1);
+        oreCheck.setEnabled(oreCheck.getItemCount() != 1);
+        woodCheck.setEnabled(woodCheck.getItemCount() != 1);
+        sheepCheck.setEnabled(sheepCheck.getItemCount() != 1);
 
-        if(!asker)
-            askButton.setEnabled(false);
+        confirmButton.setEnabled(!asker);
+        askButton.setEnabled(asker);
     }
 }
