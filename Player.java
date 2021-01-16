@@ -130,9 +130,9 @@ public class Player {
 
     public void changeBrick(int brickNum) {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
-            ;
+            pass();
         }
-        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King") || this.classTitle.equals("Gambler"))
+        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Emperor") || this.classTitle.equals("Gambler"))
             this.brickNum+=2*brickNum;
         else
             this.brickNum+=brickNum;
@@ -143,16 +143,21 @@ public class Player {
     }
 
     public void changeLumber(int lumberNum) {
-        if(this.classTitle.equals("Woodsman"))
-            this.lumberNum+=4*lumberNum;
-        else if(this.classTitle.equals("Shepard")) {
-            ;
+        switch (this.classTitle) {
+            case "Woodsman":
+                this.lumberNum += 4 * lumberNum;
+                break;
+            case "Shepard":
+                pass();
+                break;
+            case "Emperor":
+            case "Gambler":
+                this.lumberNum += 2 * lumberNum;
+                break;
+            default:
+                this.lumberNum += lumberNum;
+                break;
         }
-        else if(this.classTitle.equals("King") || this.classTitle.equals("Gambler")){
-            this.lumberNum+=2*lumberNum;
-        }
-        else
-            this.lumberNum += lumberNum;
     }
 
     public int getGrainNum() {
@@ -161,9 +166,9 @@ public class Player {
 
     public void changeGrain(int grainNum) {
         if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard")) {
-            ;
+            pass();
         }
-        else if(this.classTitle.equals("Farmer") || this.classTitle.equals("King") || this.classTitle.equals("Gambler"))
+        else if(this.classTitle.equals("Farmer") || this.classTitle.equals("Emperor") || this.classTitle.equals("Gambler"))
             this.grainNum+=2*grainNum;
         else
             this.grainNum+= grainNum;
@@ -180,12 +185,12 @@ public class Player {
                 break;
             case "Farmer":
             case "Gambler":
-            case "King":
+            case "Emperor":
                 this.woolNum += 2 * woolNum;
                 break;
             case "Woodsman":
-                break;
             case "Mountaineer":
+                pass();
                 break;
             default:
                 this.woolNum += woolNum;
@@ -199,9 +204,9 @@ public class Player {
 
     public void changeOre(int oreNum) {
         if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
-            ;
+            pass();
         }
-        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("King") || this.classTitle.equals("Gambler"))
+        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Emperor") || this.classTitle.equals("Gambler"))
             this.oreNum+=2*oreNum;
         else
             this.oreNum+= oreNum;
@@ -241,6 +246,10 @@ public class Player {
         this.brickNum-=1;
         this.oreNum-=1;
         this.grainNum-=1;
+    }
+
+    public void pass(){
+        //Tells the class that nothing needs to be done, but an if statement needs to be caught because of the 'else' statement
     }
 
     public void winTheGame(){
