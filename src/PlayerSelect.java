@@ -13,7 +13,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     //Class reveal functionality
-    String[] classTitles = {"Class","Settler","Emperor","Serf","Farmer","Mountaineer","Shepard","Pirate","Woodsman","Gambler"};
+    String[] classTitles = {"Class","Settler","Emperor","Serf","Farmer","Mountaineer","Shepard","Pirate","Woodsman","Gambler","Highwayman"};
     String[] colors = {"Building Color","Orange","Red","Blue","White"};
     String[] classDescriptions = {"A description of your class choice will be here.",
                                   "You are a normal Settler of Catan: you have access to all ports (if active), you receive the standard amount of resources, and you can build using standard prices. \n(Normal Mode)",
@@ -24,7 +24,9 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                                   "You live amongst the sheep; you know nothing but sheep. You forgot common language, but you have sheep. As a result, you produce four times normal wool; but given your status as a depraved sheep-loving-hermit, you can produce nothing else.",
                                   "You've relegated yourself to seafaring and pillaging. That's right: you're a pirate. So, you are accustomed to haggling and barbarism; as a result, any time you would trade resources into the communal pool, it is a 1-for-1 deal. However, people don't trust you, so you must pay double for everything.",
                                   "You left society long ago to live in the woods. It's where you belong, and you would rather forsake your kind than to ever return. All you need is an axe and a forest. As a result, you produce four times lumber than normal, but you can produce nothing else.",
-                                  "You are a gambler who plays fast and loose, and you don't know when to quit. Fortunately, you happen to be very lucky with your resources, and as such, produce double as normal. However, you don't always win. As a result, every time a roll is made, you have a 20% chance to lose one of every resource. Note that this effect can make you go into debt (i.e. you can have negative resources)."};
+                                  "You are a gambler who plays fast and loose, and you don't know when to quit. Fortunately, you happen to be very lucky with your resources, and as such, produce double as normal. However, you don't always win. As a result, every time a roll is made, you have a 20% chance to lose one of every resource. Note that this effect can make you go into debt (i.e. you can have negative resources).",
+                                  "You are a highwayman, a creature that slithers around the underbelly of society. By day, you till the fields and cultivate your lands; by night, you rob the innocent on the open roads. As a result, whenever a robber steals from a player, you get the same resources that are stolen. Also, you may use your 'steal' action during your turn: doing so, you can steal from any player a resource of your choice. However, you may not produce during the next round of rolls. Also, if that player does not have the resource you choose, you get nothing. And, you cannot be stolen from."};
+
     //Frame Assets
     JPanel upperPanel = new JPanel(new GridLayout(1,2));
     JComboBox<String> classBox = new JComboBox<>();
@@ -91,7 +93,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
         if(e.getSource()==classBox) {
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
 
-            if(classTitles[classBox.getSelectedIndex()].equals("Gambler"))
+            if(classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman"))
                 descriptionArea.select(0,0);
 
             imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() +".jpg"));
