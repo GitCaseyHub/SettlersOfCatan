@@ -648,21 +648,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean playerHasSettlements(){
-        int counter=0;
-        for(int x=0; x<player.getOwnedIndexes().size(); x++)
-            if(player.getOwnedIndexes().get(x).isSettlement())
-                counter++;
-
-        return counter!=0;
+        return (int)player.getOwnedIndexes().stream().filter(Index::isSettlement).count()!=0;
     }
 
     public boolean multiples(String type){
-        int counter=0;
-        for(int x=0; x<player.getUnPlayedCards().size(); x++)
-            if(player.getUnPlayedCards().get(x).getType().equals(type))
-                counter++;
-
-        return counter>1;
+        return ((int)(player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count())>1;
     }
 
     public boolean findNumSelected(JCheckBox[] checkboxes){
@@ -670,14 +660,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean boughtAllOnSameTurn(String type){
-        int counter=0;
-        for(int x=0; x<player.unPlayedCards.size(); x++) {
-            if (player.unPlayedCards.get(x).getType().equals(type))
-                counter++;
-            if (player.unPlayedCards.get(x).isBoughtThisTurn())
-                counter--;
-        }
-        return counter==0;
+        return ((int)(player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() - (int)(player.getUnPlayedCards()).stream().filter(DevelopmentCard::isBoughtThisTurn).count())==0;
     }
 
     public void mouseDragged(MouseEvent e) {}
