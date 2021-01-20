@@ -167,7 +167,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (tiles[x].getType().equals("Desert")) {
                 tiles[x].setNum(7);
                 tiles[x].setHasRobber(true);
-            } else {
+            }
+
+            else {
                 int rollIndex = new Random().nextInt(rollNumList.size());
                 tiles[x].setNum(rollNumList.get(rollIndex));
                 rollNumList.remove(rollIndex);
@@ -197,7 +199,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void constructBuildingPreviewFrame(){
         buildFrame.add(buildLabel);
-        buildFrame.isAlwaysOnTop();
         buildLabel.setBorder(compound);
         buildFrame.setSize(433,312);
         buildFrame.setLocation(309,389);
@@ -234,7 +235,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for (int x = 0; x < outLinePoints.length; x++)
                     g2.drawLine((int) outLinePoints[x].getX(), (int) outLinePoints[x].getY(), (int) outLinePoints[(x + 1) % outLinePoints.length].getX(), (int) outLinePoints[(x + 1) % outLinePoints.length].getY());
 
-                if(usablePorts) {
+                if (usablePorts) {
                     for (Port value : ports) {
                         BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
                         g.drawImage(port, (int) value.getLocations()[2].getX(), (int) value.getLocations()[2].getY(), null);
@@ -261,6 +262,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (isDoneMovingRobber) {
                 BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
                 redrawEverything = true;
+                repaint();
                 for (Tile tile : tiles)
                     if (tile.isHasRobber()) {
                         g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 80, null);
@@ -275,6 +277,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 if(friendlyRobber)
                     availablePlayers.removeIf(player -> player.getVictoryPointTotal() < 4);
+
+                if(highwaymanIsPresent())
+                    availablePlayers.removeIf(player -> player.getClassTitle().equals("Highwayman"));
 
                 if (availablePlayers.size() != 0) {
                     possibleTargets = new JCheckBox[availablePlayers.size()];
@@ -315,6 +320,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                     Player playerToStealFrom = getPlayerViaName(playerName);
                     String stolenResource = giveRandomResource(playerToStealFrom);
+                    ArrayList<Player> highwaymen = (ArrayList<Player>)catanPlayerList.stream().filter(player -> player.getClassTitle().equals("Highwayman")).collect(Collectors.toList());
+                    highwaymen.removeIf(player -> player.equals(getCurrentPlayer()) || player.equals(playerToStealFrom));
+
                     if (stolenResource.equals(""))
                         JOptionPane.showMessageDialog(this, "Unfortunately, " + playerToStealFrom.getName() + " has no resources. So, you've stolen nothing.", "Robber Failure",3, new ImageIcon("Resources/Catan_Icon.png"));
 
@@ -322,24 +330,29 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         if (stolenResource.equals("Sheep")) {
                             getCurrentPlayer().monoWool(1);
                             playerToStealFrom.monoWool(-1);
+                            highwaymen.forEach(player-> player.monoWool(1));
                         }
                         if (stolenResource.equals("Ore")) {
                             getCurrentPlayer().monoOre(1);
                             playerToStealFrom.monoOre(-1);
+                            highwaymen.forEach(player-> player.monoOre(1));
                         }
                         if (stolenResource.equals("Brick")) {
                             getCurrentPlayer().monoBrick(1);
                             playerToStealFrom.monoBrick(-1);
+                            highwaymen.forEach(player-> player.monoBrick(1));
                         }
                         if (stolenResource.equals("Lumber")) {
                             getCurrentPlayer().monoLumber(1);
                             playerToStealFrom.monoLumber(-1);
+                            highwaymen.forEach(player-> player.monoLumber(1));
                         }
                         if (stolenResource.equals("Wheat")) {
                             getCurrentPlayer().monoWheat(1);
                             playerToStealFrom.monoWheat(-1);
+                            highwaymen.forEach(player-> player.monoWheat(1));
                         }
-                        JOptionPane.showMessageDialog(this, "You've stolen " + stolenResource + " from " + playerToStealFrom.getName() + ".", "Robber Success", 1,new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this, "You've stolen " + stolenResource + " from " + playerToStealFrom.getName() + "." + ((highwaymen.size()>0)?" All highwaymen will also receive  "+stolenResource+".":""), "Robber Success", 1,new ImageIcon("Resources/Catan_Icon.png"));
                         updateAllStatusMenus();
                     }
                 }
@@ -415,10 +428,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     }
 
                     else if (roadDevCard) {
-                    JOptionPane.showMessageDialog(this, "You've built a new road. Now, create your second road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
-                    isRoadBuilding = true;
-                    roadDevCard = false;
-                    finishedRoadCard = true;
+                        JOptionPane.showMessageDialog(this, "You've built a new road. Now, create your second road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        isRoadBuilding = true;
+                        roadDevCard = false;
+                        finishedRoadCard = true;
                     } else {
                         JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action",1, new ImageIcon("Resources/Catan_Icon.png"));
                         getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
@@ -431,6 +444,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
             if (redrawEverything) {
                 //Redraws Tiles
+                g.clearRect(0,0,1000,1000);
+                Thread.yield();
                 for (Tile value : tiles) {
                     BufferedImage tile = ImageIO.read(new File("Tiles/" + value.getType() + ".png"));
                     g.drawImage(tile, value.getPosition()[0], value.getPosition()[1], null);
@@ -690,15 +705,15 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     isDoneMovingRobber = true;
                     isMovingRobber = false;
                     robberTile = tile;
-                    repaint();
+                    redrawEverything=true;
                     checkCounter++;
                     getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
                     getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
                     getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-
+                    repaint();
                     break;
                 }
-            redrawEverything = true;
+
             if (checkCounter == 0)
                 JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning",3, new ImageIcon("Resources/Catan_Icon.png"));
         }
@@ -1006,7 +1021,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     for (Index index : indexes)
                         if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
                             for (Player player : catanPlayerList)
-                                if (index.getOwner() == player)
+                                if (index.getOwner() == player && !getPlayerStatusMenu(player).hasStolen)
                                     switch (tile.getType()) {
                                         case "Grain":
                                             player.changeGrain((index.isSettlement() ? 1 : 2));
@@ -1024,7 +1039,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                             player.changeOre((index.isSettlement() ? 1 : 2));
                                             break;
                                     }
-                                
+
     }
 
     public String giveRandomResource(Player player) {
@@ -1470,6 +1485,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public boolean gamblerIsPresent(){
         return catanPlayerList.stream().anyMatch(player -> player.getClassTitle().equals("Gambler"));
+    }
+
+    public boolean highwaymanIsPresent(){
+        return catanPlayerList.stream().anyMatch(player -> player.getClassTitle().equals("Highwayman"));
     }
 
     //Excess overridden methods
