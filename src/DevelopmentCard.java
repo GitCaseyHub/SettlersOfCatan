@@ -69,7 +69,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     }
 
     public void playCard() {
-        switch (type) {
+        switch (this.type) {
             case "Knight":
                 performKnightAction();
                 break;
@@ -85,7 +85,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                 JOptionPane.showMessageDialog(null, "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 performYearOfPlenty();
                 break;
-            default:
+            case "Monopoly":
                 JOptionPane.showMessageDialog(null, "Select one of the following five resources. You will be given all of that resource from each player. Your class will not affect the amount given.", "Monopoly Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 performMonopoly();
                 break;
@@ -100,8 +100,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     }
 
     public void performVictoryPoints() {
-        int victoryPointRandomize = new Random().nextInt(3);
-        switch(victoryPointRandomize){
+        switch(new Random().nextInt(3)){
             case 0:
                 showDevelopmentImage("Resources/Preview_Images/University.png");
                 break;
@@ -251,6 +250,9 @@ public class DevelopmentCard implements ActionListener, MouseListener {
         }
 
         if(counter==1 && monopoly){
+            if(cbReference.highwaymanIsPresent())
+                otherPlayers.removeIf(player -> player.getClassTitle().equals("HighwayMan"));
+
             int confirm = JOptionPane.showConfirmDialog(null,"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(confirm==0) {
                 JOptionPane.showMessageDialog(null, "Okay. You will be given all resources of that type from other players.", "Monopoly Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
