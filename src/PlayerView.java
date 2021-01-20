@@ -578,6 +578,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
             else{
                 try{
+                    reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     playerNames = new JCheckBox[possiblePlayers.size()];
                     for(int x=0; x<playerNames.length; x++)
                         playerNames[x] = new JCheckBox(possiblePlayers.get(x).getName());
