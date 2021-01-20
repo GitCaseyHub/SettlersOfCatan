@@ -1305,11 +1305,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public int numberChecked() {
-        int counter = 0;
-        for (JCheckBox checkOption : checkOptions)
-            if (checkOption.isSelected())
-                counter++;
-        return counter;
+        return (int) Arrays.stream(checkOptions).filter(AbstractButton::isSelected).count();
     }
 
     //Longest road algorithm using recursion
