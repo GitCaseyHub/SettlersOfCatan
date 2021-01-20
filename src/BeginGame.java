@@ -39,7 +39,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JMenuBar mb = new JMenuBar();
     JMenu optionMenu = new JMenu("Options");
     JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
-    JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Award Frame");
+    JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Frame");
     JMenuItem helpMenu = new JMenuItem("Operations Help");
 
     public BeginGame(){
