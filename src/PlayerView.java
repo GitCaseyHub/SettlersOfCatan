@@ -1,8 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -69,7 +71,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JFrame costFrame = new JFrame();
     JLabel imageCostLabel = new JLabel("", SwingConstants.CENTER);
 
-    public PlayerView(){}
+    //Highwayman menu
+    JMenu hwm = new JMenu("Highwayman");
+    JMenuItem steal = new JMenuItem("Steal");
+    boolean hasStolen=false;
+    ArrayList<Player> possiblePlayers;
+    JCheckBox[] playerNames;
+    Player chosenPlayer;
+    String chosenResource;
+    boolean didSteal=false;
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
@@ -106,6 +116,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         options.setEnabled(false);
         development.setEnabled(false);
         build.setEnabled(false);
+
+        //Highwayman
+        if(player.getClassTitle().equals("Highwayman")){
+            mb.add(hwm);
+            hwm.add(steal);
+            hwm.setEnabled(false);
+            steal.addActionListener(this);
+            steal.setEnabled(false);
+        }
 
         //Creating the GUI
         this.setLayout(new BorderLayout());
@@ -214,6 +233,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         reference.getPlayerStatusMenu(player).options.setEnabled(true);
         reference.getPlayerStatusMenu(player).build.setEnabled(true);
         reference.getPlayerStatusMenu(player).development.setEnabled(true);
+        reference.getPlayerStatusMenu(player).hwm.setEnabled(true);
         settlement.setEnabled(false);
         city.setEnabled(false);
         road.setEnabled(false);
@@ -224,6 +244,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         fourForOne.setEnabled(false);
         rollDice.setEnabled(true);
         endTurn.setEnabled(false);
+        steal.setEnabled(false);
+        hasStolen=false;
+        didSteal=false;
     }
 
     public void afterRoll() {
@@ -237,13 +260,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         fourForOne.setEnabled(true);
         rollDice.setEnabled(false);
         buildingCard.setEnabled(true);
+        steal.setEnabled(!hasStolen);
     }
 
     public void initializeCostFrame(){
         costFrame.add(imageCostLabel);
         imageCostLabel.setIcon(new ImageIcon("Resources/Building_Costs.png"));
 
-        //costFrame bounds need to be adjusted
         costFrame.setBounds((int)this.getBounds().getX(),(int)this.getBounds().getY(),291,357);
         costFrame.setUndecorated(true);
     }
@@ -517,6 +540,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             update();
         }
         else if(e.getSource()==rollDice){
+            //Normal diceroll code
             int diceRoll = new Random().nextInt(10)+2;
 
             if(reference.gamblerIsPresent()){
@@ -546,7 +570,80 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         else if(e.getSource()==buildingCard){
             costFrame.setVisible(!costFrame.isVisible());
         }
+
+        else if(e.getSource()==steal){
+            possiblePlayers = (ArrayList<Player>)reference.catanPlayerList.stream().filter(player -> !player.getClassTitle().equals("Highwayman") && !player.equals(this.player)).collect(Collectors.toList());
+            if(possiblePlayers.size()==0)
+                JOptionPane.showMessageDialog(this,"There are no players who you can steal from.","Steal Unsuccessful", JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+
+            else{
+                try{
+                    playerNames = new JCheckBox[possiblePlayers.size()];
+                    for(int x=0; x<playerNames.length; x++)
+                        playerNames[x] = new JCheckBox(possiblePlayers.get(x).getName());
+
+                    while(!findNumSelected(playerNames)){
+                        JOptionPane.showMessageDialog(this,new Object[]{"Select the player you would like to steal from: ",playerNames},"Highwayman Special Action",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                    }
+                    chosenPlayer = findPlayerMatch(playerNames);
+
+                    chosenResource = "";
+                    while(!chosenResource.equalsIgnoreCase("Sheep") && !chosenResource.equalsIgnoreCase("Wheat") && !chosenResource.equalsIgnoreCase("Lumber") && !chosenResource.equalsIgnoreCase("Ore") && !chosenResource.equalsIgnoreCase("Brick"))
+                        chosenResource = (String)JOptionPane.showInputDialog(this, "Choose the resource you want to attempt to steal: Sheep, Wheat, Lumber, Ore, Brick","Highwayman Special Action",JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"),null,null);
+
+                    //Stealing Process
+                    if(chosenResource.equalsIgnoreCase("Sheep"))
+                        if(chosenPlayer.getWoolNum()>0) {
+                            chosenPlayer.monoWool(-1);
+                            this.player.monoWool(1);
+                            didSteal=true;
+                        }
+
+                    if(chosenResource.equalsIgnoreCase("Wheat"))
+                        if(chosenPlayer.getGrainNum()>0) {
+                            didSteal=true;
+                            chosenPlayer.monoWheat(-1);
+                            this.player.monoWheat(1);
+                        }
+
+                    if(chosenResource.equalsIgnoreCase("Brick"))
+                        if(chosenPlayer.getBrickNum()>0) {
+                            didSteal=true;
+                            chosenPlayer.monoBrick(-1);
+                            this.player.monoBrick(1);
+                        }
+
+                    if(chosenResource.equalsIgnoreCase("Ore"))
+                        if(chosenPlayer.getOreNum()>0) {
+                            didSteal=true;
+                            chosenPlayer.monoOre(-1);
+                            this.player.monoOre(1);
+                        }
+
+                    if(chosenResource.equalsIgnoreCase("Lumber"))
+                        if(chosenPlayer.getLumberNum()>0) {
+                            didSteal=true;
+                            chosenPlayer.monoLumber(-1);
+                            this.player.monoLumber(1);
+                        }
+
+                    JOptionPane.showMessageDialog(this,((didSteal)?"You've successfully stolen "+chosenResource.toLowerCase()+" from "+chosenPlayer.getName()+".":chosenPlayer.getName()+" did not have any "+chosenResource.toLowerCase()+" to steal. You gain nothing."),((didSteal)?"Successfully Stole":"Unsuccessful Attempt"),1,new ImageIcon("Resources/Catan_Icon.png"));
+                    hasStolen=true;
+                }
+                catch(NullPointerException f){
+                    JOptionPane.showMessageDialog(this,"You have exited out of the stealing screen. Your highwayman action has been cancelled.","Improper Action",1, new ImageIcon("Resources/Catan_Icon.png"));
+                }
+            }
+        }
         reference.updateAllStatusMenus();
+    }
+
+    public Player findPlayerMatch(JCheckBox[] cbs){
+        for(JCheckBox cb: cbs)
+            if(cb.isSelected())
+                return reference.getPlayerViaName(cb.getText());
+
+        return null;
     }
 
     public boolean playerHasSettlements(){
@@ -568,11 +665,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean findNumSelected(JCheckBox[] checkboxes){
-        int val=0;
-        for (JCheckBox checkbox : checkboxes)
-            val += (checkbox.isSelected() ? 1 : 0);
-
-        return val <= 1 && val != 0;
+        return Arrays.stream(checkboxes).filter(AbstractButton::isSelected).count()<= 1 && Arrays.stream(checkboxes).anyMatch(AbstractButton::isSelected);
     }
 
     public boolean boughtAllOnSameTurn(String type){
