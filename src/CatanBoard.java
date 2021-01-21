@@ -315,12 +315,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             break;
                         }
 
-                    for(JCheckBox cBox:possibleTargets)
-                        cBox.setSelected(false);
+                    Arrays.stream(possibleTargets).forEach(box -> box.setSelected(false));
 
                     Player playerToStealFrom = getPlayerViaName(playerName);
                     String stolenResource = giveRandomResource(playerToStealFrom);
-                    ArrayList<Player> highwaymen = (ArrayList<Player>)catanPlayerList.stream().filter(player -> player.getClassTitle().equals("Highwayman")).collect(Collectors.toList());
+                    ArrayList<Player> highwaymen = catanPlayerList.stream().filter(player -> player.getClassTitle().equals("Highwayman")).collect(Collectors.toCollection(ArrayList::new));
                     highwaymen.removeIf(player -> player.equals(getCurrentPlayer()) || player.equals(playerToStealFrom));
 
                     if (stolenResource.equals(""))
@@ -695,8 +694,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if (isMovingRobber) {
-            for(Tile t:tiles)
-                t.setHasRobber(false);
+            Arrays.stream(tiles).forEach(tile -> tile.setHasRobber(false));
 
             checkCounter = 0;
             for (Tile tile : tiles)
@@ -767,12 +765,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
     }
 
+    public ArrayList<Player> genericGetOtherPlayers(Player thisPlayer){
+        return catanPlayerList.stream().filter(player -> !player.equals(thisPlayer)).collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public ArrayList<Player> getOtherPlayers() {
-        ArrayList<Player> others = new ArrayList<>();
-        for (Player player : catanPlayerList)
-            if (player != getCurrentPlayer())
-                others.add(player);
-        return others;
+        return catanPlayerList.stream().filter(player -> !player.equals(getCurrentPlayer())).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Index returnAppropriateIndex(int chosen_x, int chosen_y) {
@@ -784,11 +782,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public Player getPlayerViaName(String name) {
-        for (Player player : catanPlayerList)
-            if (player.getName().equals(name))
-                return player;
-
-        return null;
+        return catanPlayerList.stream().filter(player -> player.getName().equals(name)).collect(Collectors.toCollection(ArrayList::new)).get(0);
     }
 
     public ArrayList<Player> turnOrder(ArrayList<String> nameList) {
@@ -858,10 +852,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     //Returns the player whose turn is currently taking place
     public Player getCurrentPlayer(){
-        for(Player player: catanPlayerList)
-            if(player.isTurn())
-                return player;
-        return null;
+        return catanPlayerList.stream().filter(Player::isTurn).collect(Collectors.toCollection(ArrayList::new)).get(0);
     }
 
     //Building condition for settlements (one of them)
@@ -876,6 +867,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     //Building condition for settlements (another of them)
     public boolean settlementBuildable(Index newSpot) {
         int counter = 0;
+
         for (Road indexConnection : indexConnections) {
             if (newSpot.getIndexID() == indexConnection.getIndexA() || newSpot.getIndexID() == indexConnection.getIndexB()) {
                 if (indexConnection.getOwner() == getCurrentPlayer())
@@ -888,11 +880,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     public void performStartingOperations() {
         int startingPlayer = new Random().nextInt(playerCreation.length);
         doingStartup = true;
-        for (Player player : catanPlayerList) {
-            if (player.getRefNumber() == startingPlayer) {
+        catanPlayerList.forEach(player -> {
+            if(player.getRefNumber()==startingPlayer)
                 player.setTurn(true);
-            }
-        }
+        });
 
         //Creating status screen for each player
         statusViewer = new PlayerView[catanPlayerList.size()];
@@ -931,11 +922,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Beginning Game",1, new ImageIcon("Resources/Catan_Icon.png"));
         JOptionPane.showMessageDialog(this, turnOrderString.toString() + buildingOrder, "Turn and Building Order",1, new ImageIcon("Resources/Catan_Icon.png"));
 
-        for (PlayerView playerView : statusViewer) {
-            playerView.options.setEnabled(false);
-            playerView.build.setEnabled(false);
-            playerView.development.setEnabled(false);
-        }
+        Arrays.stream(statusViewer).forEach( pv -> {
+            pv.options.setEnabled(false);
+            pv.build.setEnabled(false);
+            pv.development.setEnabled(false);
+        });
 
         for (String s : turnNameList)
             for (Player player : catanPlayerList)
@@ -998,11 +989,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public PlayerView getPlayerStatusMenu(Player player) {
-        for (PlayerView playerView : statusViewer)
-            if (playerView.player == player)
-                return playerView;
-
-        return null;
+        return Arrays.stream(statusViewer).filter(players -> players.player.equals(player)).collect(Collectors.toCollection(ArrayList::new)).get(0);
     }
 
     public ArrayList<Index> getOwnedIndexes(Player player) {
@@ -1059,10 +1046,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void largestArmy(Player player) {
-        int knightCounter = 0;
-        for (int x = 0; x < player.getPlayedCards().size(); x++)
-            if (player.getPlayedCards().get(x).getType().equals("Knight"))
-                knightCounter++;
+        int knightCounter = (int)(player.getPlayedCards()).stream().filter(card -> card.getType().equals("Knight")).count();
 
         if (knightCounter > currentLargestArmy && largestArmyPlayer != getCurrentPlayer()) {
             largestArmyPlayer.setLargestArmy(false);
