@@ -26,6 +26,7 @@ public class TradingFrame extends JFrame implements ActionListener {
     Player player;
     boolean asker;
     CatanBoard cbRef;
+    boolean self=false;
 
     public TradingFrame(Player player, boolean asker){
         this.asker=asker;
@@ -81,35 +82,48 @@ public class TradingFrame extends JFrame implements ActionListener {
     
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==askButton){
+            self=false;
             askButton.setEnabled(false);
             String playerName = (String)JOptionPane.showInputDialog(this,"Which player would you like to trade with?","Trading Player",1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
             int playerCounter=0;
-            for(int x=0; x<cbRef.catanPlayerList.size(); x++)
-                if(cbRef.catanPlayerList.get(x).getName().equals(playerName))
+            for(int x=0; x<cbRef.catanPlayerList.size(); x++) {
+                if (cbRef.catanPlayerList.get(x).getName().equals(playerName) && !playerName.equals(player.getName()))
                     playerCounter++;
 
-            if(playerCounter==0){
+                if (cbRef.catanPlayerList.get(x).getName().equals(player.getName())){
+                    self = true;
+                    JOptionPane.showMessageDialog(this, "You chose yourself to trade with. That is an invalid selection. Select one of the other non-assassin players.", "You Cannot Trade With Yourself", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                }
+            }
+
+            if(playerCounter==0 && !self){
                 askButton.setEnabled(true);
                 JOptionPane.showMessageDialog(this,(playerName.isBlank())?"You didn't enter in a name. Please type in a player's name if you'd like to proceed with trading.":"There is no player with "+playerName+" as a name. Please type their name correctly.","No Such Player Exists",3, new ImageIcon("Resources/Catan_Icon.png"));
             }
 
             else if(playerCounter==1 && !rejections.contains(playerName)){
-                String accept="";
-                while (accept.equals(""))
-                    accept = (String)JOptionPane.showInputDialog(this,playerName+", would you like to trade with "+this.player.getName()+"?","Trade Request",1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
-
-                if(accept.equalsIgnoreCase("Yes")) {
-                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.asker = false;
-                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.updateComboBoxes();
-                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setBounds((int) this.getBounds().getX() + 500, (int) this.getBounds().getY(), 475, 235);
-                    cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setVisible(true);
-                    cbRef.firstFrame = this;
-                    cbRef.secondFrame = cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf;
-                }
-                else {
-                    JOptionPane.showMessageDialog(this, "Your trade request has been denied.", "Trade Failed", 3, new ImageIcon("Resources/Catan_Icon.png"));
-                    rejections.add(playerName);
+                if(cbRef.getPlayerViaName(playerName).getClassTitle().equals("Assassin")) {
+                    JOptionPane.showMessageDialog(this, "You cannot trade with assassins.", "Failed Trade Request", 1, new ImageIcon("Resources/Catan_Icon.png"));
                     askButton.setEnabled(true);
+                }
+
+                else {
+                    String accept = "";
+                    while (accept.equals(""))
+                        accept = (String) JOptionPane.showInputDialog(this, playerName + ", would you like to trade with " + this.player.getName() + "?", "Trade Request", 1, new ImageIcon("Resources/Catan_Icon.png"), null, null);
+
+                    if (accept.equalsIgnoreCase("Yes")) {
+                        cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.asker = false;
+                        cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.updateComboBoxes();
+                        cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setBounds((int) this.getBounds().getX() + 500, (int) this.getBounds().getY(), 475, 235);
+                        cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setVisible(true);
+                        cbRef.firstFrame = this;
+                        cbRef.secondFrame = cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf;
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Your trade request has been denied.", "Trade Failed", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                        rejections.add(playerName);
+                        askButton.setEnabled(true);
+                    }
                 }
             }
             else{
