@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
@@ -191,9 +192,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
 
         if(catanPlayerList.size()==playerCreation.length){
-            for (PlayerSelect playerSelect : playerCreation)
-                playerSelect.setVisible(false);
-
+            Arrays.stream(playerCreation).forEach( ps -> ps.setVisible(false));
             startGame.setEnabled(true);
         }
     }
