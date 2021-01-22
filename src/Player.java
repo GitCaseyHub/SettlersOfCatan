@@ -129,13 +129,20 @@ public class Player {
     }
 
     public void changeBrick(int brickNum) {
-        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
-            pass();
+        switch(classTitle) {
+            case "Farmer":
+            case "Shepard":
+            case "Woodsman":
+                pass();
+                break;
+            case "Mountaineer":
+            case "Emperor":
+            case "Gambler":
+                this.brickNum += 2 * brickNum;
+                break;
+            default:
+                this.brickNum += brickNum;
         }
-        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Emperor") || this.classTitle.equals("Gambler"))
-            this.brickNum+=2*brickNum;
-        else
-            this.brickNum+=brickNum;
     }
 
     public int getLumberNum() {
@@ -165,13 +172,20 @@ public class Player {
     }
 
     public void changeGrain(int grainNum) {
-        if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Woodsman")||this.classTitle.equals("Shepard")) {
-            pass();
+        switch(classTitle) {
+            case "Mountaineer":
+            case "Shepard":
+            case "Woodsman":
+                pass();
+                break;
+            case "Farmer":
+            case "Emperor":
+            case "Gambler":
+                this.grainNum += 2 * grainNum;
+                break;
+            default:
+                this.grainNum += grainNum;
         }
-        else if(this.classTitle.equals("Farmer") || this.classTitle.equals("Emperor") || this.classTitle.equals("Gambler"))
-            this.grainNum+=2*grainNum;
-        else
-            this.grainNum+= grainNum;
     }
 
     public int getWoolNum() {
@@ -203,13 +217,20 @@ public class Player {
     }
 
     public void changeOre(int oreNum) {
-        if(this.classTitle.equals("Farmer") || this.classTitle.equals("Shepard") || this.classTitle.equals("Woodsman")) {
-            pass();
+        switch(classTitle) {
+            case "Farmer":
+            case "Shepard":
+            case "Woodsman":
+                pass();
+                break;
+            case "Mountaineer":
+            case "Emperor":
+            case "Gambler":
+                this.oreNum += 2 * oreNum;
+                break;
+            default:
+                this.oreNum += oreNum;
         }
-        else if(this.classTitle.equals("Mountaineer") || this.classTitle.equals("Emperor") || this.classTitle.equals("Gambler"))
-            this.oreNum+=2*oreNum;
-        else
-            this.oreNum+= oreNum;
     }
 
     public void monoOre(int num){
