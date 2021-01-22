@@ -628,7 +628,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         else if(e.getSource()==assassinate) {
             if(numNonNullCategories()>=2) {
                 possibleKills = (reference.catanPlayerList).stream().filter(player -> !player.getClassTitle().equals("Assassin") && reference.getPlayerStatusMenu(player).getCardNames().contains("Knight")).collect(Collectors.toCollection(ArrayList::new));
-                if (possiblePlayers.size() == 0)
+                if (possibleKills.size() == 0)
                     JOptionPane.showMessageDialog(this, "None of the other players have played a knight card. You cannot assassinate this turn.", "Failed Assassination", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 else {
                     playerNames = new JCheckBox[possibleKills.size()];
@@ -665,7 +665,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         reference.updateAllStatusMenus();
     }
-    
+
     public int numNonNullCategories(){
         return (int)Arrays.stream(new int[]{player.brickNum,player.oreNum,player.woolNum,player.lumberNum,player.grainNum}).filter(resourceNum -> resourceNum!=0).count();
     }
@@ -683,12 +683,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             possibilities.add("Lumber");
         if(player.woolNum>0)
             possibilities.add("Sheep");
-        
+
         while(indexOne==indexTwo){
             indexOne = new Random().nextInt(possibilities.size());
             indexTwo = new Random().nextInt(possibilities.size());
         }
-        
+
         if(indexOne==0 || indexTwo==0){player.monoBrick(-1);}
         if(indexOne==1 || indexTwo==1){player.monoOre(-1);}
         if(indexOne==2 || indexTwo==2){player.monoWheat(-1);}
