@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Player {
     String color,name,classTitle;
-    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal, referenceNumber;
+    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal,referenceNumber;
     boolean turn,longestRoad,largestArmy;
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
