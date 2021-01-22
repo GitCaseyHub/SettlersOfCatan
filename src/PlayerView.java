@@ -84,6 +84,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenuItem assassinate = new JMenuItem("Assassinate");
     boolean hasKilled=false;
     ArrayList<Player> possibleKills;
+    ArrayList<String> removedResources;
 
     //Special Classes
     JCheckBox[] playerNames;
@@ -255,11 +256,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void startTurn() {
-        reference.getPlayerStatusMenu(player).options.setEnabled(true);
-        reference.getPlayerStatusMenu(player).build.setEnabled(true);
-        reference.getPlayerStatusMenu(player).development.setEnabled(true);
-        reference.getPlayerStatusMenu(player).hwm.setEnabled(true);
-        reference.getPlayerStatusMenu(player).assassin.setEnabled(true);
+        resetReference(true);
         settlement.setEnabled(false);
         city.setEnabled(false);
         road.setEnabled(false);
@@ -313,11 +310,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     this.player.changeVictoryPoints(1);
                     JOptionPane.showMessageDialog(this,"Select the index you'd like to build a new settlement on.","Settlement Building", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     reference.isSettlementBuilding=true;
-                    reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).assassin.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).hwm.setEnabled(false);
+                    resetReference(false);
 
                     player.monoBrick(isPirateOrSerf?-2:-1);
                     player.monoWheat(isPirateOrSerf?-2:-1);
@@ -400,11 +393,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         this.player.changeVictoryPoints(1);
                         JOptionPane.showMessageDialog(null, "Select the settlement you'd like to upgrade.", "City Building", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                         reference.isCityUpgrading = true;
-                        reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).assassin.setEnabled(false);
-                        reference.getPlayerStatusMenu(player).hwm.setEnabled(false);
+                        resetReference(false);
 
                         player.monoOre(isPirateOrSerf?-6:-3);
                         player.monoWheat(isPirateOrSerf?-4:-2);
@@ -426,12 +415,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.isPlayerActing=true;
                     JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     reference.isRoadBuilding=true;
-                    reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).assassin.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).hwm.setEnabled(false);
-
+                    resetReference(false);
                     player.monoBrick(isPirateOrSerf?-2:-1);
                     player.monoLumber(isPirateOrSerf?-2:-1);
 
@@ -474,11 +458,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     }
 
                 if ((multiples(playedCard.getType()) && !boughtAllOnSameTurn(playedCard.getType())) || !playedCard.isBoughtThisTurn()) {
-                    reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).assassin.setEnabled(false);
-                    reference.getPlayerStatusMenu(player).hwm.setEnabled(false);
+                    resetReference(false);
                     JOptionPane.showMessageDialog(this, "You are playing a '" + Objects.requireNonNull(unplayed.getSelectedItem()).toString() + " Card'. Its effects are now being activated.", "Development Card Played", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     playedCard.playCard();
                     player.addDevelopmentCardToPlayed(playedCard);
@@ -534,11 +514,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
             this.player.setTurn(false);
             this.turnBox.setSelected(false);
-            reference.getPlayerStatusMenu(player).options.setEnabled(false);
-            reference.getPlayerStatusMenu(player).build.setEnabled(false);
-            reference.getPlayerStatusMenu(player).development.setEnabled(false);
-            reference.getPlayerStatusMenu(player).assassin.setEnabled(false);
-            reference.getPlayerStatusMenu(player).hwm.setEnabled(false);
+            resetReference(false);
             hasRolled=false;
 
             for(int x=0; x<player.getUnPlayedCards().size(); x++)
@@ -563,11 +539,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             JOptionPane.showMessageDialog(this,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
             if(diceRoll==7) {
-                reference.getPlayerStatusMenu(player).options.setEnabled(false);
-                reference.getPlayerStatusMenu(player).build.setEnabled(false);
-                reference.getPlayerStatusMenu(player).development.setEnabled(false);
-                reference.getPlayerStatusMenu(player).assassin.setEnabled(false);
-                reference.getPlayerStatusMenu(player).hwm.setEnabled(false);
+                resetReference(false);
                 reference.isMovingRobber = true;
             }
 
@@ -588,7 +560,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
             else{
                 try{
-                    reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     playerNames = new JCheckBox[possiblePlayers.size()];
                     for(int x=0; x<playerNames.length; x++)
                         playerNames[x] = new JCheckBox(possiblePlayers.get(x).getName());
@@ -645,8 +616,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                             chosenPlayer.monoLumber(-1);
                             this.player.monoLumber(1);
                         }
-
                     JOptionPane.showMessageDialog(this,((didSteal)?"You've successfully stolen "+chosenResource.toLowerCase()+" from "+chosenPlayer.getName()+".":chosenPlayer.getName()+" did not have any "+chosenResource.toLowerCase()+" to steal. You gain nothing."),((didSteal)?"Successfully Stole":"Unsuccessful Attempt"),1,new ImageIcon("Resources/Catan_Icon.png"));
+                    reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     hasStolen=true;
                 }
                 catch(NullPointerException f){
@@ -655,35 +626,76 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
         }
         else if(e.getSource()==assassinate) {
-            possibleKills = (reference.catanPlayerList).stream().filter(player -> !player.getClassTitle().equals("Assassin") && reference.getPlayerStatusMenu(player).getCardNames().contains("Knight")).collect(Collectors.toCollection(ArrayList::new));
-            if (possiblePlayers.size() == 0)
-                JOptionPane.showMessageDialog(this, "None of the other players have played a knight card. You cannot assassinate this turn.", "Failed Assassination", 1, new ImageIcon("Resources/Catan_Icon.png"));
-            else{
-                reference.showBuiltImage("Resources/Preview_Images/Assassinate.jpg","Assassination");
-                playerNames = new JCheckBox[possibleKills.size()];
-                for(int x=0; x<playerNames.length; x++)
-                    playerNames[x] = new JCheckBox(possibleKills.get(x).getName());
+            if(numNonNullCategories()>=2) {
+                possibleKills = (reference.catanPlayerList).stream().filter(player -> !player.getClassTitle().equals("Assassin") && reference.getPlayerStatusMenu(player).getCardNames().contains("Knight")).collect(Collectors.toCollection(ArrayList::new));
+                if (possiblePlayers.size() == 0)
+                    JOptionPane.showMessageDialog(this, "None of the other players have played a knight card. You cannot assassinate this turn.", "Failed Assassination", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                else {
+                    playerNames = new JCheckBox[possibleKills.size()];
+                    for (int x = 0; x < playerNames.length; x++)
+                        playerNames[x] = new JCheckBox(possibleKills.get(x).getName());
 
-                while(!findNumSelected(playerNames)){
-                    JOptionPane.showMessageDialog(this,new Object[]{"Select the player you want to remove a knight from: ",playerNames},"Assassin Special Action",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                    while (!findNumSelected(playerNames)) {
+                        JOptionPane.showMessageDialog(this, new Object[]{"Select the player you want to remove a knight from: ", playerNames}, "Assassin Special Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
-                    if(!findNumSelected(playerNames))
-                        JOptionPane.showMessageDialog(this,"You must select one player to remove a knight from.","Assassin Special Action",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                        if (!findNumSelected(playerNames))
+                            JOptionPane.showMessageDialog(this, "You must select one player to remove a knight from.", "Assassin Special Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                    }
+                    chosenPlayer = findPlayerMatch(playerNames);
+                    chosenPlayer.removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight", chosenPlayer, reference.genericGetOtherPlayers(chosenPlayer), reference, false));
+                    reference.getPlayerStatusMenu(chosenPlayer).played.removeItem("Knight");
+
+                    if (reference.largestArmyPlayer.equals(chosenPlayer))
+                        reference.currentLargestArmy -= 1;
+
+                    for (Player player : reference.catanPlayerList) {
+                        reference.largestArmy(player);
+                        player.winTheGame();
+                    }
+                    removedResources = assassinateResources();
+                    JOptionPane.showMessageDialog(this, "You've assassinated " + chosenPlayer.getName() + "'s knight at the cost of one " + removedResources.get(0) + " and one " + removedResources.get(1) + ".", "Assassination Complete", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                    reference.showBuiltImage("Resources/Preview_Images/Assassinate.jpg", "Assassination");
+
+                    hasKilled = true;
+                    assassinate.setEnabled(false);
                 }
-                chosenPlayer = findPlayerMatch(playerNames);
-                chosenPlayer.removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight", chosenPlayer, reference.genericGetOtherPlayers(chosenPlayer), reference, false));
-                reference.getPlayerStatusMenu(chosenPlayer).played.removeItem("Knight");
-
-                for(Player player: reference.catanPlayerList){
-                    reference.largestArmy(player);
-                    player.winTheGame();
-                }
-
-                hasKilled = true;
-                assassinate.setEnabled(false);
             }
+            else
+                JOptionPane.showMessageDialog(this,"You must have at least one of each of two distinct resources to assassinate another player's knight.","Assassination Requirements Not Met",3,new ImageIcon("Resources/Catan_Icon.png"));
         }
         reference.updateAllStatusMenus();
+    }
+    
+    public int numNonNullCategories(){
+        return (int)Arrays.stream(new int[]{player.brickNum,player.oreNum,player.woolNum,player.lumberNum,player.grainNum}).filter(resourceNum -> resourceNum!=0).count();
+    }
+
+    public ArrayList<String> assassinateResources(){
+        ArrayList<String> possibilities = new ArrayList<>();
+        int indexOne=0,indexTwo=0;
+        if(player.brickNum>0)
+            possibilities.add("Brick");
+        if(player.oreNum>0)
+            possibilities.add("Ore");
+        if(player.grainNum>0)
+            possibilities.add("Wheat");
+        if(player.lumberNum>0)
+            possibilities.add("Lumber");
+        if(player.woolNum>0)
+            possibilities.add("Sheep");
+        
+        while(indexOne==indexTwo){
+            indexOne = new Random().nextInt(possibilities.size());
+            indexTwo = new Random().nextInt(possibilities.size());
+        }
+        
+        if(indexOne==0 || indexTwo==0){player.monoBrick(-1);}
+        if(indexOne==1 || indexTwo==1){player.monoOre(-1);}
+        if(indexOne==2 || indexTwo==2){player.monoWheat(-1);}
+        if(indexOne==3 || indexTwo==3){player.monoLumber(-1);}
+        if(indexOne==4 || indexTwo==4){player.monoWool(-1);}
+
+        return possibilities;
     }
 
     public Player findPlayerMatch(JCheckBox[] cbs){
@@ -715,7 +727,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean boughtAllOnSameTurn(String type){
-        return ((int)(player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() - (int)(player.getUnPlayedCards()).stream().filter(card -> card.isBoughtThisTurn() && card.getType().equals(type)).count())==0;
+        return (int)(player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() - (int)(player.getUnPlayedCards()).stream().filter(card -> card.isBoughtThisTurn() && card.getType().equals(type)).count()==0;
     }
 
     public void mouseDragged(MouseEvent e) {}
@@ -729,5 +741,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showOptionDialog(null, null, "Longest Road Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), new Object[]{reference.longestRoadLabel}, null);
 
         }
+    }
+
+    public void resetReference(boolean state){
+        reference.getPlayerStatusMenu(player).options.setEnabled(state);
+        reference.getPlayerStatusMenu(player).build.setEnabled(state);
+        reference.getPlayerStatusMenu(player).development.setEnabled(state);
+        reference.getPlayerStatusMenu(player).assassin.setEnabled(state);
+        reference.getPlayerStatusMenu(player).hwm.setEnabled(state);
     }
 }
