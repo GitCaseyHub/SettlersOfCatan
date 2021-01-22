@@ -243,6 +243,8 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                 cbReference.getPlayerStatusMenu(player).options.setEnabled(true);
                 cbReference.getPlayerStatusMenu(player).build.setEnabled(true);
                 cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).hwm.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).assassin.setEnabled(true);
                 yearOfPlenty=false;
 
             } else
@@ -281,6 +283,8 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                 cbReference.getPlayerStatusMenu(player).options.setEnabled(true);
                 cbReference.getPlayerStatusMenu(player).build.setEnabled(true);
                 cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).hwm.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).assassin.setEnabled(true);
                 monopoly = false;
             }
             else
