@@ -436,6 +436,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
                         getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
                         getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
+                        getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
+                        getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
                         finishedRoadCard = false;
                     }
                 }
@@ -525,6 +527,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
             getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
             getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+            getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
+            getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
         }
         updateAllStatusMenus();
     }
@@ -708,6 +712,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
                     getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
                     getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+                    getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
+                    getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
                     repaint();
                     break;
                 }
@@ -734,6 +740,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
                 getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
                 getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
+                getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
+                getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
                 repaint();
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                 showBuiltImage("Resources/Preview_Images/City.png","City Construction");
@@ -1317,7 +1325,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         return Collections.max(lengths)>previous;
     }
 
-    public int roadRecursion(java.util.List<Road> potential, ArrayList<Road> usedAlready, int currentLength, Road currentRoad){
+    public int roadRecursion(ArrayList<Road> potential, ArrayList<Road> usedAlready, int currentLength, Road currentRoad){
         ArrayList<Road> possibleSplittings= new ArrayList<>();
         ArrayList<Integer> splits = new ArrayList<>();
         boolean stillHasConnections = true;
@@ -1369,7 +1377,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         if(isPlayerActing) {
             int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png"));
             if (confirmCancellation != 0) {
-                JOptionPane.showMessageDialog(this, "Then continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this, "Please continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
             if (!doingStartup && isPlayerActing) {
