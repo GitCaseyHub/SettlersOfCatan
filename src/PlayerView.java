@@ -128,22 +128,23 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         options.setEnabled(false);
         development.setEnabled(false);
         build.setEnabled(false);
+        if(reference.specialActions) {
+            //Highwayman
+            if (player.getClassTitle().equals("Highwayman")) {
+                mb.add(hwm);
+                hwm.add(steal);
+                hwm.setEnabled(false);
+                steal.addActionListener(this);
+                steal.setEnabled(false);
+            }
 
-        //Highwayman
-        if(player.getClassTitle().equals("Highwayman")){
-            mb.add(hwm);
-            hwm.add(steal);
-            hwm.setEnabled(false);
-            steal.addActionListener(this);
-            steal.setEnabled(false);
-        }
-
-        if(player.getClassTitle().equals("Assassin")){
-            mb.add(assassin);
-            assassin.add(assassinate);
-            assassinate.addActionListener(this);
-            assassinate.setEnabled(false);
-            assassin.setEnabled(false);
+            if (player.getClassTitle().equals("Assassin")) {
+                mb.add(assassin);
+                assassin.add(assassinate);
+                assassinate.addActionListener(this);
+                assassinate.setEnabled(false);
+                assassin.setEnabled(false);
+            }
         }
 
         fourForOne.setText((player.getClassTitle().equals("Pirate")?"One/One Resource Trade [Pirate]":"Four/One Resource Trade"));
