@@ -41,6 +41,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JMenu optionMenu = new JMenu("Options");
     JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
     JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Frame");
+    JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JMenuItem helpMenu = new JMenuItem("Operations Help");
 
     public BeginGame(){
@@ -59,6 +60,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
         optionMenu.add(motionMenu);
         motionMenu.setToolTipText("A frame showing what award a player has should they hover over the checkbox in their player status screen will be enabled.");
+        optionMenu.add(specialClassMenu);
+        specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.add(borderPanel);
@@ -72,7 +75,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             options.add(friendlyRobber);
                 activePorts.setBorderPainted(true);
                 activePorts.setBorder(compound);
-                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports will be identified by hollow green circles.");
+                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports indices will be marked with hollow green circles.");
                 friendlyRobber.setBorderPainted(true);
                 friendlyRobber.setBorder(compound);
                 friendlyRobber.setToolTipText("Select this checkbox to disable the robber from stealing from players with less than 4 victory points.");
@@ -136,6 +139,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.previewFrames=previewMenu.isSelected();
             cbMain.isUsingMotionFrame = motionMenu.isSelected();
             cbMain.usablePorts=activePorts.isSelected();
+            cbMain.specialActions = specialClassMenu.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
@@ -198,7 +202,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
     public void mousePressed(MouseEvent e) {
         if(e.getSource()==openingLabel){
-            JOptionPane.showMessageDialog(this,"Welcome to Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,"Let's Play Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
             this.setSize(543,140);
             this.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300);
