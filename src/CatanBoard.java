@@ -94,6 +94,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean previewFrames=false;
     boolean isUsingMotionFrame =false;
     boolean usablePorts=false;
+    boolean specialActions=false;
 
     //Building Variables
     int roadCondition = 0;
