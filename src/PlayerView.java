@@ -416,6 +416,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     JOptionPane.showMessageDialog(this,"Choose the two indices you'd like to build a road between.","Road Building", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     reference.isRoadBuilding=true;
                     resetReference(false);
+
                     player.monoBrick(isPirateOrSerf?-2:-1);
                     player.monoLumber(isPirateOrSerf?-2:-1);
 
@@ -577,7 +578,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         chosenResource = (String) JOptionPane.showInputDialog(this, "Choose the resource you want to attempt to steal: Sheep, Wheat, Lumber, Ore, Brick", "Highwayman Special Action", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null);
 
                         if(!chosenResource.equalsIgnoreCase("Sheep") && !chosenResource.equalsIgnoreCase("Wheat") && !chosenResource.equalsIgnoreCase("Lumber") && !chosenResource.equalsIgnoreCase("Ore") && !chosenResource.equalsIgnoreCase("Brick"))
-                            JOptionPane.showMessageDialog(this,"That is not one of the specified resources. Try again.","Incorrect Resource Title",1,new ImageIcon("Resources/Catan_Icon.png"));
+                            JOptionPane.showMessageDialog(this,"That is not one of the specified resources.","Incorrect Resource Title",1,new ImageIcon("Resources/Catan_Icon.png"));
 
                     }
 
@@ -672,6 +673,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public ArrayList<String> assassinateResources(){
         ArrayList<String> possibilities = new ArrayList<>();
+        ArrayList<String> appropriatelyIndexed = new ArrayList<>();
         int indexOne=0,indexTwo=0;
         if(player.brickNum>0)
             possibilities.add("Brick");
@@ -688,6 +690,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             indexOne = new Random().nextInt(possibilities.size());
             indexTwo = new Random().nextInt(possibilities.size());
         }
+        appropriatelyIndexed.add(possibilities.get(indexOne));
+        appropriatelyIndexed.add(possibilities.get(indexTwo));
 
         if(indexOne==0 || indexTwo==0){player.monoBrick(-1);}
         if(indexOne==1 || indexTwo==1){player.monoOre(-1);}
@@ -695,7 +699,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         if(indexOne==3 || indexTwo==3){player.monoLumber(-1);}
         if(indexOne==4 || indexTwo==4){player.monoWool(-1);}
 
-        return possibilities;
+        return appropriatelyIndexed;
     }
 
     public Player findPlayerMatch(JCheckBox[] cbs){
@@ -715,11 +719,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean playerHasSettlements(){
-        return (int)(player.getOwnedIndexes().stream().filter(Index::isSettlement).count())!=0;
+        return player.getOwnedIndexes().stream().anyMatch(Index::isSettlement);
     }
 
     public boolean multiples(String type){
-        return (int)(player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() > 1;
+        return (player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() > 1;
     }
 
     public boolean findNumSelected(JCheckBox[] checkboxes){
@@ -727,7 +731,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean boughtAllOnSameTurn(String type){
-        return (int)(player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() - (int)(player.getUnPlayedCards()).stream().filter(card -> card.isBoughtThisTurn() && card.getType().equals(type)).count()==0;
+        return (player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() - (player.getUnPlayedCards()).stream().filter(card -> card.isBoughtThisTurn() && card.getType().equals(type)).count()==0;
     }
 
     public void mouseDragged(MouseEvent e) {}
