@@ -121,8 +121,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         imageLabel.setBorder(compound);
     }
 
-    public void actionPerformed(ActionEvent e){
-        if((e.getSource()==specialClassMenu || e.getSource()==motionMenu || e.getSource()==previewMenu) && !(specialClassMenu.isSelected() && motionMenu.isSelected() && previewMenu.isSelected()))
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu)
             optionMenu.doClick();
 
         if(e.getSource()==players)
