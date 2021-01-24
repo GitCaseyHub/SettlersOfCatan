@@ -38,11 +38,12 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
     //JMenuBar
     JMenuBar mb = new JMenuBar();
-    JMenu optionMenu = new JMenu("Options");
+    JMenu optionMenu = new JMenu("Features");
+    JMenu help = new JMenu("Help");
     JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
     JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Frame");
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
-    JMenuItem helpMenu = new JMenuItem("Operations Help");
+    JMenuItem helpMenu = new JMenuItem("Special Operations");
 
     public BeginGame(){
         this.setUndecorated(true);
@@ -53,15 +54,23 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         mb.setBorder(compound);
         mb.setBorderPainted(true);
         mb.add(optionMenu);
-        optionMenu.add(helpMenu);
+        mb.add(help);
+        help.addSeparator();
+        help.add(helpMenu);
+        help.addSeparator();
         helpMenu.addActionListener(this);
+        optionMenu.addSeparator();
         helpMenu.setToolTipText("Click here to learn how to perform certain actions in-game and what the short-cut keys are for performing special operations.");
         optionMenu.add(previewMenu);
         previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
+        previewMenu.addActionListener(this);
         optionMenu.add(motionMenu);
+        motionMenu.addActionListener(this);
         motionMenu.setToolTipText("A frame showing what award a player has should they hover over the checkbox in their player status screen will be enabled.");
         optionMenu.add(specialClassMenu);
+        specialClassMenu.addActionListener(this);
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
+        optionMenu.addSeparator();
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.add(borderPanel);
@@ -113,6 +122,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public void actionPerformed(ActionEvent e){
+        if(e.getSource()==specialClassMenu || e.getSource()==motionMenu || e.getSource()==previewMenu)
+            optionMenu.doClick();
+        
         if(e.getSource()==players)
             generateChars.setEnabled(players.getSelectedIndex()!=0);
 
