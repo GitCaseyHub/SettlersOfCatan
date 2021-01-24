@@ -26,7 +26,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                                   "You left society long ago to live in the woods. It's where you belong, and you would rather forsake your kind than to ever return. All you need is an axe and a forest. As a result, you produce four times lumber than normal, but you can produce nothing else.",
                                   "You are a gambler who plays fast and loose, and you don't know when to quit. Fortunately, you happen to be very lucky with your resources, and as such, produce double as normal. However, you don't always win. As a result, every time a roll is made, you have a 20% chance to lose one of every resource. Note that this effect can make you go into debt (i.e. you can have negative resources).",
                                   "You are a highwayman, a creature that slithers around the underbelly of society. By day, you till the fields and cultivate your lands; by night, you rob the innocent on the open roads. As a result, whenever a robber steals from a player, you get the same resources that are stolen. Also, you may use your 'steal' action during your turn: doing so, you can steal from any player a resource of your choice. However, you may not produce during the next round of rolls. Also, if that player does not have the resource you choose, you get nothing. Finally, you cannot be stolen from.",
-                                  "You are a murderer, and you've honed your skills through years of contracts from royals. People, however, don't trust you because of your swarthy demeanor and empty eyes. As a result, you cannot trade with other players. But, your skills as a contract killer allow you to remove a single knight card from a random player at the cost of 1 random resource."};
+                                  "You are a murderer, and you've honed your skills through years of royal contracts. People, however, don't trust you because of your swarthy demeanor and empty eyes. As a result, you cannot trade with other players. But, your skills as a contract killer allow you to remove a single knight card from a random player at the cost of 1 random resource."};
 
     //Frame Assets
     JPanel upperPanel = new JPanel(new GridLayout(1,2));
@@ -49,6 +49,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     int referenceNumber;
 
     public PlayerSelect(BeginGame bgReference, int referenceNumber){
+        this.setResizable(false);
         this.bgReference=bgReference;
         this.referenceNumber=referenceNumber;
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
