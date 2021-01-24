@@ -152,6 +152,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         //Creating the GUI
         this.setLayout(new BorderLayout());
+        this.setResizable(false);
         this.add(graphicHolder, BorderLayout.CENTER);
         this.add(borderNorth,BorderLayout.NORTH);
         borderNorth.setBorder(compound);
