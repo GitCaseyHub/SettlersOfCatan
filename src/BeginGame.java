@@ -122,9 +122,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==specialClassMenu || e.getSource()==motionMenu || e.getSource()==previewMenu)
+        if((e.getSource()==specialClassMenu || e.getSource()==motionMenu || e.getSource()==previewMenu) && !(specialClassMenu.isSelected() && motionMenu.isSelected() && previewMenu.isSelected()))
             optionMenu.doClick();
-        
+
         if(e.getSource()==players)
             generateChars.setEnabled(players.getSelectedIndex()!=0);
 
