@@ -29,6 +29,7 @@ public class TradingFrame extends JFrame implements ActionListener {
     boolean self=false;
 
     public TradingFrame(Player player, boolean asker){
+        this.setResizable(false);
         this.asker=asker;
         this.player=player;
         //Array manipulation stuff
