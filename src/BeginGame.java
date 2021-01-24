@@ -73,6 +73,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         optionMenu.addSeparator();
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setResizable(false);
         this.add(borderPanel);
         borderPanel.setBorder(compound);
         borderPanel.add(options,BorderLayout.CENTER);
