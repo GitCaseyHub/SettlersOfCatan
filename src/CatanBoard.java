@@ -1100,7 +1100,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             getCurrentPlayer().monoLumber(1);
 
                         getCurrentPlayer().monoWheat(-2);
-                        getPlayerStatusMenu(getCurrentPlayer()).update();
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     }
                     break;
@@ -1129,7 +1128,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             getCurrentPlayer().monoLumber(1);
 
                         getCurrentPlayer().monoWool(-2);
-                        getPlayerStatusMenu(getCurrentPlayer()).update();
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     }
                     break;
@@ -1158,7 +1156,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             getCurrentPlayer().monoLumber(1);
 
                         getCurrentPlayer().monoOre(-2);
-                        getPlayerStatusMenu(getCurrentPlayer()).update();
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     }
                     break;
@@ -1188,7 +1185,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     }
 
                     getCurrentPlayer().monoBrick(-2);
-                    getPlayerStatusMenu(getCurrentPlayer()).update();
                     JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     break;
 
@@ -1216,7 +1212,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             getCurrentPlayer().monoBrick(1);
                     }
                     getCurrentPlayer().monoLumber(-2);
-                    getPlayerStatusMenu(getCurrentPlayer()).update();
                     JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used",1, new ImageIcon("Resources/Catan_Icon.png"));
                     break;
 
@@ -1277,11 +1272,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         if (resourceChoice.equalsIgnoreCase("Lumber"))
                             getCurrentPlayer().monoLumber(-3);
                     }
-                    getPlayerStatusMenu(getCurrentPlayer()).update();
                     JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     break;
             }
-
+            updateAllStatusMenus();
             resetPortBoxes();
         }
         catch (NullPointerException e) {
@@ -1414,11 +1408,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 }
             }
             isPlayerActing = false;
-            getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).assassin.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
+            getPlayerStatusMenu(getCurrentPlayer()).resetReference(true);
             updateAllStatusMenus();
             JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         }
