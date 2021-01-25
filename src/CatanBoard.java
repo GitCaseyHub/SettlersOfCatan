@@ -406,7 +406,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                         if (duplicates.size() > 0) {
                             duplicates.get(0).setTurn(true);
-                            JOptionPane.showMessageDialog(this, "Now, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                            JOptionPane.showMessageDialog(this, duplicates.get(0).getName() + ": Place a settlement, then build a road from that settlement.", "Road and Settlement Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             isSettlementBuilding = true;
                         }
                     }
@@ -418,7 +418,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                 player.setTurn(true);
 
                         getPlayerStatusMenu(catanPlayerList.get(0)).update();
-                        JOptionPane.showMessageDialog(this, "The game is ready to officially start. Based on your first settlement placements, you will be given the appropriate resources. " + catanPlayerList.get(0).getName() + ", you proceed first.", "Free Play",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this, "You will now receive your starting resources. Let the games begin.", "Official Start",1, new ImageIcon("Resources/Catan_Icon.png"));
                         givePlayersStartingResources();
                     }
                 } else {
@@ -677,7 +677,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         }
                     }
                     if (checkedIndex.isTaken() && breakCheck)
-                        JOptionPane.showMessageDialog(this, "This spot has already been built upon. Please choose again..", "Spot Taken",3, new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this, "This spot has already been built upon. Please choose again.", "Spot Taken",3, new ImageIcon("Resources/Catan_Icon.png"));
 
                     else if (!buildable(checkedIndex))
                         JOptionPane.showMessageDialog(this, "You are within one road-length of another settlement/city. Please choose again.", "Spot Proximity Too Close",3, new ImageIcon("Resources/Catan_Icon.png"));
@@ -912,24 +912,17 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             startPickOrder.add((startingPlayer + x) % catanPlayerList.size());
         }
         turnOrder = startPickOrder;
-        StringBuilder turnOrderString = new StringBuilder("The turn order is as follows: ");
-        for (int x = 0; x < turnOrder.size(); x++)
-            for (Player player : catanPlayerList)
-                if (player.getRefNumber() == turnOrder.get(x))
-                    turnOrderString.append(player.getName()).append((x != turnOrder.size() - 1) ? ", " : ". ");
 
         startPickOrder.addAll(reverse(startPickOrder));
-        StringBuilder buildingOrder = new StringBuilder("The starting order placement will be: ");
         turnNameList = new ArrayList<>();
 
         for (int x = 0; x < startPickOrder.size(); x++)
             for (Player player : catanPlayerList)
                 if (player.getRefNumber() == turnOrder.get(x)) {
-                    buildingOrder.append(player.getName()).append((x != turnOrder.size() - 1) ? ", " : ".");
                     turnNameList.add(player.getName());
                 }
         JOptionPane.showMessageDialog(this, "You're ready to begin play. Enjoy Settlers of Catan®.", "Beginning Game",1, new ImageIcon("Resources/Catan_Icon.png"));
-        JOptionPane.showMessageDialog(this, turnOrderString.toString() + buildingOrder, "Turn and Building Order",1, new ImageIcon("Resources/Catan_Icon.png"));
+        JOptionPane.showMessageDialog(this, getTurnOrder(turnNameList), "Turn Order",1, new ImageIcon("Resources/Catan_Icon.png"));
 
         Arrays.stream(statusViewer).forEach( pv -> {
             pv.options.setEnabled(false);
@@ -942,9 +935,18 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 if (s.equals(player.getName()))
                     duplicates.add(player);
 
-        JOptionPane.showMessageDialog(this, "So, " + duplicates.get(0).getName() + ", select an index to build on, and then a direction you'd like to build a road.", "Road and Settlement Building",1, new ImageIcon("Resources/Catan_Icon.png"));
+        JOptionPane.showMessageDialog(this, duplicates.get(0).getName() + ": Place a settlement, then build a road from that settlement.", "Road and Settlement Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
         this.isSettlementBuilding = true;
         duplicates.get(0).setTurn(true);
+    }
+
+    public String getTurnOrder(ArrayList<String> order){
+        String[] appositives = {"1 ⇒   ","2 ⇒   ","3 ⇒   ","4 ⇒   "};
+        StringBuilder turnString = new StringBuilder("Here is the turn order: \n");
+        for(int x=0; x<order.size()/2; x++)
+            turnString.append(appositives[x]).append(order.get(x)).append("\n");
+
+        return turnString.toString();
     }
 
     //Method to reverse arraylist so as to make a list for placement when game starts
@@ -1427,13 +1429,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public boolean sharesLocation(Point point){
-        int counter=0;
-        for (Index index : indexes)
-            if (Math.abs(point.getX() - index.getLocation()[0]) < 10 && Math.abs(point.getY() - index.getLocation()[1]) < 10)
-                if (index.isTaken())
-                    counter++;
-
-        return counter <= 0;
+        return Arrays.stream(indexes).filter(index -> (Math.abs(point.getX() - index.getLocation()[0]) < 10 && Math.abs(point.getY() - index.getLocation()[1]) < 10) && index.isTaken()).count() <=0;
     }
 
     public void cataclysm(){
