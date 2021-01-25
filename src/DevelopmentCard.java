@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class DevelopmentCard implements ActionListener, MouseListener {
@@ -240,11 +241,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                 cbReference.getPlayerStatusMenu(player).update();
                 choiceFrame.setVisible(false);
                 deselectAll();
-                cbReference.getPlayerStatusMenu(player).options.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).build.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).hwm.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).assassin.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).resetReference(true);
                 yearOfPlenty=false;
 
             } else
@@ -280,40 +277,24 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                 }
                 choiceFrame.setVisible(false);
                 deselectAll();
-                cbReference.getPlayerStatusMenu(player).options.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).build.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).development.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).hwm.setEnabled(true);
-                cbReference.getPlayerStatusMenu(player).assassin.setEnabled(true);
+                cbReference.getPlayerStatusMenu(player).resetReference(true);
                 monopoly = false;
             }
             else
-                JOptionPane.showMessageDialog(null, "Okay. Reselect the resource you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(null, "Reselect the resource you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
     public void disableAppropriateCheckBoxes() {
-        oreCheck.setEnabled(oreCheck.isSelected());
-        sheepCheck.setEnabled(sheepCheck.isSelected());
-        brickCheck.setEnabled(brickCheck.isSelected());
-        woodCheck.setEnabled(woodCheck.isSelected());
-        wheatCheck.setEnabled(wheatCheck.isSelected());
+        Arrays.stream(new JCheckBox[]{oreCheck,sheepCheck,brickCheck,woodCheck,wheatCheck}).forEach(box -> box.setEnabled(box.isSelected()));
     }
 
     public void changeAllCheckBoxes(boolean state) {
-        oreCheck.setEnabled(state);
-        sheepCheck.setEnabled(state);
-        brickCheck.setEnabled(state);
-        woodCheck.setEnabled(state);
-        wheatCheck.setEnabled(state);
+        Arrays.stream(new JCheckBox[]{oreCheck,sheepCheck,brickCheck,woodCheck,wheatCheck}).forEach(box -> box.setEnabled(state));
     }
 
     public void deselectAll() {
-        oreCheck.setSelected(false);
-        sheepCheck.setSelected(false);
-        brickCheck.setSelected(false);
-        wheatCheck.setSelected(false);
-        woodCheck.setSelected(false);
+        Arrays.stream(new JCheckBox[]{oreCheck,sheepCheck,brickCheck,woodCheck,wheatCheck}).forEach(box -> box.setSelected(false));
     }
 
     public void showDevelopmentImage(String name){
@@ -325,7 +306,6 @@ public class DevelopmentCard implements ActionListener, MouseListener {
         if(e.getSource()==cardLabel)
             cardFrame.setVisible(false);
     }
-
 
     public void mouseClicked(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
