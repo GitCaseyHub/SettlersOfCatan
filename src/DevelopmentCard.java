@@ -272,8 +272,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                         player.monoWheat(otherPlayer.getGrainNum());
                         otherPlayer.setGrainNum(0);
                     }
-                    cbReference.getPlayerStatusMenu(player).update();
-                    cbReference.getPlayerStatusMenu(otherPlayer).update();
+                    cbReference.updateAllStatusMenus();
                 }
                 choiceFrame.setVisible(false);
                 deselectAll();
