@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TradingFrame extends JFrame implements ActionListener {
     //Year of Plenty & Monopoly
@@ -161,11 +162,8 @@ public class TradingFrame extends JFrame implements ActionListener {
         this.setBounds(100, 100, 475, 235);
         confirmButton.setEnabled(true);
         askButton.setEnabled(true);
-        brickCheck.removeAllItems();
-        wheatCheck.removeAllItems();
-        oreCheck.removeAllItems();
-        woodCheck.removeAllItems();
-        sheepCheck.removeAllItems();
+        Arrays.stream(new JComboBox[]{brickCheck,wheatCheck,oreCheck,woodCheck,sheepCheck}).forEach(JComboBox::removeAllItems);
+
         for(int x=0; x<player.getBrickNum()+1; x++)
             brickCheck.addItem(x);
 
@@ -181,11 +179,7 @@ public class TradingFrame extends JFrame implements ActionListener {
         for(int x=0; x<player.getWoolNum()+1; x++)
             sheepCheck.addItem(x);
 
-        brickCheck.setEnabled(brickCheck.getItemCount() != 1);
-        wheatCheck.setEnabled(wheatCheck.getItemCount() != 1);
-        oreCheck.setEnabled(oreCheck.getItemCount() != 1);
-        woodCheck.setEnabled(woodCheck.getItemCount() != 1);
-        sheepCheck.setEnabled(sheepCheck.getItemCount() != 1);
+        Arrays.stream(new JComboBox[]{brickCheck,wheatCheck,oreCheck,woodCheck,sheepCheck}).forEach(box -> box.setEnabled(box.getItemCount()!=1));
 
         confirmButton.setEnabled(!asker);
         askButton.setEnabled(asker);
