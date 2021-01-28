@@ -99,6 +99,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         this.reference=reference;
         this.tf=tf;
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        build.addSeparator();
+        development.addSeparator();
+        options.addSeparator();
+        hwm.addSeparator();
+        assassin.addSeparator();
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -228,6 +233,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         wheatNum.setBorder(compound);
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
         woodNum.setBorder(compound);
+
+        build.addSeparator();
+        development.addSeparator();
+        options.addSeparator();
+        hwm.addSeparator();
+        assassin.addSeparator();
+        
         initializeCostFrame();
     }
 
@@ -725,7 +737,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean multiples(String type){
-        return (player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() > 1;
+        return player.getUnPlayedCards().stream().filter(card -> card.getType().equals(type)).count() > 1;
     }
 
     public boolean findNumSelected(JCheckBox[] checkboxes){
