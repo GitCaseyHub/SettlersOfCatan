@@ -14,14 +14,14 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel borderPanel = new JPanel(new BorderLayout());
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
-    JCheckBox activePorts = new JCheckBox("Active Ports");
-    JCheckBox friendlyRobber = new JCheckBox("Friendly Robber");
-    JCheckBox cataclysms = new JCheckBox("Active Cataclysms");
+    CustomSwitch activePorts = new CustomSwitch("Port Trading");
+    CustomSwitch friendlyRobber = new CustomSwitch("Friendly Robber");
+    CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
     JComboBox<String> players = new JComboBox<>();
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
-    Point[] generationPoints = new Point[]{new Point(195,172), new Point(195,527), new Point(1290,172), new Point(1290,527)};
+    Point[] generationPoints = new Point[]{new Point(195,168), new Point(195,527), new Point(1290,168), new Point(1290,527)};
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
     PlayerSelect[] playerCreation;
 
@@ -72,25 +72,16 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.addSeparator();
 
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.setResizable(false);
         this.add(borderPanel);
         borderPanel.setBorder(compound);
         borderPanel.add(options,BorderLayout.CENTER);
             options.setBorder(new TitledBorder("In-Game Options"));
             options.add(players);
-                players.setBorder(compound);
             options.add(activePorts);
             options.add(cataclysms);
             options.add(friendlyRobber);
-                activePorts.setBorderPainted(true);
-                activePorts.setBorder(compound);
-                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, ports indices will be marked with hollow green circles.");
-                friendlyRobber.setBorderPainted(true);
-                friendlyRobber.setBorder(compound);
+                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, port indices will be marked with hollow green circles.");
                 friendlyRobber.setToolTipText("Select this checkbox to disable the robber from stealing from players with less than 4 victory points.");
-                cataclysms.setBorderPainted(true);
-                cataclysms.setBorder(compound);
                 cataclysms.setToolTipText("Select this checkbox to activate weather events that inflict damages upon the players at random intervals.");
         borderPanel.add(charGenerate,BorderLayout.SOUTH);
             charGenerate.setBorder(new TitledBorder("Template Generation"));
@@ -102,6 +93,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 startGame.setEnabled(false);
                 generateChars.setEnabled(false);
                 players.addActionListener(this);
+                players.setBorder(compound);
                 generateChars.addActionListener(this);
                 startGame.addActionListener(this);
 
@@ -217,7 +209,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if(e.getSource()==openingLabel){
             JOptionPane.showMessageDialog(this,"Let's Play Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
-            this.setSize(543,140);
+            this.setSize(543,144);
             this.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300);
             this.setVisible(true);
             imageFrame.setUndecorated(true);
