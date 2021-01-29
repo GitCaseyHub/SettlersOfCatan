@@ -8,15 +8,20 @@ import java.awt.event.MouseListener;
 public class CustomSwitch extends JPanel implements MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
     JLabel title = new JLabel("",SwingConstants.CENTER);
-    JButton on = new JButton();
-    JButton off = new JButton();
+    JTextField on = new JTextField("ON");
+    JTextField off = new JTextField("OFF");
     JPanel on_off = new JPanel(new GridLayout(1,2));
     boolean state = true;
     String text;
+
     public CustomSwitch(String text){
         this.text=text;
         on.setEnabled(false);
+        on.setHorizontalAlignment(JTextField.CENTER);
+        on.setDisabledTextColor(Color.BLACK);
         off.setEnabled(false);
+        off.setHorizontalAlignment(JTextField.CENTER);
+        off.setDisabledTextColor(Color.BLACK);
 
         this.setLayout(new BorderLayout());
         this.add(title, BorderLayout.NORTH);
@@ -37,7 +42,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
         off.addMouseListener(this);
         on.addMouseListener(this);
 
-        title.setText(text+" - ON");
+        title.setText(text);
     }
 
     @Override
@@ -46,7 +51,6 @@ public class CustomSwitch extends JPanel implements MouseListener {
             if(!on.isEnabled()) {
                 on.setBackground(Color.green);
                 off.setBackground(Color.WHITE);
-                title.setText(text+" - ON");
                 state=true;
             }
         }
@@ -54,7 +58,6 @@ public class CustomSwitch extends JPanel implements MouseListener {
             if (!off.isEnabled()) {
                 off.setBackground(Color.RED);
                 on.setBackground(Color.WHITE);
-                title.setText(text + " - OFF");
                 state = false;
             }
         }
