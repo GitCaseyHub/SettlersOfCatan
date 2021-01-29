@@ -21,10 +21,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
-    Point[] generationPoints = new Point[]{new Point(195,168), new Point(195,527), new Point(1290,168), new Point(1290,527)};
+    Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
     PlayerSelect[] playerCreation;
-
     ArrayList<Player> catanPlayerList = new ArrayList<>();
 
     //Opening Frame
@@ -209,11 +208,11 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if(e.getSource()==openingLabel){
             JOptionPane.showMessageDialog(this,"Let's Play Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
-            this.setSize(543,144);
+            this.setSize(543,148);
             this.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300);
             this.setVisible(true);
             imageFrame.setUndecorated(true);
-            imageFrame.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300+150);
+            imageFrame.setLocation(dim.width/2-this.getSize().width/2+8, dim.height/2-this.getSize().height/2-300+152);
             imageFrame.setSize(544,502);
             imageFrame.setVisible(true);
         }
