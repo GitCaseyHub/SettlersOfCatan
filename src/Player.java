@@ -3,13 +3,37 @@ import java.util.ArrayList;
 
 public class Player {
     String color,name,classTitle;
-    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal,referenceNumber;
+    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal, referenceNumber, cities, settlements, roads;
     boolean turn,longestRoad,largestArmy;
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
     CatanBoard cb;
 
-    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber){
+    public int getCities() {
+        return cities;
+    }
+
+    public void changeCityNum(int cities) {
+        this.cities+=cities;
+    }
+
+    public int getSettlements() {
+        return settlements;
+    }
+
+    public void changeSettlementNum(int settlements) {
+        this.settlements+=settlements;
+    }
+
+    public int getRoads() {
+        return roads;
+    }
+
+    public void changeRoadNum(int roads) {
+        this.roads+=roads;
+    }
+
+    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads){
         this.color=color;
         this.name=name;
         this.classTitle=classTitle;
@@ -26,6 +50,9 @@ public class Player {
         this.longestRoad=longestRoad;
         this.largestArmy=largestArmy;
         this.referenceNumber=referenceNumber;
+        this.cities=cities;
+        this.settlements=settlements;
+        this.roads=roads;
     }
 
     public int getRefNumber() {
