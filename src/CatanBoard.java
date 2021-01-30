@@ -423,17 +423,20 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         JOptionPane.showMessageDialog(this, "You will now receive your starting resources. Let the games begin.", "Official Start",1, new ImageIcon("Resources/Catan_Icon.png"));
                         givePlayersStartingResources();
                     }
-                } else {
+                } 
+                else {
                     if (!roadDevCard && !finishedRoadCard) {
                         JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
                         showBuiltImage("Resources/Preview_Images/Road.png","Road Construction");
                     }
 
                     else if (roadDevCard) {
-                        JOptionPane.showMessageDialog(this, "You've built a new road. Now, create your second road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
-                        isRoadBuilding = true;
-                        roadDevCard = false;
-                        finishedRoadCard = true;
+                        JOptionPane.showMessageDialog(this, (getCurrentPlayer().getRoads()!=0)?"You've built a new road. Now, create your second road.":"You've created your single available road.", "Road Building",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        if(getCurrentPlayer().getRoads()!=0) {
+                            isRoadBuilding = true;
+                            roadDevCard = false;
+                            finishedRoadCard = true;
+                        }
                     } else {
                         JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action",1, new ImageIcon("Resources/Catan_Icon.png"));
                         getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
