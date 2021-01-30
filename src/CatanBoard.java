@@ -156,7 +156,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             rollNumList.add(x);
 
         for (int x = 0; x < indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, false, false, false, 69), false, false);
+            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, false, false, false, 69,0,0,0), false, false);
 
         for (int x = 0; x < types.length; x++) {
             int typeIndex = new Random().nextInt(typeList.size());
@@ -397,7 +397,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     JOptionPane.showMessageDialog(this, (currentLongestRoad != 4) ? "There is a new longest road comprised of " + currentLongestRoad + " segments by " + getCurrentPlayer().getName() + "." : "The longest road award has been claimed by " + getCurrentPlayer().getName() + ", who has a road of " + currentLongestRoad + " continuous segments.", "New Longest Road", 1,new ImageIcon("Resources/Catan_Icon.png"));
                     this.longestRoadPlayer = getCurrentPlayer();
                     updateAllStatusMenus();
+
                 }
+                getCurrentPlayer().changeRoadNum(-1);
 
                 if (doingStartup) {
                     if (duplicates.size() > 0) {
@@ -693,6 +695,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         isSettlementBuilding = false;
                         settlementPaintCondition = true;
                         repaint();
+                        getCurrentPlayer().changeSettlementNum(-1);
                     }
                 }
             }
@@ -745,6 +748,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
                 repaint();
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                getCurrentPlayer().changeCityNum(-1);
                 showBuiltImage("Resources/Preview_Images/City.png","City Construction");
             }
         }
