@@ -118,6 +118,11 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     }
 
     public void performRoadBuilding() {
+        if (player.getRoads() <= 1){
+            JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You do not have two available roads left to build with.", "Insufficient Roads", 1, new ImageIcon("Resources/Catan_Icon.png"));
+            return;
+        }
+        
         showDevelopmentImage("Resources/Preview_Images/Road_Building.png");
         cbReference.roadDevCard=true;
         cbReference.finishedRoadCard=false;
