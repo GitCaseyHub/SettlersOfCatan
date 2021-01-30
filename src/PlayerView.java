@@ -86,6 +86,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     ArrayList<Player> possibleKills;
     ArrayList<String> removedResources;
 
+    //Miscellaneous Menu
+    JMenu misc = new JMenu("Misc");
+    JMenuItem remainingResources = new JMenuItem("Remaining Building Materials");
+
     //Special Classes
     JCheckBox[] playerNames;
     Player chosenPlayer;
@@ -133,6 +137,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         options.setEnabled(false);
         development.setEnabled(false);
         build.setEnabled(false);
+        mb.add(misc);
+        misc.add(remainingResources);
+        remainingResources.setEnabled(false);
+        misc.setEnabled(false);
+        remainingResources.addActionListener(this);
+
         if(reference.specialActions) {
             //Highwayman
             if (player.getClassTitle().equals("Highwayman")) {
@@ -233,13 +243,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         wheatNum.setBorder(compound);
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
         woodNum.setBorder(compound);
-
         build.addSeparator();
         development.addSeparator();
         options.addSeparator();
         hwm.addSeparator();
         assassin.addSeparator();
-        
         initializeCostFrame();
     }
 
@@ -283,6 +291,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         endTurn.setEnabled(false);
         steal.setEnabled(false);
         assassinate.setEnabled(false);
+        remainingResources.setEnabled(false);
         hasStolen=false;
         hasKilled=false;
         didSteal=false;
@@ -299,6 +308,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         fourForOne.setEnabled(true);
         rollDice.setEnabled(false);
         buildingCard.setEnabled(true);
+        remainingResources.setEnabled(true);
         steal.setEnabled(!hasStolen);
         assassinate.setEnabled(!hasKilled);
     }
@@ -317,6 +327,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==settlement){
+            if(player.getSettlements()==0) {
+                JOptionPane.showMessageDialog(this, "You no longer have settlements available to build with.", "Settlement Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
             int settlementInput = JOptionPane.showConfirmDialog(this,"Would you like to create a new settlement?","Settlement Building",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(settlementInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
@@ -399,6 +413,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==city){
+            if(player.getCities()==0) {
+                JOptionPane.showMessageDialog(this, "You no longer have cities available to upgrade with.", "City Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
             int cityInput = JOptionPane.showConfirmDialog(this,"Would you like to upgrade one of your settlements into a city?","Settlement Upgrade",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(cityInput==0){
                 if((player.getGrainNum()>=2 && player.getOreNum()>=3 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getGrainNum()>=4 && player.getOreNum()>=6 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
@@ -423,6 +441,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==road){
+            if(player.getRoads()==0) {
+                JOptionPane.showMessageDialog(this, "You no longer have roads available to build with.", "Road Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
             int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(roadInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))) {
@@ -537,6 +559,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             tf.rejections.clear();
             tf.setVisible(false);
             costFrame.setVisible(false);
+            unplayed.setSelectedIndex(0);
+            played.setSelectedIndex(0);
             update();
         }
         else if(e.getSource()==rollDice){
@@ -678,11 +702,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             else
                 JOptionPane.showMessageDialog(this,"You must have at least one of each of two distinct resources to assassinate another player's knight.","Assassination Requirements Not Met",3,new ImageIcon("Resources/Catan_Icon.png"));
         }
+        else if(e.getSource()==remainingResources)
+            JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad             ⇒  "+player.getRoads()+"\nSettlement  ⇒  "+player.getSettlements()+"\nCity                ⇒  "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
+
         reference.updateAllStatusMenus();
     }
 
-    public int numNonNullCategories(){
-        return (int)Arrays.stream(new int[]{player.brickNum,player.oreNum,player.woolNum,player.lumberNum,player.grainNum}).filter(resourceNum -> resourceNum!=0).count();
+    public long numNonNullCategories(){
+        return Arrays.stream(new int[]{player.brickNum,player.oreNum,player.woolNum,player.lumberNum,player.grainNum}).filter(resourceNum -> resourceNum!=0).count();
     }
 
     public ArrayList<String> assassinateResources(){
@@ -745,7 +772,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public boolean boughtAllOnSameTurn(String type){
-        return (player.getUnPlayedCards()).stream().filter(card -> card.getType().equals(type)).count() - (player.getUnPlayedCards()).stream().filter(card -> card.isBoughtThisTurn() && card.getType().equals(type)).count()==0;
+        return player.getUnPlayedCards().stream().filter(card -> card.getType().equals(type)).count() - (player.getUnPlayedCards()).stream().filter(card -> card.isBoughtThisTurn() && card.getType().equals(type)).count()==0;
     }
 
     public void mouseDragged(MouseEvent e) {}
@@ -767,5 +794,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         reference.getPlayerStatusMenu(player).development.setEnabled(state);
         reference.getPlayerStatusMenu(player).assassin.setEnabled(state);
         reference.getPlayerStatusMenu(player).hwm.setEnabled(state);
+        reference.getPlayerStatusMenu(player).misc.setEnabled(state);
     }
 }
