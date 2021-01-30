@@ -19,9 +19,11 @@ public class CustomSwitch extends JPanel implements MouseListener {
         on.setEnabled(false);
         on.setHorizontalAlignment(JTextField.CENTER);
         on.setDisabledTextColor(Color.BLACK);
+        on.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize()));
         off.setEnabled(false);
         off.setHorizontalAlignment(JTextField.CENTER);
         off.setDisabledTextColor(Color.BLACK);
+        off.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize()));
 
         this.setLayout(new BorderLayout());
         this.add(title, BorderLayout.NORTH);
@@ -54,6 +56,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
                 state=true;
             }
         }
+
         else if(e.getSource()==off) {
             if (!off.isEnabled()) {
                 off.setBackground(Color.RED);
