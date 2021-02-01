@@ -54,7 +54,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenuItem settlement = new JMenuItem("Build Settlement");
     JMenuItem city = new JMenuItem("Upgrade Settlement to City");
     JMenuItem road = new JMenuItem("Build Road");
-    JMenu development = new JMenu("Develop");
+    JMenu development = new JMenu("Development");
     JMenuItem buyCard = new JMenuItem("Buy Development Card");
     JMenuItem playCard = new JMenuItem("Play Development Card");
     JMenu options = new JMenu("Options");
@@ -62,6 +62,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenuItem fourForOne = new JMenuItem();
     JMenuItem buildingCard = new JMenuItem("Building Helper Card");
     JMenuItem rollDice = new JMenuItem("Roll Dice");
+    JMenuItem remainingResources = new JMenuItem("Remaining Materials");
     JMenuItem endTurn = new JMenuItem("End Turn");
 
     //Development Card Prep
@@ -85,10 +86,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     boolean hasKilled=false;
     ArrayList<Player> possibleKills;
     ArrayList<String> removedResources;
-
-    //Miscellaneous Menu
-    JMenu misc = new JMenu("Misc");
-    JMenuItem remainingResources = new JMenuItem("Remaining Building Materials");
 
     //Special Classes
     JCheckBox[] playerNames;
@@ -132,15 +129,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         exchange.addActionListener(this);
         options.add(buildingCard);
         buildingCard.addActionListener(this);
+        options.add(remainingResources);
         options.add(endTurn);
         endTurn.addActionListener(this);
         options.setEnabled(false);
         development.setEnabled(false);
         build.setEnabled(false);
-        mb.add(misc);
-        misc.add(remainingResources);
         remainingResources.setEnabled(false);
-        misc.setEnabled(false);
         remainingResources.addActionListener(this);
 
         if(reference.specialActions) {
@@ -789,11 +784,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void resetReference(boolean state){
-        reference.getPlayerStatusMenu(player).options.setEnabled(state);
-        reference.getPlayerStatusMenu(player).build.setEnabled(state);
-        reference.getPlayerStatusMenu(player).development.setEnabled(state);
-        reference.getPlayerStatusMenu(player).assassin.setEnabled(state);
-        reference.getPlayerStatusMenu(player).hwm.setEnabled(state);
-        reference.getPlayerStatusMenu(player).misc.setEnabled(state);
+        PlayerView menuRef = reference.getPlayerStatusMenu(player);
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm}).forEach(menu -> menu.setEnabled(state));
     }
 }
