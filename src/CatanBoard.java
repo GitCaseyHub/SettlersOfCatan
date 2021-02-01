@@ -423,7 +423,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         JOptionPane.showMessageDialog(this, "You will now receive your starting resources. Let the games begin.", "Official Start",1, new ImageIcon("Resources/Catan_Icon.png"));
                         givePlayersStartingResources();
                     }
-                } 
+                }
                 else {
                     if (!roadDevCard && !finishedRoadCard) {
                         JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -439,11 +439,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         }
                     } else {
                         JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action",1, new ImageIcon("Resources/Catan_Icon.png"));
-                        getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
-                        getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-                        getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
-                        getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
-                        getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
+                        performStaleReferenceReset(true);
                         finishedRoadCard = false;
                     }
                 }
@@ -530,11 +526,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if (!doingStartup) {
-            getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
-            getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
+            performStaleReferenceReset(true);
         }
         updateAllStatusMenus();
     }
@@ -716,11 +708,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     robberTile = tile;
                     redrawEverything=true;
                     checkCounter++;
-                    getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
-                    getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
-                    getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-                    getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
-                    getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
+                    performStaleReferenceReset(true);
                     repaint();
                     break;
                 }
@@ -744,11 +732,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (cityCounter == 1) {
                 isCityUpgrading = false;
                 redrawEverything = true;
-                getPlayerStatusMenu(getCurrentPlayer()).options.setEnabled(true);
-                getPlayerStatusMenu(getCurrentPlayer()).build.setEnabled(true);
-                getPlayerStatusMenu(getCurrentPlayer()).development.setEnabled(true);
-                getPlayerStatusMenu(getCurrentPlayer()).assassinate.setEnabled(true);
-                getPlayerStatusMenu(getCurrentPlayer()).hwm.setEnabled(true);
+                performStaleReferenceReset(true);
                 repaint();
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                 getCurrentPlayer().changeCityNum(-1);
@@ -837,6 +821,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (twoX < oneX && twoY > oneY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10)
                 return new Object[]{new Point(oneX - 48, oneY + 8), "Down_To_Up"};
         }
+        //Will never get here; cannot figure out a generic way to code this to avoid the gratuitous return statement
         return new Object[]{new Point(0, 0), ""};
     }
 
@@ -1418,7 +1403,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public ArrayList<Road> getPlayerRoads(Player player){
-        return indexConnections.stream().filter(conn -> conn.getOwner() == player).collect(Collectors.toCollection(ArrayList::new));
+        return indexConnections.stream().filter(conn -> conn.getOwner().equals(player)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public boolean sharesLocation(Point point){
@@ -1476,6 +1461,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public boolean highwaymanIsPresent(){
         return catanPlayerList.stream().anyMatch(player -> player.getClassTitle().equals("Highwayman"));
+    }
+
+    public void performStaleReferenceReset(boolean state){
+        PlayerView menuRef = getPlayerStatusMenu(getCurrentPlayer());
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm}).forEach(menu -> menu.setEnabled(state));
     }
 
     @Override
