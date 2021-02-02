@@ -13,6 +13,8 @@ public class CustomSwitch extends JPanel implements MouseListener {
     JPanel on_off = new JPanel(new GridLayout(1,2));
     boolean state = true;
     String text;
+    Color green = new Color(60,255,110);
+    Color red = new Color(255,0,50);
 
     public CustomSwitch(String text){
         this.text=text;
@@ -33,7 +35,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
         on_off.add(on);
         on_off.add(off);
 
-        on.setBackground(Color.green);
+        on.setBackground(green);
         off.setBackground(Color.WHITE);
 
         this.setBorder(compound);
@@ -51,7 +53,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
     public void mousePressed(MouseEvent e) {
         if(e.getSource()==on) {
             if(!on.isEnabled()) {
-                on.setBackground(Color.green);
+                on.setBackground(green);
                 off.setBackground(Color.WHITE);
                 state=true;
             }
@@ -59,7 +61,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
 
         else if(e.getSource()==off) {
             if (!off.isEnabled()) {
-                off.setBackground(Color.RED);
+                off.setBackground(red);
                 on.setBackground(Color.WHITE);
                 state = false;
             }
