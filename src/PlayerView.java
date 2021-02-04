@@ -275,9 +275,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void startTurn() {
         resetReference(true);
         Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,rollDice,endTurn,steal,assassinate,remainingResources}).forEach(item -> item.setEnabled(false));
-        hasStolen=false;
-        hasKilled=false;
-        didSteal=false;
+        Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal}).forEach(bool -> bool=false);
     }
 
     public void afterRoll() {
