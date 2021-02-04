@@ -274,12 +274,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void startTurn() {
         resetReference(true);
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,rollDice,endTurn,steal,assassinate,remainingResources}).forEach(item -> item.setEnabled(false));
+        rollDice.setEnabled(true);
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources}).forEach(item -> item.setEnabled(false));
         Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal}).forEach(bool -> bool=false);
     }
 
     public void afterRoll() {
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,rollDice,endTurn,remainingResources}).forEach(item -> item.setEnabled(true));
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,remainingResources}).forEach(item -> item.setEnabled(true));
+        rollDice.setEnabled(false);
         steal.setEnabled(!hasStolen);
         assassinate.setEnabled(!hasKilled);
     }
@@ -346,10 +348,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         for (JCheckBox optionResource : optionResources)
                             if (optionResource.getText().equalsIgnoreCase(exchangeResource))
                                 optionResource.setEnabled(false);
-                        while (findNumSelected(optionResources)) {
+                        while (!findNumSelected(optionResources)) {
                             JOptionPane.showMessageDialog(this, new Object[]{"Select the resource you'd like to exchange for:", optionResources}, "Exchanging Resources", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
-                            if (findNumSelected(optionResources))
+                            if (!findNumSelected(optionResources))
                                 JOptionPane.showMessageDialog(this, "You must select a single resource to trade in for.", "Invalid Selection", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
