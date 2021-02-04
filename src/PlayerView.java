@@ -661,7 +661,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         else if(e.getSource()==assassinate) {
             if(numNonNullCategories()>=2) {
-                possibleKills = (reference.catanPlayerList).stream().filter(player -> !player.getClassTitle().equals("Assassin") && reference.getPlayerStatusMenu(player).getCardNames().contains("Knight")).collect(Collectors.toCollection(ArrayList::new));
+                possibleKills = reference.catanPlayerList.stream().filter(player -> !player.getClassTitle().equals("Assassin") && reference.getPlayerStatusMenu(player).getCardNames().contains("Knight")).collect(Collectors.toCollection(ArrayList::new));
                 if (possibleKills.size() == 0)
                     JOptionPane.showMessageDialog(this, "None of the other players have played a knight card. You cannot assassinate this turn.", "Failed Assassination", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 else {
@@ -739,11 +739,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public Player findPlayerMatch(JCheckBox[] cbs){
-        for(JCheckBox cb: cbs)
-            if(cb.isSelected())
-                return reference.getPlayerViaName(cb.getText());
-
-        return null;
+        return reference.getPlayerViaName(Arrays.stream(cbs).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0).getText());
     }
 
     public ArrayList<String> getCardNames(){
