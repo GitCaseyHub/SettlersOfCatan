@@ -258,7 +258,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
 
         if(counter==1 && monopoly){
             if(cbReference.highwaymanIsPresent())
-                otherPlayers.removeIf(player -> player.getClassTitle().equals("HighwayMan"));
+                otherPlayers.removeIf(player -> player.getClassTitle().equals("Highwayman"));
 
             int confirm = JOptionPane.showConfirmDialog(null,"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(confirm==0) {
