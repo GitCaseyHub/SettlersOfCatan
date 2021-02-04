@@ -274,36 +274,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void startTurn() {
         resetReference(true);
-        settlement.setEnabled(false);
-        city.setEnabled(false);
-        road.setEnabled(false);
-        buildingCard.setEnabled(false);
-        buyCard.setEnabled(false);
-        playCard.setEnabled(false);
-        exchange.setEnabled(false);
-        fourForOne.setEnabled(false);
-        rollDice.setEnabled(true);
-        endTurn.setEnabled(false);
-        steal.setEnabled(false);
-        assassinate.setEnabled(false);
-        remainingResources.setEnabled(false);
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,rollDice,endTurn,steal,assassinate,remainingResources}).forEach(item -> item.setEnabled(false));
         hasStolen=false;
         hasKilled=false;
         didSteal=false;
     }
 
     public void afterRoll() {
-        settlement.setEnabled(true);
-        city.setEnabled(true);
-        road.setEnabled(true);
-        buyCard.setEnabled(true);
-        playCard.setEnabled(true);
-        exchange.setEnabled(true);
-        endTurn.setEnabled(true);
-        fourForOne.setEnabled(true);
-        rollDice.setEnabled(false);
-        buildingCard.setEnabled(true);
-        remainingResources.setEnabled(true);
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,rollDice,endTurn,remainingResources}).forEach(item -> item.setEnabled(true));
         steal.setEnabled(!hasStolen);
         assassinate.setEnabled(!hasKilled);
     }
