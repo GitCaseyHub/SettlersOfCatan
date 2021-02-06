@@ -37,7 +37,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     JPanel lowerPanel = new JPanel(new GridLayout(1,2));
     JPanel holder = new JPanel(new BorderLayout());
     JLabel imageLabel = new JLabel("",SwingConstants.CENTER);
-    JComboBox<String> colorBox = new JComboBox<String>();
+    JComboBox<String> colorBox = new JComboBox<>();
     JTextField nameField = new JTextField("Name Your Player",SwingConstants.CENTER);
     JButton confirmButton = new JButton("    Confirm Character    ");
     JPanel southPanel = new JPanel(new BorderLayout());
@@ -104,19 +104,19 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             if (!nameField.getText().equals("Name Your Player")){
                 //Generate new player
                 if (classBox.getSelectedIndex() == 0 && colorBox.getSelectedIndex() != 0)
-                    JOptionPane.showMessageDialog(this, "That isn't a valid class. Choose a class.", "Class Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this, "You must select your character's class.", "Class Error", 1, new ImageIcon("Resources/Catan_Icon.png"));
 
                 else if (classBox.getSelectedIndex() != 0 && colorBox.getSelectedIndex() == 0)
-                    JOptionPane.showMessageDialog(this, "That isn't a valid color. Choose a color.", "Color Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this, "You must select your character's color.", "Color Error", 1, new ImageIcon("Resources/Catan_Icon.png"));
 
                 else if (classBox.getSelectedIndex() == 0 && colorBox.getSelectedIndex() == 0)
-                    JOptionPane.showMessageDialog(this, "You didn't choose a valid color or a valid class. Choose both.", "Color & Class Error", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this, "You must select your character's color and class.", "Color & Class Error", 1, new ImageIcon("Resources/Catan_Icon.png"));
 
                 else {
                     //Testing Player
-                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber);
+                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber,99,99,99);
 
-                    Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber);
+                    Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15);
                     bgReference.addPlayer(newPlayer,referenceNumber);
                 }
             }
