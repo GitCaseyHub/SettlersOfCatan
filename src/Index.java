@@ -52,9 +52,4 @@ public class Index {
     public void setTaken(boolean taken) {
         this.taken = taken;
     }
-
-    @Override
-    public String toString(){
-        return "(x,y) of Index: ("+this.location[0]+","+this.location[1]+")";
-    }
 }
