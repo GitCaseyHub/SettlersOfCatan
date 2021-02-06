@@ -296,6 +296,14 @@ public class Player {
         this.grainNum-=1;
     }
 
+    public void changeAll(int lumber, int wool, int brick, int ore, int grain){
+        this.changeLumber(lumber);
+        this.changeWool(wool);
+        this.changeBrick(brick);
+        this.changeOre(ore);
+        this.changeGrain(grain);
+    }
+
     public void pass(){
         //Tells the class that nothing needs to be done, but an if statement needs to be caught because of the 'else' statement
     }
