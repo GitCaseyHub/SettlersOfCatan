@@ -94,6 +94,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     //Simplification
     boolean isPirateOrSerf;
 
+    //Dice Objects
+    /*JLabel firstDice = new JLabel("",SwingConstants.CENTER);
+    JLabel secondDice = new JLabel("",SwingConstants.CENTER);
+    JPanel dicePanel = new JPanel(new GridLayout(1,2));*/
+
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
         this.player = player;
@@ -244,6 +249,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         hwm.addSeparator();
         assassin.addSeparator();
         initializeCostFrame();
+        //initializeDiceFrame();
     }
 
     public void update(){
@@ -297,6 +303,27 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public ArrayList<Player> getOtherPlayers(){
         return reference.catanPlayerList.stream().filter(players -> !players.equals(this.player)).collect(Collectors.toCollection(ArrayList::new));
     }
+    
+    //Dice rolling functionality
+    
+    /*public void initializeDiceFrame(){
+        dicePanel.add(firstDice);
+        firstDice.setBorder(compound);
+        dicePanel.add(secondDice);
+        secondDice.setBorder(compound);
+        dicePanel.add(new JLabel(""));
+        dicePanel.add(new JLabel(""));
+    }
+
+    public int rollDice(){
+        int diceOne = new Random().nextInt(6)+1;
+        int diceTwo = new Random().nextInt(6)+1;
+        firstDice.setIcon(new ImageIcon("Dice/"+diceOne+".png"));
+        secondDice.setIcon(new ImageIcon("Dice/"+diceTwo+".png"));
+        JOptionPane.showMessageDialog(this, new Object[]{dicePanel}, "Dice Roll - "+(diceOne+diceTwo), JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+
+        return diceOne+diceTwo;
+    }*/
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==settlement){
@@ -537,14 +564,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             update();
         }
         else if(e.getSource()==rollDice){
-            int diceRoll = new Random().nextInt(10)+2;
+            int diceRoll = new Random().nextInt(11)+2;
 
             if(reference.gamblerIsPresent()){
                 if(new Random().nextInt(100) < 20) {
-                    JOptionPane.showMessageDialog(this,"All gamblers made a poor bet and lose one of every resource.","Bad Gamble",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
-                    for (Player player : reference.catanPlayerList)
-                        if (player.getClassTitle().equals("Gambler"))
-                            player.failGamble();
+                    JOptionPane.showMessageDialog(this,"All gamblers made poor bets; each loses one of every resource.","Bad Gamble",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                    reference.catanPlayerList.stream().filter(player -> player.getClassTitle().equalsIgnoreCase("Gambler")).forEach(Player::failGamble);
                 }
             }
 
@@ -558,7 +583,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             else
                 reference.giveOutResources(diceRoll);
             hasRolled=true;
-            update();
+            reference.updateAllStatusMenus();
         }
 
         else if(e.getSource()==buildingCard){
@@ -596,9 +621,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     //Stealing Process
                     if(chosenResource.equalsIgnoreCase("Sheep"))
                         if(chosenPlayer.getWoolNum()>0) {
+                            didSteal=true;
                             chosenPlayer.monoWool(-1);
                             this.player.monoWool(1);
-                            didSteal=true;
                         }
 
                     if(chosenResource.equalsIgnoreCase("Wheat"))
