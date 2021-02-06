@@ -127,10 +127,8 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You only have one road left to build with, so this development card will only create a single road.", "Single Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
 
         showDevelopmentImage("Resources/Preview_Images/Road_Building.png");
-        cbReference.roadDevCard=true;
+        Arrays.stream(new Boolean[]{cbReference.roadDevCard,cbReference.isRoadBuilding,cbReference.isPlayerActing}).forEach(bool -> bool=true);
         cbReference.finishedRoadCard=false;
-        cbReference.isRoadBuilding=true;
-        cbReference.isPlayerActing=true;
     }
 
     public void performYearOfPlenty() {
@@ -241,11 +239,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if (confirmation == 0) {
                 JOptionPane.showMessageDialog(null, "Okay. You will be given your chosen resources.", "Resources Chosen", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                player.changeBrick((brickCheck.isSelected() ? 1 : 0));
-                player.changeWool((sheepCheck.isSelected() ? 1 : 0));
-                player.changeGrain((wheatCheck.isSelected() ? 1 : 0));
-                player.changeLumber((woodCheck.isSelected() ? 1 : 0));
-                player.changeOre((oreCheck.isSelected() ? 1 : 0));
+                player.changeAll((woodCheck.isSelected() ? 1 : 0),(sheepCheck.isSelected() ? 1 : 0),(brickCheck.isSelected() ? 1 : 0),(oreCheck.isSelected() ? 1 : 0),(wheatCheck.isSelected() ? 1 : 0));
                 cbReference.getPlayerStatusMenu(player).update();
                 choiceFrame.setVisible(false);
                 deselectAll();
