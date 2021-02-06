@@ -291,6 +291,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     String playerName = "";
                     Object[] params = {message, possibleTargets};
                     int selectCounter = 0;
+
                     while (selectCounter == 0 || (selectCounter == possibleTargets.length && possibleTargets.length != 1)) {
                         selectCounter = 0;
                         JOptionPane.showMessageDialog(this, params, "Robber Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -751,10 +752,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     public void constructPorts() {
         ArrayList<Point[]> portPointList = new ArrayList<>();
         ArrayList<String> portTypesList = new ArrayList<>();
-        for (int x = 0; x < 9; x++) {
-            portPointList.add(portPoints[x]);
-            portTypesList.add(portTypes[x]);
-        }
+
+        Collections.addAll(portPointList,portPoints);
+        Collections.addAll(portTypesList,portTypes);
 
         for (int x = 0; x < 9; x++) {
             int pointIndex = new Random().nextInt(portPointList.size());
@@ -999,7 +999,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         Arrays.stream(statusViewer).forEach(PlayerView::update);
     }
 
-    //This method is an abomination
+    //Maybe using a quad-nested for-loop is a bit inefficient lol
     public void giveOutResources(int roll) {
         for (Tile tile : tiles)
             if (tile.getNum() == roll)
@@ -1068,6 +1068,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     while (use.equals(""))
                         use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two wheat for a single resource?", "Wheat Port",JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
+                        if(getCurrentPlayer().getGrainNum()<2){
+                            JOptionPane.showMessageDialog(this,"You don't have enough wheat to use this port.","Inadequate Resources",1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[1].setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange wheat for:", checkOptions}, "Wheat Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1096,6 +1100,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     while (use.equals(""))
                         use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two sheep for a single resource?", "Sheep Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
+                        if(getCurrentPlayer().getWoolNum()<2){
+                            JOptionPane.showMessageDialog(this,"You don't have enough sheep to use this port.","Inadequate Resources",1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[0].setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange sheep for:", checkOptions}, "Sheep Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1124,6 +1132,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     while (use.equals(""))
                         use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two ore for a single resource?", "Ore Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
+                        if(getCurrentPlayer().getOreNum()<2){
+                            JOptionPane.showMessageDialog(this,"You don't have enough ore to use this port.","Inadequate Resources",1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[2].setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange ore for:", checkOptions}, "Ore Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1152,6 +1164,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     while (use.equals(""))
                         use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two brick for a single resource?", "Brick Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
+                        if(getCurrentPlayer().getBrickNum()<2){
+                            JOptionPane.showMessageDialog(this,"You don't have enough brick to use this port.","Inadequate Resources",1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[3].setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange brick for:", checkOptions}, "Brick Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1180,6 +1196,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     while (use.equals(""))
                         use = (String)JOptionPane.showInputDialog(this, "Would you like to trade two lumber for a single resource?", "Lumber Port", 1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
                     if (use.equalsIgnoreCase("yes")) {
+                        if(getCurrentPlayer().getLumberNum()<2){
+                            JOptionPane.showMessageDialog(this,"You don't have enough lumber to use this port.","Inadequate Resources",1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             checkOptions[4].setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange lumber for:", checkOptions}, "Lumber Exchange",1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1214,6 +1234,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             if (!(resourceChoice.equalsIgnoreCase("Sheep") || resourceChoice.equalsIgnoreCase("Lumber") || resourceChoice.equalsIgnoreCase("Brick") || resourceChoice.equalsIgnoreCase("Ore") || resourceChoice.equalsIgnoreCase("Wheat")))
                                 JOptionPane.showMessageDialog(this, "That is not an accepted resource. Try again.", "Improper Choice",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
+                        if(resourceChoice.equalsIgnoreCase("Sheep") && getCurrentPlayer().getWoolNum()<3){JOptionPane.showMessageDialog(this,"You don't have enough sheep to use this generic port.","Inadequate Resources",1,new ImageIcon("Resources/Catan_Icon.png"));return;}
+                        if(resourceChoice.equalsIgnoreCase("Wheat") && getCurrentPlayer().getGrainNum()<3){JOptionPane.showMessageDialog(this,"You don't have enough wheat to use this generic port.","Inadequate Resources",1,new ImageIcon("Resources/Catan_Icon.png"));return;}
+                        if(resourceChoice.equalsIgnoreCase("Brick") && getCurrentPlayer().getBrickNum()<3){JOptionPane.showMessageDialog(this,"You don't have enough brick to use this generic port.","Inadequate Resources",1,new ImageIcon("Resources/Catan_Icon.png"));return;}
+                        if(resourceChoice.equalsIgnoreCase("Ore") && getCurrentPlayer().getOreNum()<3){JOptionPane.showMessageDialog(this,"You don't have enough ore to use this generic port.","Inadequate Resources",1,new ImageIcon("Resources/Catan_Icon.png"));return;}
+                        if(resourceChoice.equalsIgnoreCase("Lumber") && getCurrentPlayer().getLumberNum()<3){JOptionPane.showMessageDialog(this,"You don't have enough lumber to use this generic port.","Inadequate Resources",1,new ImageIcon("Resources/Catan_Icon.png"));return;}
+
                         while (numberChecked() == 0 || numberChecked() > 1) {
                             if (resourceChoice.equalsIgnoreCase("Sheep"))
                                 checkOptions[0].setEnabled(false);
