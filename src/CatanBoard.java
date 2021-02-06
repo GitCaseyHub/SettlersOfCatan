@@ -1394,10 +1394,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (!doingStartup && isPlayerActing) {
                 if (isSettlementBuilding) {
                     isSettlementBuilding = false;
-                    getCurrentPlayer().changeWool(1);
-                    getCurrentPlayer().changeBrick(1);
-                    getCurrentPlayer().changeGrain(1);
-                    getCurrentPlayer().changeLumber(1);
+                    getCurrentPlayer().changeAll(1,1,1,0,1);
                     getCurrentPlayer().changeVictoryPoints(-1);
                 } else if (isMovingRobber) {
                     isMovingRobber = false;
@@ -1411,13 +1408,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     isDoneRoadBuilding = false;
                     roadCondition = 0;
                     checkedIndexes.clear();
-                    getCurrentPlayer().changeLumber(1);
-                    getCurrentPlayer().changeBrick(1);
+                    getCurrentPlayer().changeAll(1,0,1,0,0);
 
                 } else if (isCityUpgrading) {
                     isCityUpgrading = false;
-                    getCurrentPlayer().changeGrain(2);
-                    getCurrentPlayer().changeOre(3);
+                    getCurrentPlayer().changeAll(0,0,0,3,2);
                     getCurrentPlayer().changeVictoryPoints(-1);
                 }
             }
