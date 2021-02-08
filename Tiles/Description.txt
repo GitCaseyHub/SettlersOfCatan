@@ -1,0 +1,1 @@
+These are the images of the tiles that create the Catan board.
