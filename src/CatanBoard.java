@@ -803,10 +803,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         if (Math.abs(oneX - twoX) < 10 && Math.abs(distance(indexOneLoc, indexTwoLoc) - 77.5) < 10) {
             //Values for creating vertical roads
             if (oneY > twoY)
-                return new Object[]{new Point(twoX + 2, twoY + 18), "Vertical"};
+                return new Object[]{new Point(twoX + 2, twoY + 15), "Vertical"};
 
             else
-                return new Object[]{new Point(oneX + 2, oneY + 18), "Vertical"};
+                return new Object[]{new Point(oneX + 2, oneY + 15), "Vertical"};
         } else {
             //Values necessary for creating points for the diagonal road polygon
             if (oneX < twoX && oneY < twoY && distance(indexOneLoc, indexTwoLoc) - 77.5 < 10)
