@@ -13,9 +13,9 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     //Class reveal functionality
-    String[] classTitles = {"Class","Settler","Emperor","Serf","Farmer","Mountaineer","Shepard","Pirate","Woodsman","Gambler","Highwayman","Assassin"};
+    String[] classTitles = {"Character Class","Settler","Emperor","Serf","Farmer","Mountaineer","Shepard","Pirate","Woodsman","Gambler","Highwayman","Assassin"};
     String[] colors = {"Building Color","Orange","Red","Blue","White"};
-    String[] classDescriptions = {"A description of your class choice will be here.",
+    String[] classDescriptions = {" - Character Class Description -",
                                   "You are a normal Settler of Catan: you have access to all ports (if active), you receive the standard amount of resources, and you can build using standard prices. \n(Normal Mode)",
                                   "You are a tyrant with a mercurial temper and as such, your servile population fears you. To avoid death, they contribute to your resource stores frequently to ensure you are sated and pacified. As a result, when you produce resources, you produce twice as much. \n(Easy Mode)",
                                   "You are the lowest of the low. Society has long held you down, and today is no different. You're a serf, and everyone looks down on you. You are a laborer and people see you as such; as a result, no one goes easy on you. Everything costs you double as normal.  \n(Hard Mode)",
@@ -98,7 +98,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             if(classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman") || classTitles[classBox.getSelectedIndex()].equals("Assassin"))
                 descriptionArea.select(0,0);
 
-            imageLabel.setIcon(new ImageIcon("ClassTitles/" + classBox.getSelectedItem() +".jpg"));
+            imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex()==0)?"ClassTitles/Nameless.png":"ClassTitles/" + classBox.getSelectedItem() +".jpg"));
         }
         else if(e.getSource()==confirmButton) {
             if (!nameField.getText().equals("Name Your Player")){
