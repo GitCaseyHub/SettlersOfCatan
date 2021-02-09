@@ -23,6 +23,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     Tile[] tiles = new Tile[19];
     PlayerView[] statusViewer;
     ArrayList<String> turnNameList;
+    String fireResource="";
 
     //Water Tiles
     Point[] waterPoints1 = new Point[]{new Point(201, -30), new Point(334, -30), new Point(467, -30), new Point(600, -30), new Point(133, 84), new Point(66, 198), new Point(0, 312), new Point(67, 429), new Point(133, 543), new Point(333, 656), new Point(466, 656), new Point(600, 656), new Point(201, 656), new Point(668, 84), new Point(734, 198), new Point(800, 312), new Point(668, 543), new Point(734, 429)};
@@ -51,6 +52,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean isCityUpgrading = false;
     boolean redrawEverything = false;
     boolean isPlayerActing = false;
+    boolean isSettingFire=false;
+    boolean failureFire=false;
     int count = 0;
 
     //Awards
@@ -161,7 +164,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         for (int x = 0; x < types.length; x++) {
             int typeIndex = new Random().nextInt(typeList.size());
             int coordIndex = new Random().nextInt(coordList.size());
-            tiles[x] = new Tile(coordList.get(coordIndex), typeList.get(typeIndex), 0, false);
+            tiles[x] = new Tile(coordList.get(coordIndex), typeList.get(typeIndex), 0, false,false, new Player());
             typeList.remove(typeIndex);
             coordList.remove(coordIndex);
 
@@ -221,9 +224,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     g.drawImage(tile, element.getPosition()[0], element.getPosition()[1], null);
                 }
 
-                for (Tile item : tiles) {
-                    BufferedImage dice = ImageIO.read(new File("Rolls/" + item.getNum() + ".png"));
-                    g.drawImage(dice, item.getPosition()[0] + 42, item.getPosition()[1] + 25, null);
+                for (Tile tile : tiles) {
+                    BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
+                    g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
                 }
 
                 BufferedImage water = ImageIO.read(new File("Tiles/Water_Tile.png"));
@@ -477,8 +480,14 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                 //Redraws Roll Tiles
                 for (Tile tile : tiles) {
-                    BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
-                    g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
+                    if(!tile.isOnFire()) {
+                        BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
+                        g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
+                    }
+                    else{
+                        BufferedImage fire = ImageIO.read(new File("Resources/Preview_Images/Fire.png"));
+                        g.drawImage(fire,tile.getPosition()[0]+47,tile.getPosition()[1]+20,null);
+                    }
                 }
 
                 //Draws Robber
@@ -741,6 +750,66 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             }
         }
 
+        if(isSettingFire){
+            checkCounter = 0;
+            fireResource="";
+            for (Tile tile : tiles)
+                if (tile.getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5)) && !tile.isOnFire()) {
+                    if(tile.getType().equals("Mountain")){
+                        failureFire = getCurrentPlayer().getOreNum()==0;
+                        fireResource="Ore";
+                    }
+
+                    if(tile.getType().equals("Grain")){
+                        failureFire = getCurrentPlayer().getGrainNum()==0;
+                        fireResource="Wheat";
+                    }
+
+                    if(tile.getType().equals("Brick")){
+                        failureFire = getCurrentPlayer().getBrickNum()==0;
+                        fireResource="Brick";
+                    }
+
+                    if(tile.getType().equals("Forest")){
+                        failureFire = getCurrentPlayer().getLumberNum()==0;
+                        fireResource="Lumber";
+                    }
+
+                    if(tile.getType().equals("Plains")){
+                        failureFire = getCurrentPlayer().getWoolNum()==0;
+                        fireResource="Sheep";
+                    }
+
+                    if(fireResource.equals("")) {
+                        JOptionPane.showMessageDialog(this, "You cannot set fire to the desert.", "Desert Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
+
+                    if(failureFire) {
+                        performStaleReferenceReset(true);
+                        JOptionPane.showMessageDialog(this,"You do not have the necessary resource to set fire to that tile. Choose a different tile.","Arson Match Failure",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
+
+                    getCurrentPlayer().monoOre(fireResource.equals("Ore")?-1:0);
+                    getCurrentPlayer().monoBrick(fireResource.equals("Brick")?-1:0);
+                    getCurrentPlayer().monoWheat(fireResource.equals("Wheat")?-1:0);
+                    getCurrentPlayer().monoWool(fireResource.equals("Sheep")?-1:0);
+                    getCurrentPlayer().monoLumber(fireResource.equals("Lumber")?-1:0);
+
+                    tile.setOnFire(true);
+                    tile.setFirePlayer(getCurrentPlayer());
+                    redrawEverything=true;
+                    checkCounter++;
+                    performStaleReferenceReset(true);
+                    repaint();
+                    break;
+                }
+
+            if (checkCounter == 0)
+                JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to set fire to.", "Incorrect Arson Positioning",3, new ImageIcon("Resources/Catan_Icon.png"));
+        }
+
         if(e.getSource()==buildLabel)
             buildFrame.setVisible(false);
     }
@@ -783,9 +852,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public ArrayList<Player> turnOrder(ArrayList<String> nameList) {
         ArrayList<Player> players = new ArrayList<>();
-        for (String s : nameList)
+        for (String name : nameList)
             for (Player player : catanPlayerList)
-                if (s.equals(player.getName()))
+                if (name.equals(player.getName()))
                     players.add(player);
 
         return players;
@@ -1007,7 +1076,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     for (Index index : indexes)
                         if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
                             for (Player player : catanPlayerList)
-                                if (index.getOwner() == player && !getPlayerStatusMenu(player).hasStolen)
+                                if (index.getOwner() == player && !getPlayerStatusMenu(player).hasStolen && !tile.isOnFire())
                                     switch (tile.getType()) {
                                         case "Grain":
                                             player.changeGrain((index.isSettlement() ? 1 : 2));
@@ -1415,6 +1484,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     getCurrentPlayer().changeAll(0,0,0,3,2);
                     getCurrentPlayer().changeVictoryPoints(-1);
                 }
+                else if(isSettingFire){
+                    isSettingFire=false;
+                    getPlayerStatusMenu(getCurrentPlayer()).hasSetFire=false;
+                }
             }
             isPlayerActing = false;
             getPlayerStatusMenu(getCurrentPlayer()).resetReference(true);
@@ -1486,7 +1559,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void performStaleReferenceReset(boolean state){
         PlayerView menuRef = getPlayerStatusMenu(getCurrentPlayer());
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist}).forEach(menu -> menu.setEnabled(state));
     }
 
     @Override
