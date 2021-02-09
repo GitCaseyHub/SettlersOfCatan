@@ -7,6 +7,7 @@ public class Tile {
     int num;
     boolean hasRobber;
     Point upper_left;
+    boolean onFire;
 
     Shape robberRect;
     ArrayList<Point> vertices = new ArrayList<>();
@@ -17,6 +18,14 @@ public class Tile {
 
     public String getType() {
         return type;
+    }
+
+    public boolean isOnFire() {
+        return onFire;
+    }
+
+    public void setOnFire(boolean onFire) {
+        this.onFire = onFire;
     }
 
     public int getNum() {
@@ -35,11 +44,12 @@ public class Tile {
         this.hasRobber = hasRobber;
     }
 
-    public Tile(int[] position, String type, int num, boolean hasRobber){
+    public Tile(int[] position, String type, int num, boolean hasRobber,boolean onFire){
         this.position=position;
         this.type=type;
         this.num=num;
         this.hasRobber=hasRobber;
+        this.onFire=onFire;
         upper_left = new Point(position[0],position[1]);
         int x=(int)upper_left.getX();
         int y =(int)upper_left.getY();
