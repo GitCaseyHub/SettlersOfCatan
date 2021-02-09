@@ -8,6 +8,15 @@ public class Tile {
     boolean hasRobber;
     Point upper_left;
     boolean onFire;
+    Player firePlayer;
+
+    public Player getFirePlayer() {
+        return firePlayer;
+    }
+
+    public void setFirePlayer(Player firePlayer) {
+        this.firePlayer = firePlayer;
+    }
 
     Shape robberRect;
     ArrayList<Point> vertices = new ArrayList<>();
@@ -44,7 +53,7 @@ public class Tile {
         this.hasRobber = hasRobber;
     }
 
-    public Tile(int[] position, String type, int num, boolean hasRobber,boolean onFire){
+    public Tile(int[] position, String type, int num, boolean hasRobber,boolean onFire, Player firePlayer){
         this.position=position;
         this.type=type;
         this.num=num;
