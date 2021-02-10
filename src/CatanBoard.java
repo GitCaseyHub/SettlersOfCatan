@@ -546,6 +546,13 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         int yLoc = e.getY();
 
         //Code to draw ports
+        if(buildFrame.isVisible()){
+            if(e.getSource()==buildLabel)
+                buildFrame.setVisible(false);
+            
+            return;
+        }
+
         if (usablePorts && !doingStartup) {
             portCount = 0;
             for (Port port : ports) {
@@ -805,7 +812,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         performStaleReferenceReset(true);
                         isSettingFire = false;
                         repaint();
-                        JOptionPane.showMessageDialog(this,"You've successfully committed arson. The tile cannot produce resources for until after your next turn.","Arson Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this,"You've successfully committed arson. The tile cannot produce resources until after you roll on your next turn.","Arson Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                         break;
                     }
 
@@ -818,9 +825,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (checkCounter == 0)
                 JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to set fire to.", "Incorrect Arson Positioning",3, new ImageIcon("Resources/Catan_Icon.png"));
         }
-
-        if(e.getSource()==buildLabel)
-            buildFrame.setVisible(false);
     }
 
     public void mouseReleased(MouseEvent e){}
