@@ -22,7 +22,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
     Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
-    Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(990,455), new Point(1440,100), new Point(1440,455)};
+    Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(1440,100),new Point(990,455), new Point(1440,455)};
     PlayerSelect[] playerCreation;
     ArrayList<Player> catanPlayerList = new ArrayList<>();
 
@@ -42,7 +42,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
     JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Frame");
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
-    JMenuItem helpMenu = new JMenuItem("Special Operations");
+    JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
+    JMenuItem helpMenu = new JMenuItem("Special Actions");
+    JMenuItem classSet = new JMenuItem("Class Tiers");
 
     public BeginGame(){
         this.setUndecorated(true);
@@ -55,7 +57,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         mb.add(optionMenu);
         mb.add(help);
         help.addSeparator();
+        help.add(classSet);
         help.add(helpMenu);
+        classSet.addActionListener(this);
         help.addSeparator();
         helpMenu.addActionListener(this);
         optionMenu.addSeparator();
@@ -69,6 +73,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         optionMenu.add(specialClassMenu);
         specialClassMenu.addActionListener(this);
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
+        optionMenu.add(wildfires);
+        wildfires.addActionListener(this);
+        wildfires.setToolTipText("If a tile is on fire (from the arsonist's special action), there is a 1% chance neighboring tiles will also ignite after a turn cycle.");
         optionMenu.addSeparator();
 
         this.add(borderPanel);
@@ -114,7 +121,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu)
+        if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires)
             optionMenu.doClick();
 
         if(e.getSource()==players)
@@ -144,6 +151,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.isUsingMotionFrame = motionMenu.isSelected();
             cbMain.usablePorts=activePorts.isSelected();
             cbMain.specialActions = specialClassMenu.isSelected();
+            cbMain.wildfire = wildfires.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
@@ -153,11 +161,18 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
 
         else if(e.getSource()==helpMenu){
-            JOptionPane.showMessageDialog(imageFrame, "Building Settlements - Select an intersection point of three hexagonal tiles (or two hexagonal tiles if you are on the coast).\n\n"+
-                                                               "Building Roads - Select an index where you own a settlement. Then, select a second index in the direction of the road you'd\n                                like to build that is one hexagonal side-length away.\n\n"+
-                                                               "Cancelling Operations - Hold ALT+C while the board has focus. Your resources will be refunded accordingly and the menu\n                                             will reactivate until you end your turn (Note operations include: road building, settlement building,\n                                             playing knight cards).\n\n"+
-                                                               "Exit Game - Hold ALT+X while the board has focus. You will be given an option about whether you'd like to quit.",
+            JOptionPane.showMessageDialog(imageFrame, "Building Settlements ⇒ Select an intersection point of three hexagonal tiles (or two hexagonal tiles if you are on the coast).\n\n"+
+                                                               "Building Roads ⇒ Select an index where you own a settlement. Then, select a second index in the direction of the road you'd\n                                  like to build that is one hexagonal side-length away.\n\n"+
+                                                               "Cancelling Operations ⇒ Hold ALT+C while the board has focus. Your resources will be refunded accordingly and the menu\n                                               will reactivate until you end your turn (Note operations include: road building, settlement building,\n                                               playing knight cards).\n\n"+
+                                                               "Exit Game ⇒ Hold ALT+X while the board has focus. You will be given an option about whether you'd like to quit.",
                                                           "Help Menu - Implicit Operations",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+        }
+
+        else if(e.getSource()==classSet){
+            JOptionPane.showMessageDialog(imageFrame,"Easy              ⇒    Emperor - Highwayman\n" +
+                    "Normal         ⇒    Arsonist - Mountaineer - Settler\n" +
+                    "Hard              ⇒    Pirate - Serf - Shepard - Woodsman\n" +
+                    "Advanced    ⇒    Assassin - Gambler","Class Tiers",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
