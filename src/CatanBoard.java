@@ -805,9 +805,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         performStaleReferenceReset(true);
                         isSettingFire = false;
                         repaint();
+                        JOptionPane.showMessageDialog(this,"You've successfully committed arson. The tile cannot produce resources for until after your next turn.","Arson Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                         break;
                     }
-                    
+
                     else {
                         JOptionPane.showMessageDialog(this, "That tile is already on fire. Choose a tile that isn't.","Tile On Fire",1, new ImageIcon("Resources/Catan_Icon.png"));
                         return;
