@@ -88,6 +88,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenu arsonist = new JMenu("Arsonist");
     JMenuItem setFire = new JMenuItem("Burn Tile");
     boolean hasSetFire = false;
+    ArrayList<Tile> before, after;
+    boolean spread=false,putOut=false;
 
     //Special Classes
     JCheckBox[] playerNames;
@@ -285,13 +287,38 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void startTurn() {
-        if(Arrays.stream(reference.tiles).anyMatch(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player))){
-            Arrays.stream(reference.tiles).filter(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player)).forEach(tile -> {
-                tile.setFirePlayer(new Player());
+        if(reference.wildfire){
+            before = Arrays.stream(reference.tiles).filter(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player)).collect(Collectors.toCollection(ArrayList::new));
+            for(Tile tile:before){
+                for(Tile tileBase: reference.tiles){
+                    if(reference.distance(tile.getCenter(),tileBase.getCenter())<200 && !tileBase.isOnFire() && new Random().nextInt(100)<5 && !tileBase.equals(tile)){
+                        tileBase.setOnFire(true);
+                        tileBase.setFirePlayer(player);
+                        spread=true;
+                    }
+                }
                 tile.setOnFire(false);
-            });
-            reference.redrawEverything=true;
-            reference.repaint();
+                tile.setFirePlayer(new Player());
+                putOut=true;
+            }
+            after = Arrays.stream(reference.tiles).filter(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player)).collect(Collectors.toCollection(ArrayList::new));
+
+            if(!before.equals(after)) {
+                reference.redrawEverything = true;
+                reference.repaint();
+                JOptionPane.showMessageDialog(this,(!putOut && spread)?"The fire has spread from the original source, which has died down.":(putOut&&!spread)?"The original fire source has died down.":"","Arson Results",1, new ImageIcon("Resources/Catan_Icon.png"));
+            }
+        }
+
+        else {
+            if (Arrays.stream(reference.tiles).anyMatch(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player))) {
+                Arrays.stream(reference.tiles).filter(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player)).forEach(tile -> {
+                    tile.setFirePlayer(new Player());
+                    tile.setOnFire(false);
+                });
+                reference.redrawEverything = true;
+                reference.repaint();
+            }
         }
 
         resetReference(true);
