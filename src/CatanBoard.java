@@ -549,7 +549,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         if(buildFrame.isVisible()){
             if(e.getSource()==buildLabel)
                 buildFrame.setVisible(false);
-            
+
             return;
         }
 
@@ -812,7 +812,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         performStaleReferenceReset(true);
                         isSettingFire = false;
                         repaint();
-                        JOptionPane.showMessageDialog(this,"You've successfully committed arson. The tile cannot produce resources until after you roll on your next turn.","Arson Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this,"You've successfully committed arson. That tile cannot produce resources until after you roll on your next turn.","Arson Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                         break;
                     }
 
