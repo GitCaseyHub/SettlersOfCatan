@@ -592,6 +592,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
             else{
                 try{
+                    reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     playerNames = new JCheckBox[possiblePlayers.size()];
                     for(int x=0; x<playerNames.length; x++)
                         playerNames[x] = new JCheckBox(possiblePlayers.get(x).getName());
@@ -649,7 +650,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                             this.player.monoLumber(1);
                         }
                     JOptionPane.showMessageDialog(this,((didSteal)?"You've successfully stolen "+chosenResource.toLowerCase()+" from "+chosenPlayer.getName()+".":chosenPlayer.getName()+" did not have any "+chosenResource.toLowerCase()+" to steal. You gain nothing."),((didSteal)?"Successfully Stole":"Unsuccessful Attempt"),1,new ImageIcon("Resources/Catan_Icon.png"));
-                    reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     hasStolen=true;
                 }
                 catch(NullPointerException f){
