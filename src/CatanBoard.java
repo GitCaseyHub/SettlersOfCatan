@@ -754,56 +754,64 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             checkCounter = 0;
             fireResource="";
             for (Tile tile : tiles)
-                if (tile.getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5)) && !tile.isOnFire()) {
-                    if(tile.getType().equals("Mountain")){
-                        failureFire = getCurrentPlayer().getOreNum()==0;
-                        fireResource="Ore";
-                    }
+                if (tile.getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
+                    if (!tile.isOnFire()) {
+                        if (tile.getType().equals("Mountain")) {
+                            failureFire = getCurrentPlayer().getOreNum() == 0;
+                            fireResource = "Ore";
+                        }
 
-                    if(tile.getType().equals("Grain")){
-                        failureFire = getCurrentPlayer().getGrainNum()==0;
-                        fireResource="Wheat";
-                    }
+                        if (tile.getType().equals("Grain")) {
+                            failureFire = getCurrentPlayer().getGrainNum() == 0;
+                            fireResource = "Wheat";
+                        }
 
-                    if(tile.getType().equals("Brick")){
-                        failureFire = getCurrentPlayer().getBrickNum()==0;
-                        fireResource="Brick";
-                    }
+                        if (tile.getType().equals("Brick")) {
+                            failureFire = getCurrentPlayer().getBrickNum() == 0;
+                            fireResource = "Brick";
+                        }
 
-                    if(tile.getType().equals("Forest")){
-                        failureFire = getCurrentPlayer().getLumberNum()==0;
-                        fireResource="Lumber";
-                    }
+                        if (tile.getType().equals("Forest")) {
+                            failureFire = getCurrentPlayer().getLumberNum() == 0;
+                            fireResource = "Lumber";
+                        }
 
-                    if(tile.getType().equals("Plains")){
-                        failureFire = getCurrentPlayer().getWoolNum()==0;
-                        fireResource="Sheep";
-                    }
+                        if (tile.getType().equals("Plains")) {
+                            failureFire = getCurrentPlayer().getWoolNum() == 0;
+                            fireResource = "Sheep";
+                        }
 
-                    if(fireResource.equals("")) {
-                        JOptionPane.showMessageDialog(this, "You cannot set fire to the desert.", "Desert Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
-                        return;
-                    }
+                        if (fireResource.equals("")) {
+                            JOptionPane.showMessageDialog(this, "You cannot set fire to the desert.", "Desert Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
 
-                    if(failureFire) {
+                        if (failureFire) {
+                            performStaleReferenceReset(true);
+                            JOptionPane.showMessageDialog(this, "You do not have the necessary resource to set fire to that tile. Choose a different tile.", "Arson Match Failure", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
+
+                        getCurrentPlayer().monoOre(fireResource.equals("Ore") ? -1 : 0);
+                        getCurrentPlayer().monoBrick(fireResource.equals("Brick") ? -1 : 0);
+                        getCurrentPlayer().monoWheat(fireResource.equals("Wheat") ? -1 : 0);
+                        getCurrentPlayer().monoWool(fireResource.equals("Sheep") ? -1 : 0);
+                        getCurrentPlayer().monoLumber(fireResource.equals("Lumber") ? -1 : 0);
+
+                        tile.setOnFire(true);
+                        tile.setFirePlayer(getCurrentPlayer());
+                        redrawEverything = true;
+                        checkCounter++;
                         performStaleReferenceReset(true);
-                        JOptionPane.showMessageDialog(this,"You do not have the necessary resource to set fire to that tile. Choose a different tile.","Arson Match Failure",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        isSettingFire = false;
+                        repaint();
+                        break;
+                    }
+                    
+                    else {
+                        JOptionPane.showMessageDialog(this, "That tile is already on fire. Choose a tile that isn't.","Tile On Fire",1, new ImageIcon("Resources/Catan_Icon.png"));
                         return;
                     }
-
-                    getCurrentPlayer().monoOre(fireResource.equals("Ore")?-1:0);
-                    getCurrentPlayer().monoBrick(fireResource.equals("Brick")?-1:0);
-                    getCurrentPlayer().monoWheat(fireResource.equals("Wheat")?-1:0);
-                    getCurrentPlayer().monoWool(fireResource.equals("Sheep")?-1:0);
-                    getCurrentPlayer().monoLumber(fireResource.equals("Lumber")?-1:0);
-
-                    tile.setOnFire(true);
-                    tile.setFirePlayer(getCurrentPlayer());
-                    redrawEverything=true;
-                    checkCounter++;
-                    performStaleReferenceReset(true);
-                    repaint();
-                    break;
                 }
 
             if (checkCounter == 0)
