@@ -54,6 +54,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean isPlayerActing = false;
     boolean isSettingFire=false;
     boolean failureFire=false;
+    boolean wildfire=false;
     int count = 0;
 
     //Awards
