@@ -221,6 +221,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     public void paint(Graphics g) {
         try {
             if (!loaded) {
+                this.setVisible(false);
                 for (Tile element : tiles) {
                     BufferedImage tile = ImageIO.read(new File("Tiles/" + element.getType() + ".png"));
                     g.drawImage(tile, element.getPosition()[0], element.getPosition()[1], null);
@@ -264,6 +265,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     }
                 }
                 loaded = true;
+                this.setVisible(true);
             }
             if (isDoneMovingRobber) {
                 BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
