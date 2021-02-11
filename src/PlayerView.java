@@ -44,6 +44,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     //MenuBar manipulation
     boolean hasRolled=false;
+    boolean loadedSpecialClasses=false;
 
     //MenuBar
     JMenuBar mb = new JMenuBar();
@@ -287,6 +288,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void startTurn() {
+        loadedSpecialClasses=false;
         if(reference.wildfire){
             before = Arrays.stream(reference.tiles).filter(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player)).collect(Collectors.toCollection(ArrayList::new));
             for(Tile tile:before){
@@ -306,7 +308,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if(!before.equals(after)) {
                 reference.redrawEverything = true;
                 reference.repaint();
-                JOptionPane.showMessageDialog(this,(!putOut && spread)?"The fire has spread from the original source, which has died down.":(putOut&&!spread)?"The original fire source has died down.":"The fires have moved tiles.","Arson Results",1, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this,(!putOut && spread)?"The fire has spread from the original source, which has died down.":"The original fire source has died down.","Arson Results",1, new ImageIcon("Resources/Catan_Icon.png"));
             }
         }
 
@@ -329,10 +331,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void afterRoll() {
         Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,remainingResources}).forEach(item -> item.setEnabled(true));
+        if(!loadedSpecialClasses){
+            steal.setEnabled(true);
+            assassinate.setEnabled(true);
+            setFire.setEnabled(true);
+            loadedSpecialClasses=true;
+        }
         rollDice.setEnabled(false);
-        steal.setEnabled(!hasStolen);
-        assassinate.setEnabled(!hasKilled);
-        setFire.setEnabled(!hasSetFire);
     }
 
     public void initializeCostFrame(){
@@ -605,7 +610,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             else
                 reference.giveOutResources(diceRoll);
             hasRolled=true;
-            reference.updateAllStatusMenus();
+            update();
         }
 
         else if(e.getSource()==buildingCard){
@@ -735,6 +740,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.isPlayerActing=true;
                 reference.isSettingFire=true;
                 hasSetFire=true;
+                setFire.setEnabled(false);
             }
         }
 
