@@ -306,7 +306,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if(!before.equals(after)) {
                 reference.redrawEverything = true;
                 reference.repaint();
-                JOptionPane.showMessageDialog(this,(!putOut && spread)?"The fire has spread from the original source, which has died down.":(putOut&&!spread)?"The original fire source has died down.":"","Arson Results",1, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this,(!putOut && spread)?"The fire has spread from the original source, which has died down.":(putOut&&!spread)?"The original fire source has died down.":"The fires have moved tiles.","Arson Results",1, new ImageIcon("Resources/Catan_Icon.png"));
             }
         }
 
@@ -348,8 +348,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==settlement){
-            if(player.getSettlements()==0) {
+        if (e.getSource()==settlement) {
+            if (player.getSettlements()==0) {
                 JOptionPane.showMessageDialog(this, "You no longer have settlements available to build with.", "Settlement Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
