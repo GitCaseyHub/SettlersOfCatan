@@ -131,6 +131,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 setShape(new Polygon(outline_x,outline_y,outLinePoints.length));
             }
         });
+
         this.addMouseListener(this);
 
         for (int x = 0; x < coords1.length; x++)
@@ -451,6 +452,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             }
 
             if (redrawEverything) {
+                this.setVisible(false);
                 //Redraws Tiles
                 g.clearRect(0,0,1000,1000);
                 Thread.yield();
@@ -530,6 +532,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 }
 
                 redrawEverything = false;
+                this.setVisible(true);
             }
         }
         catch (IOException ie) {
