@@ -17,7 +17,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     CustomSwitch activePorts = new CustomSwitch("Port Trading");
     CustomSwitch friendlyRobber = new CustomSwitch("Friendly Robber");
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
-    CustomSwitch base = new CustomSwitch("Base Characters");
+    CustomSwitch base = new CustomSwitch("Uniform Characters");
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
@@ -91,7 +91,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 activePorts.setToolTipText("Select the 'YES' option if you want special trading ports to be usable in game. On the board, port indices will be marked with hollow green circles.");
                 friendlyRobber.setToolTipText("Select the 'YES' option to disable the robber from stealing from players with less than 4 victory points.");
                 cataclysms.setToolTipText("Select the 'YES' option to activate weather events that inflict damages upon the players at random intervals.");
-                base.setToolTipText("Select the 'YES' option to deactivate all special classes.");
+                base.setToolTipText("Select the 'YES' option to force all players to be the same class.");
         borderPanel.add(charGenerate,BorderLayout.SOUTH);
             charGenerate.setBorder(new TitledBorder("Character Generation"));
             charGenerate.add(generateChars);
@@ -143,8 +143,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                     Arrays.stream(playerNumOptions).forEach(box -> box.setSelected(false));
                 }
             }
-            base.fixState();
             generateChars.setEnabled(false);
+            base.fixState();
             numPlayers = (playerNumOptions[0].isSelected()?2:(playerNumOptions[1].isSelected()?3:4));
             playerCreation = new PlayerSelect[numPlayers];
 
@@ -153,11 +153,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
                 playerCreation[x].setVisible(true);
                 playerCreation[x].setTitle("Player "+(playerCreation[x].referenceNumber+1)+" Select Screen");
-                if(base.isSelected()) {
-                    playerCreation[x].classBox.setSelectedIndex(10);
-                    playerCreation[x].classBox.setEnabled(false);
-                }
             }
+            Arrays.stream(playerCreation).forEach(player -> player.loadedIn=true);
             playerCreation[0].nameField.requestFocus();
         }
 
