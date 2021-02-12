@@ -1,13 +1,15 @@
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class CustomSwitch extends JPanel implements MouseListener {
+    Border etched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
+
     JLabel title = new JLabel("",SwingConstants.CENTER);
     JTextField on = new JTextField("ON");
     JTextField off = new JTextField("OFF");
@@ -42,8 +44,8 @@ public class CustomSwitch extends JPanel implements MouseListener {
 
         this.setBorder(compound);
         on.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        title.setBorder(new TitledBorder(""));
-        off.setBorder(new TitledBorder(""));
+        title.setBorder(etched);
+        off.setBorder(etched);
 
         off.addMouseListener(this);
         on.addMouseListener(this);
@@ -58,7 +60,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
                 if (!on.isEnabled()) {
                     on.setBackground(green);
                     off.setBackground(Color.WHITE);
-                    off.setBorder(new TitledBorder(""));
+                    off.setBorder(etched);
                     on.setBorder(new BevelBorder(BevelBorder.LOWERED));
                     state = true;
                 }
@@ -66,7 +68,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
                 if (!off.isEnabled()) {
                     off.setBackground(red);
                     on.setBackground(Color.WHITE);
-                    on.setBorder(new TitledBorder(""));
+                    on.setBorder(etched);
                     off.setBorder(new BevelBorder(BevelBorder.LOWERED));
                     state = false;
                 }
@@ -80,6 +82,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
 
     public void fixState(){
         this.locked=true;
+        this.setBorder(etched);
     }
 
     @Override
