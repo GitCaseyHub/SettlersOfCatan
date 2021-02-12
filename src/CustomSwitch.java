@@ -82,6 +82,8 @@ public class CustomSwitch extends JPanel implements MouseListener {
 
     public void fixState(){
         this.locked=true;
+        on_off.remove((state)?off:on);
+        on_off.revalidate();
     }
 
     @Override
