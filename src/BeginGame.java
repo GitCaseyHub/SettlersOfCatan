@@ -189,7 +189,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             JOptionPane.showMessageDialog(imageFrame,"Easy              ⇒    Emperor - Highwayman\n" +
                     "Normal         ⇒    Arsonist - Mountaineer - Settler\n" +
                     "Hard              ⇒    Pirate - Serf - Shepard - Woodsman\n" +
-                    "Advanced    ⇒    Assassin - Gambler","Class Tiers",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    "Advanced    ⇒    Assassin - Gambler","Class Tiers - Difficulty Rating",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
