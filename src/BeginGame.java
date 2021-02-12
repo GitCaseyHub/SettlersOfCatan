@@ -108,8 +108,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public void initializeCheckBoxes() {
-        for (int x = 0; x < playerNumOptions.length; x++)
+        for (int x = 0; x < playerNumOptions.length; x++) {
             playerNumOptions[x] = new JCheckBox(boxString[x]);
+            playerNumOptions[x].addActionListener(this);
+        }
     }
 
     public void commencementFrameInitiation(){
@@ -131,6 +133,12 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        for(JCheckBox box: playerNumOptions)
+            if(e.getSource()==box) {
+                Arrays.stream(playerNumOptions).filter(boxCheck -> !boxCheck.equals(box)).forEach(oldBox -> oldBox.setSelected(false));
+                return;
+            }
+
         if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires)
             optionMenu.doClick();
 
