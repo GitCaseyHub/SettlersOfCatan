@@ -15,6 +15,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
     String text;
     Color green = new Color(60,255,110);
     Color red = new Color(255,0,50);
+    boolean locked = false;
 
     public CustomSwitch(String text){
         this.text=text;
@@ -51,25 +52,29 @@ public class CustomSwitch extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getSource()==on) {
-            if(!on.isEnabled()) {
-                on.setBackground(green);
-                off.setBackground(Color.WHITE);
-                state=true;
-            }
-        }
-
-        else if(e.getSource()==off) {
-            if (!off.isEnabled()) {
-                off.setBackground(red);
-                on.setBackground(Color.WHITE);
-                state = false;
+        if(!locked) {
+            if (e.getSource() == on) {
+                if (!on.isEnabled()) {
+                    on.setBackground(green);
+                    off.setBackground(Color.WHITE);
+                    state = true;
+                }
+            } else if (e.getSource() == off) {
+                if (!off.isEnabled()) {
+                    off.setBackground(red);
+                    on.setBackground(Color.WHITE);
+                    state = false;
+                }
             }
         }
     }
 
     public boolean isSelected(){
         return state;
+    }
+
+    public void fixState(){
+        this.locked=true;
     }
 
     @Override
