@@ -190,21 +190,23 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
 
         else if(e.getSource()==helpMenu){
-            JOptionPane.showMessageDialog(imageFrame, "Building Settlements ⇒ Select an intersection point of three hexagonal tiles (or two hexagonal tiles if you are on the coast).\n\n"+
+            JOptionPane.showMessageDialog(imageFrame, "====================================================================================================\n"+
+                    "Building Settlements ⇒ Select an intersection point of three hexagonal tiles (or two hexagonal tiles if you are on the coast).\n\n"+
                                                                "Building Roads ⇒ Select an index where you own a settlement. Then, select a second index in the direction of the road you'd\n                                  like to build that is one hexagonal side-length away.\n\n"+
                                                                "Cancelling Operations ⇒ Hold ALT+C while the board has focus. Your resources will be refunded accordingly and the menu\n                                               will reactivate until you end your turn (Note operations include: road building, settlement building,\n                                               playing knight cards).\n\n"+
-                                                               "Exit Game ⇒ Hold ALT+X while the board has focus. You will be given an option about whether you'd like to quit.",
+                                                               "Exit Game ⇒ Hold ALT+X while the board has focus. You will be given an option about whether you'd like to quit.\n" +
+                                                               "====================================================================================================",
                                                           "Help Menu - Implicit Operations",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         else if(e.getSource()==classSet){
-            JOptionPane.showMessageDialog(imageFrame,"A class tier-list to help assist you in creating a character:\n" +
-                    "--------------------------------------------------------------------------------\n" +
+            JOptionPane.showMessageDialog(imageFrame,
+           "==============================================\n" +
                     "Easy              ⇒    Emperor  -  Highwayman\n" +
                     "Normal         ⇒    Arsonist  -  Mountaineer  -  Settler\n" +
                     "Hard              ⇒    Pirate  -  Serf  -  Shepard  -  Woodsman\n" +
                     "Advanced    ⇒    Assassin  -  Gambler\n" +
-                    "--------------------------------------------------------------------------------","Class Ratings - Difficulty Ranking",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    "==============================================","Class Ratings - Difficulty Ranking",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
