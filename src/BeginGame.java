@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +18,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     CustomSwitch activePorts = new CustomSwitch("Port Trading");
     CustomSwitch friendlyRobber = new CustomSwitch("Friendly Robber");
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
-    CustomSwitch base = new CustomSwitch("Uniform Characters");
+    CustomSwitch base = new CustomSwitch("Character Uniformity");
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
@@ -83,7 +84,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         this.add(borderPanel);
         borderPanel.setBorder(compound);
         borderPanel.add(options,BorderLayout.CENTER);
-            options.setBorder(new TitledBorder("In-Game Options"));
+            options.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"In-Game Options"));
             options.add(base);
             options.add(activePorts);
             options.add(cataclysms);
@@ -93,12 +94,12 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 cataclysms.setToolTipText("Select the 'YES' option to activate weather events that inflict damages upon the players at random intervals.");
                 base.setToolTipText("Select the 'YES' option to force all players to be the same class.");
         borderPanel.add(charGenerate,BorderLayout.SOUTH);
-            charGenerate.setBorder(new TitledBorder("Character Generation"));
+            charGenerate.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Game Generation"));
             charGenerate.add(generateChars);
-                generateChars.setBorder(compound);
+                generateChars.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
                 generateChars.setToolTipText("Click this button to create screens for players to choose their characters.");
             charGenerate.add(startGame);
-                startGame.setBorder(compound);
+                startGame.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
                 startGame.setEnabled(false);
                 generateChars.addActionListener(this);
                 startGame.addActionListener(this);
@@ -167,6 +168,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
 
         else if(e.getSource()==startGame) {
+            if(JOptionPane.showConfirmDialog(imageFrame,"Are you sure about the game settings you have selected?","Game Check", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
+                return;
+
             this.setVisible(false);
             imageFrame.setVisible(false);
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
