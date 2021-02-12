@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class PlayerSelect extends JFrame implements ActionListener, FocusListener {
@@ -135,6 +136,9 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
                     Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15);
                     bgReference.addPlayer(newPlayer,referenceNumber);
+                    
+                    if(bgReference.base.isSelected())
+                        Arrays.stream(bgReference.playerCreation).forEach(player -> player.classBox.setEnabled(false));
                 }
             }
             else
