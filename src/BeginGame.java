@@ -43,7 +43,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
     JMenuItem helpMenu = new JMenuItem("Special Actions");
-    JMenuItem classSet = new JMenuItem("Class Tiers");
+    JMenuItem classSet = new JMenuItem("Class Rankings");
 
     //Number of Players Question
     int numPlayers;
@@ -194,10 +194,13 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
 
         else if(e.getSource()==classSet){
-            JOptionPane.showMessageDialog(imageFrame,"Easy              ⇒    Emperor - Highwayman\n" +
-                    "Normal         ⇒    Arsonist - Mountaineer - Settler\n" +
-                    "Hard              ⇒    Pirate - Serf - Shepard - Woodsman\n" +
-                    "Advanced    ⇒    Assassin - Gambler","Class Tiers - Difficulty Rating",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(imageFrame,"A class tier-list to help assist you in creating a character:\n" +
+                    "--------------------------------------------------------------------------------\n" +
+                    "Easy              ⇒    Emperor  -  Highwayman\n" +
+                    "Normal         ⇒    Arsonist  -  Mountaineer  -  Settler\n" +
+                    "Hard              ⇒    Pirate  -  Serf  -  Shepard  -  Woodsman\n" +
+                    "Advanced    ⇒    Assassin  -  Gambler\n" +
+                    "--------------------------------------------------------------------------------","Class Ratings - Difficulty Ranking",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
