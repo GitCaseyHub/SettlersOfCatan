@@ -17,10 +17,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     CustomSwitch activePorts = new CustomSwitch("Port Trading");
     CustomSwitch friendlyRobber = new CustomSwitch("Friendly Robber");
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
-    JComboBox<String> players = new JComboBox<>();
+    CustomSwitch base = new CustomSwitch("Base Characters");
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
-    String[] comboOptions = {"Active Players","Two Players","Three Players","Four Players"};
     Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(1440,100),new Point(990,455), new Point(1440,455)};
     PlayerSelect[] playerCreation;
@@ -46,10 +45,13 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JMenuItem helpMenu = new JMenuItem("Special Actions");
     JMenuItem classSet = new JMenuItem("Class Tiers");
 
+    //Number of Players Question
+    int numPlayers;
+    JCheckBox[] playerNumOptions = new JCheckBox[3];
+    String[] boxString = new String[]{"Two Players","Three Players","Four Players"};
+
     public BeginGame(){
         this.setUndecorated(true);
-        for (String comboOption : comboOptions)
-            players.addItem(comboOption);
 
         this.setJMenuBar(mb);
         mb.setBorder(compound);
@@ -75,35 +77,39 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
         wildfires.addActionListener(this);
-        wildfires.setToolTipText("If a tile is on fire (from the arsonist's special action), there is a 1% chance neighboring tiles will also ignite after a turn cycle.");
+        wildfires.setToolTipText("If a tile is on fire (from the arsonist's special action), there is a 5% chance neighboring tiles will also ignite after a turn cycle.");
         optionMenu.addSeparator();
 
         this.add(borderPanel);
         borderPanel.setBorder(compound);
         borderPanel.add(options,BorderLayout.CENTER);
             options.setBorder(new TitledBorder("In-Game Options"));
-            options.add(players);
+            options.add(base);
             options.add(activePorts);
             options.add(cataclysms);
             options.add(friendlyRobber);
-                activePorts.setToolTipText("Select this checkbox if you want special trading ports to be usable in game. On the board, port indices will be marked with hollow green circles.");
-                friendlyRobber.setToolTipText("Select this checkbox to disable the robber from stealing from players with less than 4 victory points.");
-                cataclysms.setToolTipText("Select this checkbox to activate weather events that inflict damages upon the players at random intervals.");
+                activePorts.setToolTipText("Select the 'YES' option if you want special trading ports to be usable in game. On the board, port indices will be marked with hollow green circles.");
+                friendlyRobber.setToolTipText("Select the 'YES' option to disable the robber from stealing from players with less than 4 victory points.");
+                cataclysms.setToolTipText("Select the 'YES' option to activate weather events that inflict damages upon the players at random intervals.");
+                base.setToolTipText("Select the 'YES' option to deactivate all special classes.");
         borderPanel.add(charGenerate,BorderLayout.SOUTH);
-            charGenerate.setBorder(new TitledBorder("Template Generation"));
+            charGenerate.setBorder(new TitledBorder("Character Generation"));
             charGenerate.add(generateChars);
                 generateChars.setBorder(compound);
                 generateChars.setToolTipText("Click this button to create screens for players to choose their characters.");
             charGenerate.add(startGame);
                 startGame.setBorder(compound);
                 startGame.setEnabled(false);
-                generateChars.setEnabled(false);
-                players.addActionListener(this);
-                players.setBorder(compound);
                 generateChars.addActionListener(this);
                 startGame.addActionListener(this);
 
         commencementFrameInitiation();
+        initializeCheckBoxes();
+    }
+
+    public void initializeCheckBoxes() {
+        for (int x = 0; x < playerNumOptions.length; x++)
+            playerNumOptions[x] = new JCheckBox(boxString[x]);
     }
 
     public void commencementFrameInitiation(){
@@ -120,23 +126,37 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         imageLabel.setBorder(compound);
     }
 
+    public boolean appropriateNumSelected(JCheckBox[] boxes){
+        return Arrays.stream(boxes).filter(AbstractButton::isSelected).count()==1;
+    }
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires)
             optionMenu.doClick();
 
-        if(e.getSource()==players)
-            generateChars.setEnabled(players.getSelectedIndex()!=0);
-
         else if(e.getSource()==generateChars){
-            generateChars.setEnabled(false);
-            players.setEnabled(false);
-            playerCreation = new PlayerSelect[players.getSelectedIndex()+1];
+            while(!appropriateNumSelected(playerNumOptions)) {
+                JOptionPane.showMessageDialog(imageFrame, new Object[]{"How many people are playing?", playerNumOptions}, "Number of Players", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
-            for(int x=0; x<players.getSelectedIndex()+1; x++) {
+                if(!appropriateNumSelected(playerNumOptions)) {
+                    JOptionPane.showMessageDialog(imageFrame, "You must select a single Checkbox option.", "Failed Registration", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                    Arrays.stream(playerNumOptions).forEach(box -> box.setSelected(false));
+                }
+            }
+            base.fixState();
+            generateChars.setEnabled(false);
+            numPlayers = (playerNumOptions[0].isSelected()?2:(playerNumOptions[1].isSelected()?3:4));
+            playerCreation = new PlayerSelect[numPlayers];
+
+            for(int x=0; x<numPlayers; x++) {
                 playerCreation[x] = new PlayerSelect(this, x);
                 playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
                 playerCreation[x].setVisible(true);
                 playerCreation[x].setTitle("Player "+(playerCreation[x].referenceNumber+1)+" Select Screen");
+                if(base.isSelected()) {
+                    playerCreation[x].classBox.setSelectedIndex(10);
+                    playerCreation[x].classBox.setEnabled(false);
+                }
             }
             playerCreation[0].nameField.requestFocus();
         }
