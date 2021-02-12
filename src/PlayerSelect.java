@@ -48,6 +48,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     //Global Variables
     BeginGame bgReference;
     int referenceNumber;
+    boolean loadedIn=false;
 
     public PlayerSelect(BeginGame bgReference, int referenceNumber){
         this.setResizable(false);
@@ -94,12 +95,27 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     }
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==classBox) {
+            if (loadedIn) {
+                if (bgReference.base.isSelected()) {
+                    for (PlayerSelect player : bgReference.playerCreation) {
+                        player.descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
+                        player.classBox.setSelectedIndex(classBox.getSelectedIndex());
+
+                        if (player.classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman") || player.classTitles[classBox.getSelectedIndex()].equals("Assassin") || classTitles[classBox.getSelectedIndex()].equals("Arsonist"))
+                            player.descriptionArea.select(0, 0);
+
+                        player.imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
+                    }
+                }
+                return;
+            }
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
 
-            if(classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman") || classTitles[classBox.getSelectedIndex()].equals("Assassin") || classTitles[classBox.getSelectedIndex()].equals("Arsonist"))
-                descriptionArea.select(0,0);
+            if (classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman") || classTitles[classBox.getSelectedIndex()].equals("Assassin") || classTitles[classBox.getSelectedIndex()].equals("Arsonist"))
+                descriptionArea.select(0, 0);
 
-            imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex()==0)?"ClassTitles/Nameless.png":"ClassTitles/" + classBox.getSelectedItem() +".jpg"));
+            imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
+
         }
         else if(e.getSource()==confirmButton) {
             if (!nameField.getText().equals("Name Your Player")){
