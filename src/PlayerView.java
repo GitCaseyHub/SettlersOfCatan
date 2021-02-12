@@ -308,7 +308,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if(!before.equals(after)) {
                 reference.redrawEverything = true;
                 reference.repaint();
-                JOptionPane.showMessageDialog(this,(!putOut && spread)?"The fire has spread from the original source, which has died down.":"The original fire source has died down.","Arson Results",1, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this,(!putOut && spread)?"The fire has spread from the original site, which has died down.":"The original fire has died down.","Arson Results",1, new ImageIcon("Resources/Catan_Icon.png"));
             }
         }
 
