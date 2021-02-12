@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -40,7 +41,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
         off.setBackground(Color.WHITE);
 
         this.setBorder(compound);
-        on.setBorder(new TitledBorder(""));
+        on.setBorder(new BevelBorder(BevelBorder.LOWERED));
         title.setBorder(new TitledBorder(""));
         off.setBorder(new TitledBorder(""));
 
@@ -57,12 +58,16 @@ public class CustomSwitch extends JPanel implements MouseListener {
                 if (!on.isEnabled()) {
                     on.setBackground(green);
                     off.setBackground(Color.WHITE);
+                    off.setBorder(new TitledBorder(""));
+                    on.setBorder(new BevelBorder(BevelBorder.LOWERED));
                     state = true;
                 }
             } else if (e.getSource() == off) {
                 if (!off.isEnabled()) {
                     off.setBackground(red);
                     on.setBackground(Color.WHITE);
+                    on.setBorder(new TitledBorder(""));
+                    off.setBorder(new BevelBorder(BevelBorder.LOWERED));
                     state = false;
                 }
             }
