@@ -42,7 +42,7 @@ public class CustomSwitch extends JPanel implements MouseListener {
         on.setBackground(green);
         off.setBackground(Color.WHITE);
 
-        this.setBorder(compound);
+        this.setBorder(etched);
         on.setBorder(new BevelBorder(BevelBorder.LOWERED));
         title.setBorder(etched);
         off.setBorder(etched);
@@ -82,7 +82,6 @@ public class CustomSwitch extends JPanel implements MouseListener {
 
     public void fixState(){
         this.locked=true;
-        this.setBorder(etched);
     }
 
     @Override
