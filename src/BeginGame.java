@@ -49,7 +49,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     //Number of Players Question
     int numPlayers;
     JCheckBox[] playerNumOptions = new JCheckBox[3];
-    String[] boxString = new String[]{"          ⇒  Two People","      ⇒  Three People","  ⇒  Four People"};
+    String[] boxString = new String[]{"   ⇒   Two People","   ⇒   Three People","   ⇒   Four People"};
     String[] imageTitles = new String[]{"Two_Players.png","Three_Players.png","Four_Players.png"};
 
     public BeginGame(){
@@ -149,7 +149,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 JOptionPane.showMessageDialog(imageFrame, new Object[]{"=======================\n   Number of People Playing\n=======================", playerNumOptions,"======================="}, "Number of Players", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
                 if(!appropriateNumSelected(playerNumOptions)) {
-                    JOptionPane.showMessageDialog(imageFrame, "You must select a single Checkbox option.", "Failed Registration", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(imageFrame, "You must select one of the options.", "Failed Registration", 1, new ImageIcon("Resources/Catan_Icon.png"));
                     Arrays.stream(playerNumOptions).forEach(box -> box.setSelected(false));
                 }
             }
