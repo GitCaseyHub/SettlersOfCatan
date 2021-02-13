@@ -1,0 +1,1 @@
+This folder is for images that appear when players are selecting the number of people playing.
