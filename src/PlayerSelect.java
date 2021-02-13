@@ -16,6 +16,20 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     //Class reveal functionality
     String[] classTitles = {"Character Class", "Arsonist", "Assassin", "Emperor", "Farmer", "Gambler", "Highwayman", "Mountaineer", "Pirate", "Serf", "Settler", "Shepard", "Woodsman"};
     String[] colors = {"Building Color", "Orange", "Red", "Blue", "White"};
+    String[] actions = {"Ability Shorthand",
+            "Tile Arson - Remove Production",
+            "Assassinate Opponent Knights",
+            "Double Resources",
+            "Double Sheep & Wheat - No Brick & Ore",
+            "Double Resources - Chance of Net Loss",
+            "Steal Action - Collect Stolen Resources",
+            "Double Brick & Ore - No Sheep & Wheat",
+            "No Trading - One-To-One Trading",
+            "Every Cost is Doubled",
+            "No Special Characteristics",
+            "Quadruple Sheep - No Other Resources",
+            "Quadruple Lumber - No Other Resources"};
+
     String[] classDescriptions = {" - Character Class Description -",
             "You are an arsonist, and you leave a wake of destruction wherever you go. Naturally, you play fast and loose and frequently cause 'accidents'. As a result, once per turn, you may set fire to a tile, preventing it from getting resources for a turn. However, you must use a resource of the type the tile could produce as 'kindling' to start the fire. Note that a fire will last an entire turn cycle. Prepare to be hated.",
             "You are a murderer, and you've honed your skills through years of royal contracts. People, however, don't trust you because of your swarthy demeanor and empty eyes. As a result, you cannot trade with other players. But, your skills as a contract killer allow you to remove a single knight card from a random player at the cost of 1 random resource.",
@@ -43,8 +57,8 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     JTextField nameField = new JTextField("Name Your Player",SwingConstants.CENTER);
     JButton confirmButton = new JButton("    Confirm Character    ");
     JPanel southPanel = new JPanel(new BorderLayout());
-    JLabel fillout = new JLabel("",SwingConstants.CENTER);
     Color color = new Color(100,100,100);
+    JLabel specialAbility = new JLabel(" Ability: ");
 
     //Global Variables
     BeginGame bgReference;
@@ -85,8 +99,9 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             southPanel.add(confirmButton,BorderLayout.EAST);
                 confirmButton.setBorder(compound);
                 confirmButton.addActionListener(this);
-                southPanel.add(fillout,BorderLayout.CENTER);
-                    fillout.setBorder(compound);
+                southPanel.add(specialAbility,BorderLayout.CENTER);
+                    specialAbility.setBorder(compound);
+                    specialAbility.setFont(new Font(imageLabel.getFont().getName(),Font.BOLD,11));
 
         for (String classTitle : classTitles)
             classBox.addItem(classTitle);
@@ -106,9 +121,10 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                             player.descriptionArea.select(0, 0);
 
                         player.imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
+                        player.specialAbility.setText(" Ability: "+actions[classBox.getSelectedIndex()]);
                     }
+                    return;
                 }
-                return;
             }
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
 
@@ -116,7 +132,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                 descriptionArea.select(0, 0);
 
             imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
-
+            specialAbility.setText(" Ability: "+actions[classBox.getSelectedIndex()]);
         }
         else if(e.getSource()==confirmButton) {
             if (!nameField.getText().equals("Name Your Player")){
@@ -140,7 +156,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                     if(bgReference.base.isSelected())
                         Arrays.stream(bgReference.playerCreation).forEach(player -> player.classBox.setEnabled(false));
 
-                    JOptionPane.showMessageDialog(this,"A new character, "+newPlayer.getName()+" the "+newPlayer.getClassTitle()+", has been created.","Character Created",1,new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(bgReference,"A new character, "+newPlayer.getName()+" the "+newPlayer.getClassTitle()+", has been created.","Character Created",1,new ImageIcon("Resources/Catan_Icon.png"));
                 }
             }
             else
