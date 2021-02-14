@@ -49,7 +49,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     //Number of Players Question
     int numPlayers;
     JCheckBox[] playerNumOptions = new JCheckBox[3];
-    String[] boxString = new String[]{"   ⇒   Two People","   ⇒   Three People","   ⇒   Four People"};
+    String[] boxString = new String[]{"     ⇒     2 Players","     ⇒     3 Players","     ⇒     4 Players"};
     String[] imageTitles = new String[]{"Two_Players.png","Three_Players.png","Four_Players.png"};
 
     public BeginGame(){
