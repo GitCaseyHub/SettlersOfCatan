@@ -380,7 +380,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         else if(e.getSource()==fourForOne) {
             if((!player.getClassTitle().equals("Pirate") && player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4) || (player.getClassTitle().equalsIgnoreCase("Pirate") && player.returnTotalResources()>0))
-                JOptionPane.showMessageDialog(this,"You don't have sufficient resources to do a trade of this kind. You cannot use this 'option'.","Insufficient Resources", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this,"You don't have sufficient resources to do a trade of this kind.","Insufficient Resources", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             else{
                 boolean isPirate = player.getClassTitle().equalsIgnoreCase("Pirate");
                 int confirm = JOptionPane.showConfirmDialog(this,isPirate?"Would you like to trade in one resource for another one resource?":"Would you like to trade in four of a resource for one of another resource?","Generic Resource Exchange",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
@@ -589,6 +589,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             unplayed.setSelectedIndex(0);
             played.setSelectedIndex(0);
             update();
+            
+            if(reference.razing)
+                reference.razeTiles();
         }
         else if(e.getSource()==rollDice){
             int diceRoll = new Random().nextInt(11)+2;
@@ -745,7 +748,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==remainingResources)
-            JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad             ⇒  "+player.getRoads()+"\nSettlement  ⇒  "+player.getSettlements()+"\nCity                ⇒  "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
 
         reference.updateAllStatusMenus();
     }
