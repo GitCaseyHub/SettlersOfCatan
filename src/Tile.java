@@ -52,6 +52,10 @@ public class Tile {
         return type;
     }
 
+    public void setType(String type){
+        this.type=type;
+    }
+
     public boolean isOnFire() {
         return onFire;
     }
