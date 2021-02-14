@@ -96,12 +96,16 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             nameField.setForeground(color);
             descriptionArea.requestFocus();
         this.add(southPanel, BorderLayout.SOUTH);
+        southPanel.setOpaque(true);
+            southPanel.setBackground(Color.WHITE);
             southPanel.add(confirmButton,BorderLayout.EAST);
                 confirmButton.setBorder(compound);
                 confirmButton.addActionListener(this);
                 southPanel.add(specialAbility,BorderLayout.CENTER);
                     specialAbility.setBorder(compound);
                     specialAbility.setFont(new Font(imageLabel.getFont().getName(),Font.BOLD,11));
+                    specialAbility.setBackground(Color.WHITE);
+                    specialAbility.setOpaque(true);
 
         for (String classTitle : classTitles)
             classBox.addItem(classTitle);
