@@ -16,15 +16,15 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     //Class reveal functionality
     String[] classTitles = {"Character Class", "Arsonist", "Assassin", "Emperor", "Farmer", "Gambler", "Highwayman", "Mountaineer", "Pirate", "Serf", "Settler", "Shepard", "Woodsman"};
     String[] colors = {"Building Color", "Orange", "Red", "Blue", "White"};
-    String[] actions = {"Ability Shorthand",
+    String[] actions = {"",
             "Tile Arson - Remove Production",
-            "Assassinate Opponent Knights",
+            "Assassinate - Remove Opponent Knights",
             "Double Resources",
             "Double Sheep & Wheat - No Brick & Ore",
             "Double Resources - Chance of Net Loss",
             "Steal Action - Collect Stolen Resources",
             "Double Brick & Ore - No Sheep & Wheat",
-            "No Trading - One-To-One Trading",
+            "No Trading - 1:1 Exchange",
             "Every Cost is Doubled",
             "No Special Characteristics",
             "Quadruple Sheep - No Other Resources",
@@ -58,7 +58,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     JButton confirmButton = new JButton("    Confirm Character    ");
     JPanel southPanel = new JPanel(new BorderLayout());
     Color color = new Color(100,100,100);
-    JLabel specialAbility = new JLabel(" Ability: ");
+    JLabel specialAbility = new JLabel("");
 
     //Global Variables
     BeginGame bgReference;
@@ -125,7 +125,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                             player.descriptionArea.select(0, 0);
 
                         player.imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
-                        player.specialAbility.setText(" Ability: "+actions[classBox.getSelectedIndex()]);
+                        player.specialAbility.setText((classBox.getSelectedIndex()!=0)?" Ability: "+actions[classBox.getSelectedIndex()]:"");
                     }
                     return;
                 }
@@ -136,7 +136,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                 descriptionArea.select(0, 0);
 
             imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
-            specialAbility.setText(" Ability: "+actions[classBox.getSelectedIndex()]);
+            specialAbility.setText((classBox.getSelectedIndex()!=0)?" Ability: "+actions[classBox.getSelectedIndex()]:"");
         }
         else if(e.getSource()==confirmButton) {
             if (!nameField.getText().equals("Name Your Player")){
