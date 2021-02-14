@@ -14,10 +14,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel borderPanel = new JPanel(new BorderLayout());
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
-    CustomSwitch activePorts = new CustomSwitch("Port Trading");
+    CustomSwitch activePorts = new CustomSwitch("Trading w/ Ports");
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
     CustomSwitch base = new CustomSwitch("Character Uniformity");
-    CustomSwitch razing = new CustomSwitch("Tile Razing");
+    CustomSwitch razing = new CustomSwitch("Tile Desertification");
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
