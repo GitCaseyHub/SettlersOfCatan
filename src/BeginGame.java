@@ -15,9 +15,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JButton generateChars = new JButton("Generate Templates");
     JButton startGame = new JButton("Start Game");
     CustomSwitch activePorts = new CustomSwitch("Port Trading");
-    CustomSwitch friendlyRobber = new CustomSwitch("Friendly Robber");
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
     CustomSwitch base = new CustomSwitch("Character Uniformity");
+    CustomSwitch razing = new CustomSwitch("Tile Razing");
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
@@ -88,11 +88,11 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             options.add(base);
             options.add(activePorts);
             options.add(cataclysms);
-            options.add(friendlyRobber);
-                activePorts.setToolTipText("Select the 'YES' option if you want special trading ports to be usable in game. On the board, port indices will be marked with hollow green circles.");
-                friendlyRobber.setToolTipText("Select the 'YES' option to disable the robber from stealing from players with less than 4 victory points.");
+            options.add(razing);
+                activePorts.setToolTipText("Select the 'YES' option if you want ports to be usable. On the board, ports will be marked with hollow green circles.");
                 cataclysms.setToolTipText("Select the 'YES' option to activate weather events that inflict damages upon the players at random intervals.");
                 base.setToolTipText("Select the 'YES' option to force all players to be the same class.");
+                razing.setToolTipText("Select the 'YES' option to have a 0.1% chance that a single tile will turn into a desert every end of turn.");
         borderPanel.add(charGenerate,BorderLayout.SOUTH);
             charGenerate.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Game Generation"));
             charGenerate.add(generateChars);
@@ -174,7 +174,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             this.setVisible(false);
             imageFrame.setVisible(false);
             CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
-            cbMain.friendlyRobber=friendlyRobber.isSelected();
+            cbMain.razing = razing.isSelected();
             cbMain.cataclysmsActive=cataclysms.isSelected();
             cbMain.previewFrames=previewMenu.isSelected();
             cbMain.isUsingMotionFrame = motionMenu.isSelected();
