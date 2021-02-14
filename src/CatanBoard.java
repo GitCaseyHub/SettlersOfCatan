@@ -193,14 +193,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         givePlayersCatanBoardReference();
         initializeAwardOptionPanes();
         constructBuildingPreviewFrame();
-        workAround();
-    }
-
-    public void workAround(){
-        JDialog dummy = new JDialog();
-        dummy.setBounds(-500,-500,0,0);
-        dummy.setVisible(true);
-        dummy.setVisible(false);
     }
 
     public void constructBuildingPreviewFrame(){
