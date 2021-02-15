@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
     JPanel borderPanel = new JPanel(new BorderLayout());
-    JButton generateChars = new JButton("Generate Templates");
+    JButton generateChars = new JButton("Create Characters");
     JButton startGame = new JButton("Start Game");
     CustomSwitch activePorts = new CustomSwitch("Trading w/ Ports");
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
@@ -92,7 +92,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         this.add(borderPanel);
         borderPanel.setBorder(compound);
         borderPanel.add(options,BorderLayout.CENTER);
-            options.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"In-Game Options"));
+            options.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Options"));
             options.add(base);
             options.add(activePorts);
             options.add(cataclysms);
@@ -102,7 +102,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 base.setToolTipText("Select the 'YES' option to force all players to be the same class.");
                 razing.setToolTipText("Select the 'YES' option to have a 0.1% chance that a single tile will turn into a desert every end of turn.");
         borderPanel.add(charGenerate,BorderLayout.SOUTH);
-            charGenerate.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Game Generation"));
+            charGenerate.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Setup & Startup"));
             charGenerate.add(generateChars);
                 generateChars.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
                 generateChars.setToolTipText("Click this button to create screens for players to choose their characters.");
