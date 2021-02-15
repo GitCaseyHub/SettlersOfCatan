@@ -3,11 +3,51 @@ import java.util.ArrayList;
 
 public class Player {
     String color,name,classTitle;
-    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal, referenceNumber, cities, settlements, roads;
-    boolean turn,longestRoad,largestArmy;
+    int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal, referenceNumber, cities, settlements, roads,votes;
+    boolean turn,longestRoad,largestArmy,leader;
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
     CatanBoard cb;
+
+    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads, boolean leader, int votes){
+        this.color=color;
+        this.name=name;
+        this.classTitle=classTitle;
+        this.ownedIndexes=ownedIndexes;
+        this.unPlayedCards=unPlayedCards;
+        this.playedCards=playedCards;
+        this.lumberNum=lumberNum;
+        this.brickNum=brickNum;
+        this.grainNum=grainNum;
+        this.woolNum=woolNum;
+        this.oreNum=oreNum;
+        this.victoryPointTotal=victoryPointTotal;
+        this.turn=turn;
+        this.longestRoad=longestRoad;
+        this.largestArmy=largestArmy;
+        this.referenceNumber=referenceNumber;
+        this.cities=cities;
+        this.settlements=settlements;
+        this.roads=roads;
+        this.leader=leader;
+        this.votes=votes;
+    }
+
+    public boolean isLeader() {
+        return leader;
+    }
+
+    public void setLeader(boolean leader) {
+        this.leader = leader;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
+
+    public void addVotes(int vote) {
+        this.votes+=vote;
+    }
 
     public int getCities() {
         return cities;
@@ -31,28 +71,6 @@ public class Player {
 
     public void changeRoadNum(int roads) {
         this.roads+=roads;
-    }
-
-    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads){
-        this.color=color;
-        this.name=name;
-        this.classTitle=classTitle;
-        this.ownedIndexes=ownedIndexes;
-        this.unPlayedCards=unPlayedCards;
-        this.playedCards=playedCards;
-        this.lumberNum=lumberNum;
-        this.brickNum=brickNum;
-        this.grainNum=grainNum;
-        this.woolNum=woolNum;
-        this.oreNum=oreNum;
-        this.victoryPointTotal=victoryPointTotal;
-        this.turn=turn;
-        this.longestRoad=longestRoad;
-        this.largestArmy=largestArmy;
-        this.referenceNumber=referenceNumber;
-        this.cities=cities;
-        this.settlements=settlements;
-        this.roads=roads;
     }
 
     public int getRefNumber() {
