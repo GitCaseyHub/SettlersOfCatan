@@ -94,11 +94,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     Tile robberTile;
     JCheckBox[] possibleTargets;
     int checkCounter = 0;
-    boolean friendlyRobber=false;
+    boolean razing=false;
     boolean previewFrames=false;
     boolean isUsingMotionFrame =false;
     boolean usablePorts=false;
     boolean specialActions=false;
+    boolean randomize=false;
 
     //Building Variables
     int roadCondition = 0;
@@ -220,8 +221,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 }
 
                 for (Tile tile : tiles) {
-                    BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
-                    g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
+                    if(tile.getNum()!=7) {
+                        BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
+                        g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
+                    }
                 }
 
                 BufferedImage water = ImageIO.read(new File("Tiles/Water_Tile.png"));
@@ -274,9 +277,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     JOptionPane.showMessageDialog(this, "The robber has been moved.", "Robber Moved", 1,new ImageIcon("Resources/Catan_Icon.png"));
 
                 ArrayList<Player> availablePlayers = getPlayersOnTile(robberTile);
-
-                if(friendlyRobber)
-                    availablePlayers.removeIf(player -> player.getVictoryPointTotal() < 4);
 
                 if(highwaymanIsPresent())
                     availablePlayers.removeIf(player -> player.getClassTitle().equals("Highwayman"));
@@ -478,8 +478,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 //Redraws Roll Tiles
                 for (Tile tile : tiles) {
                     if(!tile.isOnFire()) {
-                        BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
-                        g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
+                        if(tile.getNum()!=7) {
+                            BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
+                            g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
+                        }
                     }
                     else{
                         BufferedImage fire = ImageIO.read(new File("Resources/Preview_Images/Fire.png"));
@@ -1577,4 +1579,27 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     public void keyTyped(KeyEvent e){}
     public void keyReleased(KeyEvent e){}
     public void mouseClicked(MouseEvent e){}
+
+    public void randomize(){
+        Arrays.stream(tiles).forEach(tile ->{
+            tile.setNum(new Random().nextInt(11)+2);
+            tile.setType(types[new Random().nextInt(19)]);
+        });
+        redrawEverything=true;
+        repaint();
+    }
+
+    public void razeTiles() {
+        long before = Arrays.stream(tiles).filter(tile->tile.getType().equals("Desert")).count();
+        Arrays.stream(tiles).filter(tile -> !tile.getType().equals("Desert") && new Random().nextInt(1000) < 1).forEach(tile -> {
+            tile.setType("Desert");
+            tile.setNum(7);
+        });
+
+        if(Arrays.stream(tiles).filter(tile -> tile.getType().equals("Desert")).count()!=before) {
+            redrawEverything = true;
+            repaint();
+            JOptionPane.showMessageDialog(this, "New deserts have been formed. The resource production of Catan shrinks!", "Desert Formation", 1, new ImageIcon("Resources/Catan_Icon.png"));
+        }
+    }
 }
