@@ -152,15 +152,16 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
                 else {
                     //Testing Player
-                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber,99,99,99);
-
-                    Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15);
+                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 100, 100, 100, 100, 100, 0, false, false, false,referenceNumber,99,99,99,true,0);
+                    int before = bgReference.catanPlayerList.size();
+                    Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15,false,0);
                     bgReference.addPlayer(newPlayer,referenceNumber);
 
                     if(bgReference.base.isSelected())
                         Arrays.stream(bgReference.playerCreation).forEach(player -> player.classBox.setEnabled(false));
 
-                    JOptionPane.showMessageDialog(bgReference,"A new character, "+newPlayer.getName()+" the "+newPlayer.getClassTitle()+", has been created.","Character Created",1,new ImageIcon("Resources/Catan_Icon.png"));
+                    if(before!=bgReference.catanPlayerList.size())
+                        JOptionPane.showMessageDialog(bgReference,"A new character, "+newPlayer.getName()+" the "+newPlayer.getClassTitle()+", has been created.","Character Created",1,new ImageIcon("Resources/Catan_Icon.png"));
                 }
             }
             else
