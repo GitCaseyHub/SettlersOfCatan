@@ -20,8 +20,9 @@ public class CustomSwitch extends JPanel implements MouseListener {
     Color red = new Color(255,0,50);
     boolean locked = false;
 
-    public CustomSwitch(String text){
+    public CustomSwitch(String text, boolean startState){
         this.text=text;
+        this.state=startState;
         on.setEnabled(false);
         on.setHorizontalAlignment(JTextField.CENTER);
         on.setDisabledTextColor(Color.BLACK);
@@ -39,8 +40,14 @@ public class CustomSwitch extends JPanel implements MouseListener {
         on_off.add(on);
         on_off.add(off);
 
-        on.setBackground(green);
-        off.setBackground(Color.WHITE);
+        if(state) {
+            on.setBackground(green);
+            off.setBackground(Color.WHITE);
+        }
+        else{
+            on.setBackground(Color.WHITE);
+            off.setBackground(red);
+        }
 
         this.setBorder(etched);
         on.setBorder(new BevelBorder(BevelBorder.LOWERED));
