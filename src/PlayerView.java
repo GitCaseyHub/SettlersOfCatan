@@ -98,7 +98,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     //Simplification
     boolean isPirateOrSerf;
+
+    //Turn cycles
     boolean singleRandomize=false;
+    boolean singleDemocracy=false;
+    int diceRoll=0;
+    Object breakCheck;
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
@@ -324,10 +329,16 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
         }
         if(!singleRandomize)
-            if(reference.randomize) {
+            if(reference.randomize && !reference.doingStartup) {
                 singleRandomize = true;
                 reference.randomize();
             }
+        if(!singleDemocracy && !reference.doingStartup) {
+            if (reference.turnNameList.get(0).equals(this.player.getName())) {
+                singleDemocracy=true;
+                reference.performDemocracyVoting();
+            }
+        }
 
         resetReference(true);
         rollDice.setEnabled(true);
@@ -557,6 +568,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         else if(e.getSource()==endTurn){
             singleRandomize=false;
+            singleDemocracy=false;
             int cataclysmOccurrence = 69;
             if(reference.cataclysmsActive){
                 cataclysmOccurrence = new Random().nextInt(20);
@@ -601,7 +613,22 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.razeTiles();
         }
         else if(e.getSource()==rollDice){
-            int diceRoll = new Random().nextInt(11)+2;
+            diceRoll=0;
+            if(this.player.isLeader()){
+                while(diceRoll==0) {
+                    try {
+                        diceRoll = Integer.parseInt((String) JOptionPane.showInputDialog(this, "Select the number you'd like to roll this turn: ", "Democracy Action", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null));
+                        if (diceRoll < 2 || diceRoll > 12)
+                            throw new Exception();
+                    } catch (Exception f) {
+                        JOptionPane.showMessageDialog(this, "You must select an integer between 2 and 12.", "Improper Number Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                        diceRoll = 0;
+                    }
+                }
+            }
+
+            else
+                diceRoll = new Random().nextInt(11)+2;
 
             if(reference.gamblerIsPresent()){
                 if(new Random().nextInt(100) < 20) {
