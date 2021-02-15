@@ -34,11 +34,6 @@ public class Road {
         return owner;
     }
 
-    @Override
-    public String toString(){
-        return "Index (A,B): ("+getIndexA()+","+getIndexB()+")";
-    }
-
     public boolean isConnectedTo(Road road){
         return road.getIndexA() == this.getIndexA() || road.getIndexA() == this.getIndexB() || road.getIndexB() == this.getIndexA() || road.getIndexB() == this.getIndexB();
     }
