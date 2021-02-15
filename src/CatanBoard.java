@@ -100,6 +100,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean usablePorts=false;
     boolean specialActions=false;
     boolean randomize=false;
+    boolean democracy=false;
 
     //Building Variables
     int roadCondition = 0;
@@ -125,6 +126,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     //Frame for appropriate image reveal when building
     JFrame buildFrame = new JFrame();
     JLabel buildLabel = new JLabel();
+
+    //Democracy
+    JCheckBox[] democracyBoxes;
+    ArrayList<Integer> votes;
+    ArrayList<Player> maxVotesPlayer;
+    int leaderIndex;
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
@@ -162,7 +169,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             rollNumList.add(x);
 
         for (int x = 0; x < indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, false, false, false, 69,0,0,0), false, false);
+            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, false, false, false, 69,0,0,0,false,0), false, false);
 
         for (int x = 0; x < types.length; x++) {
             int typeIndex = new Random().nextInt(typeList.size());
@@ -194,6 +201,13 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         givePlayersCatanBoardReference();
         initializeAwardOptionPanes();
         constructBuildingPreviewFrame();
+        createDemocracyComponents();
+    }
+
+    public void createDemocracyComponents(){
+        democracyBoxes = new JCheckBox[catanPlayerList.size()];
+        for(int x=0; x<catanPlayerList.size(); x++)
+            democracyBoxes[x] = new JCheckBox(catanPlayerList.get(x).getName()+" the "+catanPlayerList.get(x).getClassTitle());
     }
 
     public void constructBuildingPreviewFrame(){
@@ -414,7 +428,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     }
 
                     if (duplicates.size() == 0) {
-                        doingStartup = false;
                         for (Player player : catanPlayerList)
                             if (player.getName().equals(turnNameList.get(0)))
                                 player.setTurn(true);
@@ -422,6 +435,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         getPlayerStatusMenu(catanPlayerList.get(0)).update();
                         JOptionPane.showMessageDialog(this, "You will now receive your starting resources. Let the games begin.", "Official Start",1, new ImageIcon("Resources/Catan_Icon.png"));
                         givePlayersStartingResources();
+                        doingStartup = false;
                     }
                 }
                 else {
@@ -1601,5 +1615,58 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             repaint();
             JOptionPane.showMessageDialog(this, "New deserts have been formed. The resource production of Catan shrinks!", "Desert Formation", 1, new ImageIcon("Resources/Catan_Icon.png"));
         }
+    }
+
+    public void performDemocracyVoting(){
+        leaderIndex= new Random().nextInt(catanPlayerList.size());
+        votes = new ArrayList<>();
+        maxVotesPlayer = new ArrayList<>();
+
+        if(catanPlayerList.size()==2){
+            getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(leaderIndex).getName() + " - " + catanPlayerList.get(leaderIndex).getClassTitle()+" - Current Leader");
+            JOptionPane.showMessageDialog(this,catanPlayerList.get(leaderIndex).getName()+" has been selected as the leader for this round.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
+            catanPlayerList.get(leaderIndex).setLeader(true);
+            return;
+        }
+
+        for(int x=0; x<catanPlayerList.size(); x++){
+            for(JCheckBox box: democracyBoxes)
+                if(box.getText().equals(catanPlayerList.get(x).getName()+" the "+catanPlayerList.get(x).getClassTitle()))
+                    box.setEnabled(false);
+
+            while(statusViewer[0].findNumSelected(democracyBoxes)) {
+                JOptionPane.showMessageDialog(getPlayerStatusMenu(catanPlayerList.get(x)), new Object[]{"Vote for the next leader:", democracyBoxes}, "Democracy Voting", 1, new ImageIcon("Resources/Catan_Icon.png"));
+
+                if (statusViewer[0].findNumSelected(democracyBoxes))
+                    JOptionPane.showMessageDialog(getPlayerStatusMenu(catanPlayerList.get(x)), "You must vote for a single player to be leader.", "Democracy Failure", 1, new ImageIcon("Resources/Catan_Icon.png"));
+            }
+            JCheckBox selectedBox = Arrays.stream(democracyBoxes).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
+            for(Player player:catanPlayerList)
+                player.addVotes(selectedBox.getText().equals(player.getName())?1:0);
+
+            Arrays.stream(democracyBoxes).forEach(box->box.setEnabled(true));
+            Arrays.stream(democracyBoxes).forEach(box->box.setSelected(false));
+        }
+
+        for(Player player:catanPlayerList) {
+            votes.add(player.getVotes());
+            getPlayerStatusMenu(player).setTitle(player.getName() + " - " + player.getClassTitle());
+        }
+
+        for(Player player:catanPlayerList)
+            if(Collections.max(votes).equals(player.getVotes()))
+                maxVotesPlayer.add(player);
+
+        if(maxVotesPlayer.size()>2){
+            getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(leaderIndex).getName() + " - " + catanPlayerList.get(leaderIndex).getClassTitle()+" - Current Leader");
+            JOptionPane.showMessageDialog(this,((maxVotesPlayer.size()==3)?"Three":"Four")+" players have received the same number of votes, so "+catanPlayerList.get(leaderIndex).getName()+" has been randomly selected to be the leader.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
+            catanPlayerList.get(leaderIndex).setLeader(true);
+        }
+        else{
+            getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(0).getName() + " - " + catanPlayerList.get(0).getClassTitle()+" - Current Leader");
+            JOptionPane.showMessageDialog(this,maxVotesPlayer.get(0).getName()+" has been elected leader for this turn cycle.","Leader Elected",1, new ImageIcon("Resources/Catan_Icon.png"));
+            maxVotesPlayer.get(0).setLeader(true);
+        }
+        catanPlayerList.forEach(player-> player.votes=0);
     }
 }
