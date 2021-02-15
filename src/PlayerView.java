@@ -98,6 +98,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     //Simplification
     boolean isPirateOrSerf;
+    boolean singleRandomize=false;
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
@@ -322,6 +323,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.repaint();
             }
         }
+        if(!singleRandomize)
+            if(reference.randomize) {
+                singleRandomize = true;
+                reference.randomize();
+            }
 
         resetReference(true);
         rollDice.setEnabled(true);
@@ -550,6 +556,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==endTurn){
+            singleRandomize=false;
             int cataclysmOccurrence = 69;
             if(reference.cataclysmsActive){
                 cataclysmOccurrence = new Random().nextInt(20);
@@ -589,7 +596,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             unplayed.setSelectedIndex(0);
             played.setSelectedIndex(0);
             update();
-            
+
             if(reference.razing)
                 reference.razeTiles();
         }
