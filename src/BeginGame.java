@@ -38,10 +38,12 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JMenuBar mb = new JMenuBar();
     JMenu optionMenu = new JMenu("Features");
     JMenu help = new JMenu("Help");
+    JMenu modes = new JMenu("Modes");
     JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
     JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Frame");
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
+    JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
     JMenuItem helpMenu = new JMenuItem("Special Actions");
     JMenuItem classSet = new JMenuItem("Class Rankings");
 
@@ -58,6 +60,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         mb.setBorder(compound);
         mb.setBorderPainted(true);
         mb.add(optionMenu);
+        mb.add(modes);
+        modes.addSeparator();
         mb.add(help);
         help.addSeparator();
         help.add(classSet);
@@ -67,19 +71,23 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         helpMenu.addActionListener(this);
         optionMenu.addSeparator();
         helpMenu.setToolTipText("Click here to learn how to perform certain actions in-game and what the short-cut keys are for performing special operations.");
-        optionMenu.add(previewMenu);
         previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
         previewMenu.addActionListener(this);
+        optionMenu.add(specialClassMenu);
         optionMenu.add(motionMenu);
+        optionMenu.add(previewMenu);
         motionMenu.addActionListener(this);
         motionMenu.setToolTipText("A frame showing what award a player has should they hover over the checkbox in their player status screen will be enabled.");
-        optionMenu.add(specialClassMenu);
         specialClassMenu.addActionListener(this);
+        modes.add(randomizer);
+        randomizer.addActionListener(this);
+        randomizer.setToolTipText("Every turn, tiles will change types. The tiles will then be given a new roll value that may or may not be consistent with probabilities.");
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
         wildfires.addActionListener(this);
         wildfires.setToolTipText("If a tile is on fire (from the arsonist's special action), there is a 5% chance neighboring tiles will also ignite after a turn cycle.");
         optionMenu.addSeparator();
+        modes.addSeparator();
 
         this.add(borderPanel);
         borderPanel.setBorder(compound);
@@ -143,6 +151,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires)
             optionMenu.doClick();
 
+        if(e.getSource()==randomizer)
+            modes.doClick();
+
         else if(e.getSource()==generateChars){
             while(!appropriateNumSelected(playerNumOptions)) {
                 JOptionPane.showMessageDialog(imageFrame, new Object[]{"=======================\n   Number of People Playing\n=======================", playerNumOptions,"======================="}, "Number of Players", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -181,6 +192,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.usablePorts=activePorts.isSelected();
             cbMain.specialActions = specialClassMenu.isSelected();
             cbMain.wildfire = wildfires.isSelected();
+            cbMain.randomize = randomizer.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
