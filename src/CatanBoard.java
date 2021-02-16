@@ -132,6 +132,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     ArrayList<Integer> votes;
     ArrayList<Player> maxVotesPlayer;
     int leaderIndex;
+    boolean singleShowDemocracy=false;
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
@@ -1613,6 +1614,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         if(Arrays.stream(tiles).filter(tile -> tile.getType().equals("Desert")).count()!=before) {
             redrawEverything = true;
             repaint();
+            showBuiltImage("Resources/Preview_Images/Desertification.png","Deserts Formed");
             JOptionPane.showMessageDialog(this, "New deserts have been formed. The resource production of Catan shrinks!", "Desert Formation", 1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
@@ -1621,10 +1623,15 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         leaderIndex= new Random().nextInt(catanPlayerList.size());
         votes = new ArrayList<>();
         maxVotesPlayer = new ArrayList<>();
+        
+        if(!singleShowDemocracy) {
+            showBuiltImage("Resources/Preview_Images/Democracy.jpg", "Electing a New Leader");
+            singleShowDemocracy = true;
+        }
 
         if(catanPlayerList.size()==2){
             getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(leaderIndex).getName() + " - " + catanPlayerList.get(leaderIndex).getClassTitle()+" - Current Leader");
-            JOptionPane.showMessageDialog(this,catanPlayerList.get(leaderIndex).getName()+" has been selected as the leader for this round.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,catanPlayerList.get(leaderIndex).getName()+" the "+catanPlayerList.get(leaderIndex).getClassTitle()+" has been selected as the leader for this round.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
             catanPlayerList.get(leaderIndex).setLeader(true);
             return;
         }
@@ -1659,12 +1666,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
         if(maxVotesPlayer.size()>2){
             getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(leaderIndex).getName() + " - " + catanPlayerList.get(leaderIndex).getClassTitle()+" - Current Leader");
-            JOptionPane.showMessageDialog(this,((maxVotesPlayer.size()==3)?"Three":"Four")+" players have received the same number of votes, so "+catanPlayerList.get(leaderIndex).getName()+" has been randomly selected to be the leader.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,((maxVotesPlayer.size()==3)?"Three":"Four")+" players have received the same number of votes, so "+catanPlayerList.get(leaderIndex).getName()+" the "+catanPlayerList.get(leaderIndex).getName()+" has been randomly selected to be the leader.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
             catanPlayerList.get(leaderIndex).setLeader(true);
         }
         else{
             getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(0).getName() + " - " + catanPlayerList.get(0).getClassTitle()+" - Current Leader");
-            JOptionPane.showMessageDialog(this,maxVotesPlayer.get(0).getName()+" has been elected leader for this turn cycle.","Leader Elected",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,maxVotesPlayer.get(0).getName()+" the "+maxVotesPlayer.get(0).getClassTitle()+" has been elected leader for this turn cycle.","Leader Elected",1, new ImageIcon("Resources/Catan_Icon.png"));
             maxVotesPlayer.get(0).setLeader(true);
         }
         catanPlayerList.forEach(player-> player.votes=0);
