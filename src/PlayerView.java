@@ -334,7 +334,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.randomize();
             }
         if(!singleDemocracy && !reference.doingStartup) {
-            if (reference.turnNameList.get(0).equals(this.player.getName())) {
+            if (reference.turnNameList.get(0).equals(this.player.getName()) && reference.democracy) {
                 singleDemocracy=true;
                 reference.performDemocracyVoting();
             }
