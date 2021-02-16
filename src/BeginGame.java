@@ -14,10 +14,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel borderPanel = new JPanel(new BorderLayout());
     JButton generateChars = new JButton("Create Characters");
     JButton startGame = new JButton("Start Game");
-    CustomSwitch activePorts = new CustomSwitch("Trading w/ Ports");
-    CustomSwitch cataclysms = new CustomSwitch("Cataclysms");
-    CustomSwitch base = new CustomSwitch("Character Uniformity");
-    CustomSwitch razing = new CustomSwitch("Tile Desertification");
+    CustomSwitch activePorts = new CustomSwitch("Trading w/ Ports",false);
+    CustomSwitch cataclysms = new CustomSwitch("Cataclysms",false);
+    CustomSwitch base = new CustomSwitch("Character Uniformity",false);
+    CustomSwitch razing = new CustomSwitch("Tile Desertification",false);
     JPanel options = new JPanel(new GridLayout(1,4));
     JPanel charGenerate = new JPanel(new GridLayout(1,2));
     Point[] generationPoints = new Point[]{new Point(195,165), new Point(195,523), new Point(1290,165), new Point(1290,523)};
@@ -44,8 +44,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
     JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
-    JMenuItem helpMenu = new JMenuItem("Special Actions");
-    JMenuItem classSet = new JMenuItem("Class Rankings");
+    JCheckBoxMenuItem democracyMode = new JCheckBoxMenuItem("Democracy Mode");
+    JMenuItem helpMenu = new JMenuItem("How-To Guide");
 
     //Number of Players Question
     int numPlayers;
@@ -64,9 +64,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         modes.addSeparator();
         mb.add(help);
         help.addSeparator();
-        help.add(classSet);
         help.add(helpMenu);
-        classSet.addActionListener(this);
         help.addSeparator();
         helpMenu.addActionListener(this);
         optionMenu.addSeparator();
@@ -79,9 +77,12 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         motionMenu.addActionListener(this);
         motionMenu.setToolTipText("A frame showing what award a player has should they hover over the checkbox in their player status screen will be enabled.");
         specialClassMenu.addActionListener(this);
+        modes.add(democracyMode);
         modes.add(randomizer);
         randomizer.addActionListener(this);
         randomizer.setToolTipText("Every turn, tiles will change types. The tiles will then be given a new roll value that may or may not be consistent with probabilities.");
+        democracyMode.addActionListener(this);
+        democracyMode.setToolTipText("Every turn cycle, players vote for a ruler. That player can then decide what they roll on the dice when it's their turn.");
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
         wildfires.addActionListener(this);
@@ -151,8 +152,14 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires)
             optionMenu.doClick();
 
-        if(e.getSource()==randomizer)
+        if(e.getSource()==randomizer || e.getSource()==democracyMode)
             modes.doClick();
+
+        if(e.getSource()==democracyMode && randomizer.isSelected())
+            randomizer.setSelected(false);
+
+        if(e.getSource()==randomizer && democracyMode.isSelected())
+            democracyMode.setSelected(false);
 
         else if(e.getSource()==generateChars){
             while(!appropriateNumSelected(playerNumOptions)) {
@@ -193,6 +200,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.specialActions = specialClassMenu.isSelected();
             cbMain.wildfire = wildfires.isSelected();
             cbMain.randomize = randomizer.isSelected();
+            cbMain.democracy = democracyMode.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
@@ -211,18 +219,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                                                                "Exit Game ⇒ Hold ALT+X while the board has focus. You will be given an option about whether you'd like to quit.\n" +
                                                                "====================================================================================================",
                                                           "Help Menu - How-To",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
-        }
-
-        else if(e.getSource()==classSet){
-            JOptionPane.showMessageDialog(imageFrame,
-           "============================================\n"+
-                    "                              Class Difficulty Ranking\n" +
-                    "============================================\n" +
-                    "Easy              ⇒    Emperor  -  Highwayman\n" +
-                    "Normal         ⇒    Arsonist  -  Mountaineer  -  Settler\n" +
-                    "Hard              ⇒    Pirate  -  Serf  -  Shepard  -  Woodsman\n" +
-                    "Advanced    ⇒    Assassin  -  Gambler\n" +
-                    "============================================","Class Ratings - Difficulty Ranking",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
