@@ -1600,6 +1600,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             tile.setNum(new Random().nextInt(11)+2);
             tile.setType(types[new Random().nextInt(19)]);
         });
+        Arrays.stream(tiles).filter(tile -> tile.getNum()==7).forEach(tile -> tile.setNum(tile.getNum()+(new Random().nextInt(5)+1)*(new Random().nextInt(2)==0?-1:1)));
         redrawEverything=true;
         repaint();
     }
@@ -1623,7 +1624,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         leaderIndex= new Random().nextInt(catanPlayerList.size());
         votes = new ArrayList<>();
         maxVotesPlayer = new ArrayList<>();
-        
+
         if(!singleShowDemocracy) {
             showBuiltImage("Resources/Preview_Images/Democracy.jpg", "Electing a New Leader");
             singleShowDemocracy = true;
