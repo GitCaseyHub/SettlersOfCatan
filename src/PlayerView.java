@@ -854,11 +854,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void mouseMoved(MouseEvent e) {
         if (reference.isUsingMotionFrame) {
             if (e.getSource() == largestArmyBox && largestArmyBox.isSelected())
-                JOptionPane.showOptionDialog(null, null, "Largest Army Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), new Object[]{reference.largestArmyLabel}, null);
+                JOptionPane.showMessageDialog(reference, new Object[]{reference.largestArmyLabel}, "Largest Army Award", JOptionPane.PLAIN_MESSAGE);
 
             else if (e.getSource() == longestRoadBox && longestRoadBox.isSelected())
-                JOptionPane.showOptionDialog(null, null, "Longest Road Award", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), new Object[]{reference.longestRoadLabel}, null);
-
+                JOptionPane.showMessageDialog(reference, new Object[]{reference.longestRoadLabel}, "Longest Road Award", JOptionPane.PLAIN_MESSAGE);
         }
     }
 
