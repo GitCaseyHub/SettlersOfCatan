@@ -224,7 +224,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         longestRoadLabel.setIcon(new ImageIcon("Resources/Awards/Longest_Road.png"));
         longestRoadLabel.setBorder(compound);
         largestArmyLabel.setIcon(new ImageIcon("Resources/Awards/Largest_Army.png"));
-        longestRoadLabel.setBorder(compound);
+        largestArmyLabel.setBorder(compound);
     }
 
     public void paint(Graphics g) {
