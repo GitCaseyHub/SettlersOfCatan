@@ -1599,10 +1599,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void randomize(){
         Arrays.stream(tiles).forEach(tile ->{
-            tile.setNum(new Random().nextInt(11)+2);
             tile.setType(types[new Random().nextInt(19)]);
+            tile.setNum((tile.getType().equalsIgnoreCase("Desert"))?7:new Random().nextInt(11)+2);
         });
-        Arrays.stream(tiles).filter(tile -> tile.getNum()==7).forEach(tile -> tile.setNum(tile.getNum()+(new Random().nextInt(5)+1)*(new Random().nextInt(2)==0?-1:1)));
+        Arrays.stream(tiles).filter(tile -> tile.getNum()==7 && !tile.getType().equalsIgnoreCase("Desert")).forEach(tile -> tile.setNum(tile.getNum()+(new Random().nextInt(5)+1)*(new Random().nextInt(2)==0?-1:1)));
         redrawEverything=true;
         repaint();
     }
