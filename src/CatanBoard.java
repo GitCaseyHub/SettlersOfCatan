@@ -215,7 +215,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         buildFrame.add(buildLabel);
         buildLabel.setBorder(compound);
         buildFrame.setSize(433,312);
-        buildFrame.setLocation(309,389);
         buildLabel.addMouseListener(this);
     }
 
@@ -1574,6 +1573,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             buildLabel.setIcon(new ImageIcon(name));
             buildFrame.setTitle(title);
             buildFrame.setVisible(true);
+            buildFrame.setLocation(getPlayerStatusMenu(getCurrentPlayer()).getX()+Math.abs((getPlayerStatusMenu(getCurrentPlayer()).getWidth()-buildFrame.getWidth())/2),getPlayerStatusMenu(getCurrentPlayer()).getY()+Math.abs((getPlayerStatusMenu(getCurrentPlayer()).getHeight()-buildFrame.getWidth())/2));
         }
     }
 
@@ -1638,10 +1638,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         for(int x=0; x<catanPlayerList.size(); x++){
-            for(JCheckBox box: democracyBoxes)
-                if(box.getText().equals(catanPlayerList.get(x).getName()+" the "+catanPlayerList.get(x).getClassTitle()))
-                    box.setEnabled(false);
-
             while(statusViewer[0].findNumSelected(democracyBoxes)) {
                 JOptionPane.showMessageDialog(getPlayerStatusMenu(catanPlayerList.get(x)), new Object[]{"Vote for the next leader:", democracyBoxes}, "Democracy Voting", 1, new ImageIcon("Resources/Catan_Icon.png"));
 
