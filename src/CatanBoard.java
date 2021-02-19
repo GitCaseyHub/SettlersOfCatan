@@ -217,7 +217,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         buildFrame.setSize(433,312);
         buildFrame.setLocation(309,389);
         buildLabel.addMouseListener(this);
-        buildFrame.setAlwaysOnTop(true);
     }
 
     public void initializeAwardOptionPanes(){
