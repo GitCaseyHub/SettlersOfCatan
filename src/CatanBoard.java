@@ -126,6 +126,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     //Frame for appropriate image reveal when building
     JFrame buildFrame = new JFrame();
     JLabel buildLabel = new JLabel();
+    ArrayList<String> alreadyPreviewed = new ArrayList<>();
 
     //Democracy
     JCheckBox[] democracyBoxes;
@@ -1569,7 +1570,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void showBuiltImage(String name, String title){
-        if(previewFrames) {
+        if(previewFrames && !alreadyPreviewed.contains(name)) {
+            alreadyPreviewed.add(name);
             buildLabel.setIcon(new ImageIcon(name));
             buildFrame.setTitle(title);
             buildFrame.setVisible(true);
