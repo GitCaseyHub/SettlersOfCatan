@@ -1515,6 +1515,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 else if(isSettingFire){
                     isSettingFire=false;
                     getPlayerStatusMenu(getCurrentPlayer()).hasSetFire=false;
+                    JOptionPane.showMessageDialog(this,"Your arsonist action has been cancelled. Please continue with your turn.","Cancellation Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    isPlayerActing=false;
+                    getPlayerStatusMenu(getCurrentPlayer()).resetReference(true);
+                    updateAllStatusMenus();
+                    return;
                 }
             }
             isPlayerActing = false;
