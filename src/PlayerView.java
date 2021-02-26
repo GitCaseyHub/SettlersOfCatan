@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 public class PlayerView extends JFrame implements ActionListener, MouseMotionListener {
@@ -192,11 +193,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         borderSouth.add(vpPointHolder,BorderLayout.WEST);
         borderSouth.add(turnBorderPanel, BorderLayout.EAST);
         turnBorderPanel.setBorder(compound);
-            turnBorderPanel.add(turnHolder);
-            turnHolder.add(new JLabel("  "),BorderLayout.WEST);
+        turnBorderPanel.add(turnHolder);
+        turnHolder.add(new JLabel("  "),BorderLayout.WEST);
         turnHolder.add(turnBox,BorderLayout.CENTER);
         turnHolder.add(new JLabel("  "),BorderLayout.EAST);
-            turnHolder.setBorder(new TitledBorder("Turn"));
+        turnHolder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Turn"));
         vpPointHolder.setBorder(compound);
         vpPointHolder.add(victoryPointLabel);
         borderSouth.add(borderInfoPanel,BorderLayout.CENTER);
@@ -204,12 +205,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         turnBox.setToolTipText("This box is checked if it's your turn");
         borderInfoPanel.setBorder(compound);
         borderInfoPanel.add(awardPanel);
-        victoryPointLabel.setBorder(new TitledBorder("VPs"));
+        victoryPointLabel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"VPs"));
         borderNorth.setBackground(Color.white);
         colorDisplayLabel.setBorder(compound);
         infoPanel.add(devPanel);
         infoPanel.setBorder(compound);
-        devPanel.setBorder(new TitledBorder("Development Cards"));
+        devPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Development Cards"));
         devPanel.add(unplayed);
         unplayed.setBorder(compound);
         devPanel.add(played);
@@ -221,7 +222,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         if(player.getClassTitle().equals("Assassin"))
             options.remove(exchange);
 
-        awardPanel.setBorder(new TitledBorder("Awards"));
+        awardPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Awards"));
         awardPanel.add(longestRoadBox);
         longestRoadBox.setBorderPainted(true);
         longestRoadBox.setEnabled(false);
@@ -827,8 +828,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public ArrayList<String> getCardNames(){
         ArrayList<String> names = new ArrayList<>();
-        for(DevelopmentCard card: player.playedCards)
-            names.add(card.getType());
+        player.playedCards.forEach(card -> names.add(card.getType()));
 
         return names;
     }
