@@ -550,8 +550,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 //Draws Aura for Cultivator
                 for(Tile tile: tiles){
                     if(tile.isCultivated()) {
-                        BufferedImage aura = ImageIO.read(new File("Tiles/Aura.png"));
-                        g.drawImage(aura, tile.getPosition()[0]-5, tile.getPosition()[1], null);
+                        BufferedImage aura = ImageIO.read(new File("Tiles/Sun_Aura.png"));
+                        g.drawImage(aura, tile.getPosition()[0]+23, tile.getPosition()[1]+7, null);
                     }
                 }
 
