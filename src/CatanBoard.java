@@ -53,6 +53,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean redrawEverything = false;
     boolean isPlayerActing = false;
     boolean isSettingFire=false;
+    boolean isCultivating=false;
+    boolean failureCultivate=false;
     boolean failureFire=false;
     boolean wildfire=false;
     int count = 0;
@@ -135,6 +137,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     int leaderIndex;
     boolean singleShowDemocracy=false;
 
+    //Cultivator
+    String cultivateResource;
+
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
@@ -176,7 +181,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         for (int x = 0; x < types.length; x++) {
             int typeIndex = new Random().nextInt(typeList.size());
             int coordIndex = new Random().nextInt(coordList.size());
-            tiles[x] = new Tile(coordList.get(coordIndex), typeList.get(typeIndex), 0, false,false, new Player());
+            tiles[x] = new Tile(coordList.get(coordIndex), typeList.get(typeIndex), 0, false,false, new Player(),false,new Player());
             typeList.remove(typeIndex);
             coordList.remove(coordIndex);
 
@@ -542,6 +547,14 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     g.drawImage(road, (int) indexConnection.getPosition().getX(), (int) indexConnection.getPosition().getY(), null);
                 }
 
+                //Draws Aura for Cultivator
+                for(Tile tile: tiles){
+                    if(tile.isCultivated()) {
+                        BufferedImage aura = ImageIO.read(new File("Tiles/Aura.png"));
+                        g.drawImage(aura, tile.getPosition()[0]-5, tile.getPosition()[1], null);
+                    }
+                }
+
                 redrawEverything = false;
                 this.setVisible(true);
             }
@@ -840,6 +853,75 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (checkCounter == 0)
                 JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to set fire to.", "Incorrect Arson Positioning",3, new ImageIcon("Resources/Catan_Icon.png"));
         }
+        if(isCultivating){
+            checkCounter = 0;
+            cultivateResource="";
+            for (Tile tile : tiles)
+                if (tile.getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
+                    if (!tile.isOnFire()) {
+                        if (tile.getType().equals("Mountain")) {
+                            failureCultivate = getCurrentPlayer().getOreNum() == 0;
+                            cultivateResource = "Ore";
+                        }
+
+                        if (tile.getType().equals("Grain")) {
+                            failureCultivate = getCurrentPlayer().getGrainNum() == 0;
+                            cultivateResource = "Wheat";
+                        }
+
+                        if (tile.getType().equals("Brick")) {
+                            failureCultivate = getCurrentPlayer().getBrickNum() == 0;
+                            cultivateResource = "Brick";
+                        }
+
+                        if (tile.getType().equals("Forest")) {
+                            failureCultivate = getCurrentPlayer().getLumberNum() == 0;
+                            cultivateResource = "Lumber";
+                        }
+
+                        if (tile.getType().equals("Plains")) {
+                            failureCultivate = getCurrentPlayer().getWoolNum() == 0;
+                            cultivateResource = "Sheep";
+                        }
+
+                        if (cultivateResource.equals("")) {
+                            JOptionPane.showMessageDialog(this, "You cannot cultivate a desert. Good luck on that.", "Desert Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
+
+                        if (failureCultivate) {
+                            performStaleReferenceReset(true);
+                            JOptionPane.showMessageDialog(this, "You do not have the necessary resource to cultivate this tile. Choose a different tile.", "Cultivation Failure", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
+
+                        getCurrentPlayer().monoOre(cultivateResource.equals("Ore") ? -1 : 0);
+                        getCurrentPlayer().monoBrick(cultivateResource.equals("Brick") ? -1 : 0);
+                        getCurrentPlayer().monoWheat(cultivateResource.equals("Wheat") ? -1 : 0);
+                        getCurrentPlayer().monoWool(cultivateResource.equals("Sheep") ? -1 : 0);
+                        getCurrentPlayer().monoLumber(cultivateResource.equals("Lumber") ? -1 : 0);
+
+                        tile.setCultivated(true);
+                        tile.setCultivatingPlayer(getCurrentPlayer());
+                        redrawEverything = true;
+                        checkCounter++;
+                        performStaleReferenceReset(true);
+                        isCultivating = false;
+                        repaint();
+                        JOptionPane.showMessageDialog(this,"You've successfully cultivated. The tile now produces double the resources until your next turn.","New Tile Cultivated",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        break;
+                    }
+
+                    else {
+                        JOptionPane.showMessageDialog(this, "That tile has already been cultivated. Select another tile.","Tile Already Cultivated",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
+                }
+
+            if (checkCounter == 0)
+                JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to cultivate.", "Incorrect Arson Positioning",3, new ImageIcon("Resources/Catan_Icon.png"));
+
+        }
     }
 
     public void mouseReleased(MouseEvent e){}
@@ -1013,6 +1095,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             pv.options.setEnabled(false);
             pv.build.setEnabled(false);
             pv.development.setEnabled(false);
+            pv.arsonist.setEnabled(false);
+            pv.hwm.setEnabled(false);
+            pv.assassin.setEnabled(false);
+            pv.cultivator.setEnabled(false);
         });
 
         for (String s : turnNameList)
@@ -1107,19 +1193,19 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                 if (index.getOwner() == player && !getPlayerStatusMenu(player).hasStolen && !tile.isOnFire())
                                     switch (tile.getType()) {
                                         case "Grain":
-                                            player.changeGrain((index.isSettlement() ? 1 : 2));
+                                            player.changeGrain((tile.isCultivated()?2:1)*(index.isCity()?2:1));
                                             break;
                                         case "Brick":
-                                            player.changeBrick((index.isSettlement() ? 1 : 2));
+                                            player.changeBrick((tile.isCultivated()?2:1)*(index.isCity()?2:1));
                                             break;
                                         case "Forest":
-                                            player.changeLumber((index.isSettlement() ? 1 : 2));
+                                            player.changeLumber((tile.isCultivated()?2:1)*(index.isCity()?2:1));
                                             break;
                                         case "Plains":
-                                            player.changeWool((index.isSettlement() ? 1 : 2));
+                                            player.changeWool((tile.isCultivated()?2:1)*(index.isCity()?2:1));
                                             break;
                                         case "Mountain":
-                                            player.changeOre((index.isSettlement() ? 1 : 2));
+                                            player.changeOre((tile.isCultivated()?2:1)*(index.isCity()?2:1));
                                             break;
                                     }
 
@@ -1594,7 +1680,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void performStaleReferenceReset(boolean state){
         PlayerView menuRef = getPlayerStatusMenu(getCurrentPlayer());
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist, menuRef.cultivator}).forEach(menu -> menu.setEnabled(state));
     }
 
     @Override
