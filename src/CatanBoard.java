@@ -1632,6 +1632,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         votes = new ArrayList<>();
         maxVotesPlayer = new ArrayList<>();
 
+        catanPlayerList.forEach(player -> {
+            player.setLeader(false);
+            getPlayerStatusMenu(player).setTitle(player.getName()+" - "+player.getClassTitle());
+        });
+
         if(!singleShowDemocracy) {
             showBuiltImage("Resources/Preview_Images/Democracy.jpg", "Electing a New Leader");
             singleShowDemocracy = true;
@@ -1659,10 +1664,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             Arrays.stream(democracyBoxes).forEach(box->box.setSelected(false));
         }
 
-        for(Player player:catanPlayerList) {
+        for(Player player:catanPlayerList)
             votes.add(player.getVotes());
-            getPlayerStatusMenu(player).setTitle(player.getName() + " - " + player.getClassTitle());
-        }
 
         for(Player player:catanPlayerList)
             if(Collections.max(votes).equals(player.getVotes()))
@@ -1670,7 +1673,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
         if(maxVotesPlayer.size()>2){
             getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(leaderIndex).getName() + " - " + catanPlayerList.get(leaderIndex).getClassTitle()+" - Current Leader");
-            JOptionPane.showMessageDialog(this,((maxVotesPlayer.size()==3)?"Three":"Four")+" players have received the same number of votes, so "+catanPlayerList.get(leaderIndex).getName()+" the "+catanPlayerList.get(leaderIndex).getName()+" has been randomly selected to be the leader.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,((maxVotesPlayer.size()==2)?"Two":(maxVotesPlayer.size()==3)?"Three":"Four")+" players have received the same number of votes, so "+catanPlayerList.get(leaderIndex).getName()+" the "+catanPlayerList.get(leaderIndex).getClassTitle()+" has been randomly selected to be the leader.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
             catanPlayerList.get(leaderIndex).setLeader(true);
         }
         else{
