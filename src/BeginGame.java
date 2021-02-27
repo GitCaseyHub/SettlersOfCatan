@@ -86,7 +86,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
         wildfires.addActionListener(this);
-        wildfires.setToolTipText("If a tile is on fire (from the arsonist's special action), there is a 5% chance neighboring tiles will also ignite after a turn cycle.");
+        wildfires.setToolTipText("If a tile is on fire (from the arsonist's special action), there is a 5% chance neighboring tiles will ignite after a turn cycle.");
         optionMenu.addSeparator();
         modes.addSeparator();
 
