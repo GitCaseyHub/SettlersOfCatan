@@ -93,6 +93,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     ArrayList<Tile> before, after;
     boolean spread=false,putOut=false;
 
+    //Cultivator menu
+    JMenu cultivator = new JMenu("Cultivator");
+    JMenuItem cultivate = new JMenuItem("Cultivate");
+    boolean hasCultivated = false;
+
     //Special Classes
     JCheckBox[] playerNames;
     Player chosenPlayer;
@@ -104,7 +109,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     boolean singleRandomize=false;
     boolean singleDemocracy=false;
     int diceRoll=0;
-    Object breakCheck;
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
@@ -118,6 +122,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         hwm.addSeparator();
         assassin.addSeparator();
         arsonist.addSeparator();
+        cultivator.addSeparator();
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -175,6 +180,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 setFire.addActionListener(this);
                 setFire.setEnabled(false);
                 arsonist.setEnabled(false);
+            }
+            if(player.getClassTitle().equals("Cultivator")){
+                mb.add(cultivator);
+                cultivator.add(cultivate);
+                cultivate.addActionListener(this);
+                cultivator.setEnabled(false);
+                cultivate.setEnabled(false);
             }
         }
 
@@ -265,6 +277,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         hwm.addSeparator();
         assassin.addSeparator();
         arsonist.addSeparator();
+        cultivator.addSeparator();
         initializeCostFrame();
     }
 
@@ -329,6 +342,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.repaint();
             }
         }
+        if(Arrays.stream(reference.tiles).anyMatch(tile -> tile.isCultivated() && tile.getCultivatingPlayer().equals(player))){
+            Arrays.stream(reference.tiles).filter(tile -> tile.isCultivated() && tile.getCultivatingPlayer().equals(player)).forEach(tile -> {
+                tile.setCultivatingPlayer(new Player());
+                tile.setCultivated(false);
+            });
+            reference.redrawEverything = true;
+            reference.repaint();
+        }
+
         if(!singleRandomize)
             if(reference.randomize && !reference.doingStartup) {
                 singleRandomize = true;
@@ -343,8 +365,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         resetReference(true);
         rollDice.setEnabled(true);
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,setFire}).forEach(item -> item.setEnabled(false));
-        Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire}).forEach(bool -> bool=false);
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,setFire,cultivate}).forEach(item -> item.setEnabled(false));
+        Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire,hasCultivated}).forEach(bool -> bool=false);
     }
 
     public void afterRoll() {
@@ -353,6 +375,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             steal.setEnabled(true);
             assassinate.setEnabled(true);
             setFire.setEnabled(true);
+            cultivate.setEnabled(true);
             loadedSpecialClasses=true;
         }
         rollDice.setEnabled(false);
@@ -781,6 +804,22 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 setFire.setEnabled(false);
             }
         }
+        else if(e.getSource()==cultivate){
+            if(numNonNullCategories()==0){
+                JOptionPane.showMessageDialog(this,"You have no resources. You cannot use the 'cultivator' special ability.","No Resources",1,new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            int confirmCultivation = JOptionPane.showConfirmDialog(this,"Would you like to double production on a tile?","Cultivator Special Ability", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"));
+            if(confirmCultivation==JOptionPane.YES_OPTION){
+                resetReference(false);
+                reference.showBuiltImage("Resources/Preview_Images/Cultivate.png","Cultivator Special Action");
+                JOptionPane.showMessageDialog(this,"Select the tile you'd like to cultivate.","Cultivator Special Ability", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                reference.isCultivating=true;
+                reference.isPlayerActing=true;
+                hasCultivated=true;
+                cultivate.setEnabled(false);
+            }
+        }
 
         else if(e.getSource()==remainingResources)
             JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -863,6 +902,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void resetReference(boolean state){
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator}).forEach(menu -> menu.setEnabled(state));
     }
 }
