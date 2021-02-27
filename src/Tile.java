@@ -5,20 +5,22 @@ public class Tile {
     int[] position;
     String type;
     int num;
-    boolean hasRobber,onFire;
+    boolean hasRobber,onFire,isCultivated;
     Point upper_left;
     Point center;
-    Player firePlayer;
+    Player firePlayer,cultivatingPlayer;
     Shape robberRect;
     ArrayList<Point> vertices = new ArrayList<>();
 
-    public Tile(int[] position, String type, int num, boolean hasRobber,boolean onFire, Player firePlayer){
+    public Tile(int[] position, String type, int num, boolean hasRobber, boolean onFire, Player firePlayer, boolean isCultivated, Player cultivatingPlayer){
         this.position=position;
         this.type=type;
         this.num=num;
         this.hasRobber=hasRobber;
         this.onFire=onFire;
         this.firePlayer=firePlayer;
+        this.isCultivated=isCultivated;
+        this.cultivatingPlayer=cultivatingPlayer;
         upper_left = new Point(position[0],position[1]);
         int x=(int)upper_left.getX();
         int y =(int)upper_left.getY();
@@ -30,6 +32,22 @@ public class Tile {
         vertices.add(new Point(x+134,y+116));
         robberRect = new Rectangle(position[0]+5,position[1]+54,124,67);
         center = new Point(x+72, y+78);
+    }
+
+    public Player getCultivatingPlayer() {
+        return cultivatingPlayer;
+    }
+
+    public void setCultivatingPlayer(Player cultivatingPlayer) {
+        this.cultivatingPlayer = cultivatingPlayer;
+    }
+
+    public boolean isCultivated() {
+        return isCultivated;
+    }
+
+    public void setCultivated(boolean cultivated) {
+        isCultivated = cultivated;
     }
 
     public Point getCenter(){
