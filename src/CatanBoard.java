@@ -244,10 +244,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     if(tile.getNum()!=7) {
                         BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
                         g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
-                        
+
                         //Aura Testing
                         //BufferedImage aura = ImageIO.read(new File("Tiles/Sun_Aura.png"));
-                        //g.drawImage(aura, tile.getPosition()[0]+26, tile.getPosition()[1]+11, null);
+                        //g.drawImage(aura, tile.getPosition()[0]+29, tile.getPosition()[1]+12, null);
                     }
                 }
 
@@ -271,7 +271,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for (Tile tile : tiles)
                     if (tile.isHasRobber()) {
                         BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
-                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 80, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 88, null);
                     }
 
                 //Draws Ports
@@ -292,7 +292,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 repaint();
                 for (Tile tile : tiles)
                     if (tile.isHasRobber()) {
-                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 80, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 88, null);
                         isDoneMovingRobber = false;
                         break;
                     }
@@ -517,7 +517,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for (Tile tile : tiles)
                     if (tile.isHasRobber()) {
                         BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
-                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 80, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 88, null);
                     }
 
                 //Redraws Ports
@@ -555,7 +555,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for(Tile tile: tiles){
                     if(tile.isCultivated()) {
                         BufferedImage aura = ImageIO.read(new File("Tiles/Sun_Aura.png"));
-                        g.drawImage(aura, tile.getPosition()[0]+26, tile.getPosition()[1]+11, null);
+                        g.drawImage(aura, tile.getPosition()[0]+29, tile.getPosition()[1]+12, null);
                     }
                 }
 
