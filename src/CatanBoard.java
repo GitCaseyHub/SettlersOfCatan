@@ -244,6 +244,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     if(tile.getNum()!=7) {
                         BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
                         g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
+                        
+                        //Aura Testing
+                        //BufferedImage aura = ImageIO.read(new File("Tiles/Sun_Aura.png"));
+                        //g.drawImage(aura, tile.getPosition()[0]+26, tile.getPosition()[1]+11, null);
                     }
                 }
 
@@ -551,7 +555,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for(Tile tile: tiles){
                     if(tile.isCultivated()) {
                         BufferedImage aura = ImageIO.read(new File("Tiles/Sun_Aura.png"));
-                        g.drawImage(aura, tile.getPosition()[0]+23, tile.getPosition()[1]+7, null);
+                        g.drawImage(aura, tile.getPosition()[0]+26, tile.getPosition()[1]+11, null);
                     }
                 }
 
