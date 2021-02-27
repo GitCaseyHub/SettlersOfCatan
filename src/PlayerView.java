@@ -349,6 +349,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             });
             reference.redrawEverything = true;
             reference.repaint();
+            JOptionPane.showMessageDialog(this,"The cultivated tile has returned to normal.","Normal Cultivation",1,new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         if(!singleRandomize)
@@ -812,7 +813,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             int confirmCultivation = JOptionPane.showConfirmDialog(this,"Would you like to double production on a tile?","Cultivator Special Ability", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"));
             if(confirmCultivation==JOptionPane.YES_OPTION){
                 resetReference(false);
-                reference.showBuiltImage("Resources/Preview_Images/Cultivate.jpg","Cultivator Special Action");
+                reference.showBuiltImage("Resources/Preview_Images/Cultivate.png","Cultivator Special Action");
                 JOptionPane.showMessageDialog(this,"Select the tile you'd like to cultivate.","Cultivator Special Ability", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 reference.isCultivating=true;
                 reference.isPlayerActing=true;
