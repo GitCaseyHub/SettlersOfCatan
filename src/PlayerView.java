@@ -532,10 +532,17 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==buyCard){
-            DevelopmentCard newDc = new DevelopmentCard(devCardTypes[new Random().nextInt(25)],player,getOtherPlayers(),reference,true);
+            if(reference.devCardDeck.size()==0){
+                JOptionPane.showMessageDialog(this,"There are no development cards left.","Development Card Deck Empty",1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+
             int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(devInput==0){
                 if((player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getOreNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
+                    DevelopmentCard newDc = reference.drawDevelopmentCard();
+                    newDc.setPlayer(this.player);
+                    newDc.setOtherPlayers(getOtherPlayers());
                     JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     player.addDevelopmentCardToUnplayed(newDc);
                     unplayed.addItem(newDc.getType());
