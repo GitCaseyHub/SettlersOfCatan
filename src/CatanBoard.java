@@ -140,6 +140,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     //Cultivator
     String cultivateResource;
 
+    //DevelopmentCard Deck
+    ArrayList<DevelopmentCard> devCardDeck = new ArrayList<>();
+    String[] devCards = new String[]{"Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Victory Points","Victory Points","Victory Points","Victory Points","Victory Points","Road Building","Road Building","Monopoly","Monopoly","Year of Plenty","Year of Plenty"};
+
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
@@ -209,6 +213,20 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         initializeAwardOptionPanes();
         constructBuildingPreviewFrame();
         createDemocracyComponents();
+        initializeDevelopmentDeck();
+    }
+
+    public void initializeDevelopmentDeck(){
+        for(String str: devCards)
+            devCardDeck.add(new DevelopmentCard(str,new Player(),new ArrayList<Player>(),this,false));
+    }
+
+    public DevelopmentCard drawDevelopmentCard(){
+        int index = new Random().nextInt(devCardDeck.size());
+        DevelopmentCard cardAtIndex = devCardDeck.get(index);
+        devCardDeck.remove(index);
+        devCardDeck.trimToSize();
+        return cardAtIndex;
     }
 
     public void createDemocracyComponents(){
