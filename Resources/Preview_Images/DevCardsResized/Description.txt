@@ -1,0 +1,1 @@
+A folder for images to be used when dev card transparency is active.
