@@ -142,8 +142,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     String cultivateResource;
 
     //DevelopmentCard Deck
+    ArrayList<String> managedCards = new ArrayList<>();
     ArrayList<DevelopmentCard> devCardDeck = new ArrayList<>();
     String[] devCards = new String[]{"Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Victory Points","Victory Points","Victory Points","Victory Points","Victory Points","Road Building","Road Building","Monopoly","Monopoly","Year of Plenty","Year of Plenty"};
+    HashMap<String,Integer> properNum = new HashMap<>();
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
@@ -215,6 +217,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         constructBuildingPreviewFrame();
         createDemocracyComponents();
         initializeDevelopmentDeck();
+        initializeDevCardNonTransparencyHashMap();
     }
 
     public void initializeDevelopmentDeck(){
@@ -241,6 +244,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         buildLabel.setBorder(compound);
         buildFrame.setSize(433,312);
         buildLabel.addMouseListener(this);
+    }
+
+    public void initializeDevCardNonTransparencyHashMap(){
+        for(int x=0; x<5; x++)
+            properNum.put(new String[]{"Knight","Year of Plenty","Road Building","Monopoly","Victory Points"}[x],new Integer[]{14,2,2,2,5}[x]);
     }
 
     public void initializeAwardOptionPanes(){
@@ -1064,7 +1072,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public long numDevCardsOfATypeLeft(String devName){
-        return devCardDeck.stream().filter(card ->card.getType().equals(devName)).count();
+        return (devCardTransparency)?(devCardDeck.stream().filter(card ->card.getType().equals(devName)).count()):((long)properNum.get(devName) - managedCards.stream().filter(card -> card.equals(devName)).count());
     }
 
     //Building condition for settlements (another of them)
@@ -1613,6 +1621,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     getCurrentPlayer().removeDevelopmentCardFromPlayed(new DevelopmentCard("Knight", getCurrentPlayer(), getOtherPlayers(), this, false));
                     getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem("Knight");
                     getPlayerStatusMenu(getCurrentPlayer()).played.removeItem("Knight");
+                    managedCards.remove("Knight");
                 } else if (isRoadBuilding) {
                     isRoadBuilding = false;
                     isDoneRoadBuilding = false;
