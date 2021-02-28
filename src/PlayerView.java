@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-public class PlayerView extends JFrame implements ActionListener, MouseMotionListener {
+public class PlayerView extends JFrame implements ActionListener, MouseMotionListener, MouseListener {
     //Fancy Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
@@ -61,6 +61,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenuItem buildingCard = new JMenuItem("Building Helper Card");
     JMenuItem rollDice = new JMenuItem("Roll Dice");
     JMenuItem remainingResources = new JMenuItem("Remaining Materials");
+    JMenuItem devCardsRemaining = new JMenuItem("Remaining Development Cards");
     JMenuItem endTurn = new JMenuItem("End Turn");
 
     //Development Card Prep
@@ -109,6 +110,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     boolean singleDemocracy=false;
     int diceRoll=0;
 
+    //DevCard Frame
+    JFrame devFrame = new JFrame();
+    JPanel devImagePanel =new JPanel(new GridLayout(1,5));
+    JLabel[] devImages = new JLabel[5];
+    String[] devPaths = new String[]{"Knight","Monopoly","Road_Building","Year_Of_Plenty","University"};
+    HashMap<Integer,String> alphaNumeric = new HashMap<>();
+    String[] strNums = {"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"};
+    int[] actNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
         this.player = player;
@@ -147,6 +157,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         options.add(buildingCard);
         buildingCard.addActionListener(this);
         options.add(remainingResources);
+        
+        if(reference.devCardTransparency) {
+            options.add(devCardsRemaining);
+            devCardsRemaining.addActionListener(this);
+        }
         options.add(endTurn);
         endTurn.addActionListener(this);
         options.setEnabled(false);
@@ -278,6 +293,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         arsonist.addSeparator();
         cultivator.addSeparator();
         initializeCostFrame();
+        initializeDevCardFrame();
     }
 
     public void update(){
@@ -304,6 +320,25 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 afterRoll();
             else
                 startTurn();
+    }
+
+    public void initializeDevCardFrame(){
+        devFrame.add(devImagePanel);
+        devFrame.setBounds(100,100,820,270);
+        devFrame.setTitle("Development Cards Remaining");
+
+        for(int x=0; x<5; x++){
+            devImages[x]= new JLabel("", SwingConstants.CENTER);
+            devImages[x].setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+            devImages[x].setIcon(new ImageIcon("Resources/Preview_Images/DevCardsResized/"+devPaths[x]+".png"));
+            devImages[x].addMouseListener(this);
+            devImagePanel.add(devImages[x]);
+        }
+
+        for(int x=0; x<actNums.length; x++)
+            alphaNumeric.put(actNums[x],strNums[x].toLowerCase());
+
+        devFrame.revalidate();
     }
 
     public void startTurn() {
@@ -365,12 +400,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         resetReference(true);
         rollDice.setEnabled(true);
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,setFire,cultivate}).forEach(item -> item.setEnabled(false));
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,devCardsRemaining,setFire,cultivate}).forEach(item -> item.setEnabled(false));
         Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire,hasCultivated}).forEach(bool -> bool=false);
     }
 
     public void afterRoll() {
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,remainingResources}).forEach(item -> item.setEnabled(true));
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,remainingResources,devCardsRemaining}).forEach(item -> item.setEnabled(true));
         if(!loadedSpecialClasses){
             steal.setEnabled(true);
             assassinate.setEnabled(true);
@@ -829,6 +864,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
         }
 
+        else if(e.getSource() == devCardsRemaining)
+            devFrame.setVisible(!devFrame.isVisible());
+
         else if(e.getSource()==remainingResources)
             JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
 
@@ -912,4 +950,23 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
         Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator}).forEach(menu -> menu.setEnabled(state));
     }
+
+    public void mousePressed(MouseEvent e) {
+        if(e.getSource()==devImages[0])
+            JOptionPane.showMessageDialog(devFrame,"There are "+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Knight")))+" 'Knight' cards remaining.","Knight Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+        if(e.getSource()==devImages[1])
+            JOptionPane.showMessageDialog(devFrame,"There are "+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Monopoly")))+" 'Monopoly' cards remaining.","Monopoly Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+        if(e.getSource()==devImages[2])
+            JOptionPane.showMessageDialog(devFrame,"There are "+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Road Building")))+" 'Road Building' cards remaining.","Road Building Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+        if(e.getSource()==devImages[3])
+            JOptionPane.showMessageDialog(devFrame,"There are "+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Year of Plenty")))+" 'Year of Plenty' cards remaining.","Year of Plenty Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+        if(e.getSource()==devImages[4])
+            JOptionPane.showMessageDialog(devFrame,"There are "+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Victory Points")))+" 'Victory Point' cards remaining.","Victory Point Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e){}
+    public void mouseReleased(MouseEvent e){}
+    public void mouseEntered(MouseEvent e){}
+    public void mouseExited(MouseEvent e){}
 }
