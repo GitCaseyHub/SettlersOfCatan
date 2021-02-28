@@ -543,7 +543,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     DevelopmentCard newDc = reference.drawDevelopmentCard();
                     newDc.setPlayer(this.player);
                     newDc.setOtherPlayers(getOtherPlayers());
-                    JOptionPane.showMessageDialog(this,"You have purchased a development card.","Development Card", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this,"You have purchased a development card."+((reference.devCardDeck.size()>0)?" There are "+reference.devCardDeck.size()+" cards remaining.":" There are now no more development cards."),"Development Card", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     player.addDevelopmentCardToUnplayed(newDc);
                     unplayed.addItem(newDc.getType());
 
