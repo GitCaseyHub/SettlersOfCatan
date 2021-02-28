@@ -49,6 +49,14 @@ public class DevelopmentCard implements ActionListener, MouseListener {
         return type;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setOtherPlayers(ArrayList<Player> otherPlayers) {
+        this.otherPlayers = otherPlayers;
+    }
+
     public DevelopmentCard(String type, Player player, ArrayList<Player> otherPlayers, CatanBoard cbReference, boolean boughtThisTurn) {
         //Types of Cards: Knight, Victory Points, Road Builder, Year of Plenty, Monopoly
         this.type = type;
