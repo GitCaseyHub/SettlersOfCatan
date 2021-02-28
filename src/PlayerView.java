@@ -745,6 +745,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         }
                     JOptionPane.showMessageDialog(this,((didSteal)?"You've successfully stolen "+chosenResource.toLowerCase()+" from "+chosenPlayer.getName()+".":chosenPlayer.getName()+" did not have any "+chosenResource.toLowerCase()+" to steal. You gain nothing."),((didSteal)?"Successfully Stole":"Unsuccessful Attempt"),1,new ImageIcon("Resources/Catan_Icon.png"));
                     hasStolen=true;
+                    steal.setEnabled(false);
                 }
                 catch(NullPointerException f){
                     JOptionPane.showMessageDialog(this,"You have exited out of the stealing screen. Your highwayman action has been cancelled.","Improper Action",1, new ImageIcon("Resources/Catan_Icon.png"));
