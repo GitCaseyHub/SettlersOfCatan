@@ -57,6 +57,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean failureCultivate=false;
     boolean failureFire=false;
     boolean wildfire=false;
+    boolean devCardTransparency=false;
     int count = 0;
 
     //Awards
@@ -1060,6 +1061,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 return false;
 
         return true;
+    }
+
+    public long numDevCardsOfATypeLeft(String devName){
+        return devCardDeck.stream().filter(card ->card.getType().equals(devName)).count();
     }
 
     //Building condition for settlements (another of them)
