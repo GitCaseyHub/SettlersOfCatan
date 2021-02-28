@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 
 public class PlayerView extends JFrame implements ActionListener, MouseMotionListener {
     //Fancy Border
