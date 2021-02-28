@@ -43,6 +43,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Frame");
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
+    JCheckBoxMenuItem devCardTransparency = new JCheckBoxMenuItem("Enable Development Card Transparency");
     JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
     JCheckBoxMenuItem democracyMode = new JCheckBoxMenuItem("Democracy Mode");
     JMenuItem helpMenu = new JMenuItem("How-To Guide");
@@ -69,13 +70,16 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         helpMenu.addActionListener(this);
         optionMenu.addSeparator();
         helpMenu.setToolTipText("Click here to learn how to perform certain actions in-game and what the short-cut keys are for performing special operations.");
-        previewMenu.setToolTipText("A frame depicting what your current action is (i.e. an image of road construction appears when you build a road) will be enabled.");
+        previewMenu.setToolTipText("Click to enable frame depicting what your current action is (i.e. an image of road construction appears when you build a road).");
         previewMenu.addActionListener(this);
         optionMenu.add(specialClassMenu);
+        optionMenu.add(devCardTransparency);
+        devCardTransparency.setToolTipText("Click to enable a menu item that allows players to know the number of development cards of each type that are available.");
         optionMenu.add(motionMenu);
+        devCardTransparency.addActionListener(this);
         optionMenu.add(previewMenu);
         motionMenu.addActionListener(this);
-        motionMenu.setToolTipText("A frame showing what award a player has should they hover over the checkbox in their player status screen will be enabled.");
+        motionMenu.setToolTipText("Click to enable a frame showing what award a player has should they hover over the checkbox in their player status screen.");
         specialClassMenu.addActionListener(this);
         modes.add(democracyMode);
         modes.add(randomizer);
@@ -149,7 +153,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                 return;
             }
 
-        if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires)
+        if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires || e.getSource()==devCardTransparency)
             optionMenu.doClick();
 
         if(e.getSource()==randomizer || e.getSource()==democracyMode)
@@ -201,6 +205,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.wildfire = wildfires.isSelected();
             cbMain.randomize = randomizer.isSelected();
             cbMain.democracy = democracyMode.isSelected();
+            cbMain.devCardTransparency = devCardTransparency.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
