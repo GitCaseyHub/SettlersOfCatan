@@ -74,7 +74,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         previewMenu.addActionListener(this);
         optionMenu.add(specialClassMenu);
         optionMenu.add(devCardTransparency);
-        devCardTransparency.setToolTipText("Click to enable a menu item that allows players to know the number of development cards of each type that are available.");
+        devCardTransparency.setToolTipText("Click to allow players to know the exact number of development cards of a type that are available, hidden or not. Otherwise, you will be given an estimation of how many remain.");
         optionMenu.add(motionMenu);
         devCardTransparency.addActionListener(this);
         optionMenu.add(previewMenu);
