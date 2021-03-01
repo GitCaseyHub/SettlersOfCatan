@@ -84,35 +84,27 @@ public class TradingFrame extends JFrame implements ActionListener {
     
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==askButton){
-            self=false;
-            askButton.setEnabled(false);
-            String playerName = (String)JOptionPane.showInputDialog(this,"Which player would you like to trade with?","Trading Player",1,new ImageIcon("Resources/Catan_Icon.png"),null,null);
-            int playerCounter=0;
-            for(int x=0; x<cbRef.catanPlayerList.size(); x++) {
-                if (cbRef.catanPlayerList.get(x).getName().equals(playerName) && !playerName.equals(player.getName()))
-                    playerCounter++;
-
-                if (cbRef.catanPlayerList.get(x).getName().equals(player.getName())){
-                    self = true;
-                    JOptionPane.showMessageDialog(this, "You chose yourself to trade with. That is an invalid selection. Select one of the other non-assassin players.", "You Cannot Trade With Yourself", 1, new ImageIcon("Resources/Catan_Icon.png"));
+            try {
+                String playerName = (String) JOptionPane.showInputDialog(this, "Which player would you like to trade with?", "Trading Player", 1, new ImageIcon("Resources/Catan_Icon.png"), null, null);
+                if(!cbRef.playerExists(playerName)){
+                    JOptionPane.showMessageDialog(this,"There is no player with that name. Make sure you are typing their name in correctly.","Invalid Name",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    return;
                 }
-            }
+                
+                if (cbRef.playerExists(playerName) && !playerName.equals(player.getName())) {
+                    if (cbRef.getPlayerViaName(playerName).getClassTitle().equals("Assassin")) {
+                        JOptionPane.showMessageDialog(this, "You cannot trade with assassins.", "Improper Trade Request", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
 
-            if(playerCounter==0 && !self){
-                askButton.setEnabled(true);
-                JOptionPane.showMessageDialog(this,(playerName.isBlank())?"You didn't enter in a name. Please type in a player's name if you'd like to proceed with trading.":"There is no player with "+playerName+" as a name. Please type their name correctly.","No Such Player Exists",3, new ImageIcon("Resources/Catan_Icon.png"));
-            }
+                    if (rejections.contains(playerName)) {
+                        JOptionPane.showMessageDialog(this, "That player has already rejected your trade request.", "Previous Rejection", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
 
-            else if(playerCounter==1 && !rejections.contains(playerName)){
-                if(cbRef.getPlayerViaName(playerName).getClassTitle().equals("Assassin")) {
-                    JOptionPane.showMessageDialog(this, "You cannot trade with assassins.", "Failed Trade Request", 1, new ImageIcon("Resources/Catan_Icon.png"));
-                    askButton.setEnabled(true);
-                }
-
-                else {
                     String accept = "";
-                    while (accept.equals(""))
-                        accept = (String) JOptionPane.showInputDialog(this, playerName + ", would you like to trade with " + this.player.getName() + "?", "Trade Request", 1, new ImageIcon("Resources/Catan_Icon.png"), null, null);
+                    while (!accept.equalsIgnoreCase("Yes") && !accept.equalsIgnoreCase("No"))
+                        accept = (String) JOptionPane.showInputDialog(this, playerName + ", would you like to trade with " + this.player.getName() + "? YES/NO?", "Trade Request", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null);
 
                     if (accept.equalsIgnoreCase("Yes")) {
                         cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.asker = false;
@@ -121,20 +113,24 @@ public class TradingFrame extends JFrame implements ActionListener {
                         cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf.setVisible(true);
                         cbRef.firstFrame = this;
                         cbRef.secondFrame = cbRef.getPlayerStatusMenu(cbRef.getPlayerViaName(playerName)).tf;
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Your trade request has been denied.", "Trade Failed", 3, new ImageIcon("Resources/Catan_Icon.png"));
-                        rejections.add(playerName);
-                        askButton.setEnabled(true);
+                        askButton.setEnabled(false);
                     }
+                    else {
+                        JOptionPane.showMessageDialog(this, "Your trade request has been denied.", "Trade Failed", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                        rejections.add(playerName);
+                    }
+                    return;
+                }
+                if (playerName.equals(player.getName())) {
+                    JOptionPane.showMessageDialog(this, "You cannot trade with yourself.", "Trade Loop", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 }
             }
-            else{
-                askButton.setEnabled(true);
-                JOptionPane.showMessageDialog(this,"This player has already rejected your trade request this turn. Try again on your next turn.","Already Rejected",3, new ImageIcon("Resources/Catan_Icon.png"));
+            catch(IndexOutOfBoundsException f){
+                JOptionPane.showMessageDialog(this,"The trade request has been cancelled.","Trade Cancelled",1, new ImageIcon("Resources/Catan_Icon.png"));
             }
         }
         else if(e.getSource()==confirmButton){
-            JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             TradingFrame firstFrame = cbRef.firstFrame;
             TradingFrame secondFrame = cbRef.secondFrame;
 
@@ -153,7 +149,7 @@ public class TradingFrame extends JFrame implements ActionListener {
 
             firstFrame.setVisible(false);
             secondFrame.setVisible(false);
-            secondFrame.cbRef.updateAllStatusMenus();
+            cbRef.updateAllStatusMenus();
         }
     }
 
