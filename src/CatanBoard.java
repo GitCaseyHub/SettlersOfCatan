@@ -146,6 +146,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     ArrayList<DevelopmentCard> devCardDeck = new ArrayList<>();
     String[] devCards = new String[]{"Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Victory Points","Victory Points","Victory Points","Victory Points","Victory Points","Road Building","Road Building","Monopoly","Monopoly","Year of Plenty","Year of Plenty"};
     HashMap<String,Integer> properNum = new HashMap<>();
+    int size = devCards.length;
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
@@ -989,6 +990,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public Player getPlayerViaName(String name) {
         return catanPlayerList.stream().filter(player -> player.getName().equals(name)).collect(Collectors.toCollection(ArrayList::new)).get(0);
+    }
+
+    public boolean playerExists(String name){
+        return catanPlayerList.stream().anyMatch(player -> player.getName().equals(name));
     }
 
     public ArrayList<Player> turnOrder(ArrayList<String> nameList) {
