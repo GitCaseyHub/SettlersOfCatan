@@ -951,15 +951,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void mousePressed(MouseEvent e) {
         if(e.getSource()==devImages[0])
-            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?"":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Knight")))+" 'Knight' cards remaining in the deck.","Knight Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?" ":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Knight")))+" 'Knight' cards remaining in the deck.","Knight Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
         if(e.getSource()==devImages[1])
-            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?"":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Monopoly")))+" 'Monopoly' cards remaining in the deck.","Monopoly Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?" ":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Monopoly")))+" 'Monopoly' cards remaining in the deck.","Monopoly Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
         if(e.getSource()==devImages[2])
-            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?"":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Road Building")))+" 'Road Building' cards remaining in the deck.","Road Building Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?" ":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Road Building")))+" 'Road Building' cards remaining in the deck.","Road Building Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
         if(e.getSource()==devImages[3])
-            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?"":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Year of Plenty")))+" 'Year of Plenty' cards remaining in the deck.","Year of Plenty Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?" ":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Year of Plenty")))+" 'Year of Plenty' cards remaining in the deck.","Year of Plenty Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
         if(e.getSource()==devImages[4])
-            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?"":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Victory Points")))+" 'Victory Point' cards remaining in the deck.","Victory Point Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(devFrame,"There are"+((reference.devCardTransparency)?" ":", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Victory Points")))+" 'Victory Point' cards remaining in the deck.","Victory Point Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
     }
 
     @Override
