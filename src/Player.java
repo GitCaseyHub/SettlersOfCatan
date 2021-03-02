@@ -185,6 +185,9 @@ public class Player {
             case "Gambler":
                 this.brickNum += 2 * brickNum;
                 break;
+            case "Deity":
+                this.brickNum+=4*brickNum;
+                break;
             default:
                 this.brickNum += brickNum;
         }
@@ -197,6 +200,7 @@ public class Player {
     public void changeLumber(int lumberNum) {
         switch (this.classTitle) {
             case "Woodsman":
+            case "Deity":
                 this.lumberNum += 4 * lumberNum;
                 break;
             case "Shepard":
@@ -218,6 +222,9 @@ public class Player {
 
     public void changeGrain(int grainNum) {
         switch(classTitle) {
+            case "Deity":
+                this.grainNum+=4*grainNum;
+                break;
             case "Mountaineer":
             case "Shepard":
             case "Woodsman":
@@ -240,6 +247,7 @@ public class Player {
     public void changeWool(int woolNum) {
         switch (this.classTitle) {
             case "Shepard":
+            case "Deity":
                 this.woolNum += 4 * woolNum;
                 break;
             case "Farmer":
@@ -263,6 +271,9 @@ public class Player {
 
     public void changeOre(int oreNum) {
         switch(classTitle) {
+            case "Deity":
+                this.oreNum+=4*oreNum;
+                break;
             case "Farmer":
             case "Shepard":
             case "Woodsman":
@@ -323,7 +334,7 @@ public class Player {
     }
 
     public void pass(){
-        //Tells the class that nothing needs to be done, but an if statement needs to be caught because of the 'else' statement
+        //Tells the class that nothing needs to be done, but an if statement needs to be caught because of the 'else' statement. Python-inspired
     }
 
     public void winTheGame(){
