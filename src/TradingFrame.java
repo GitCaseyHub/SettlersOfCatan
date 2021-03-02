@@ -90,7 +90,7 @@ public class TradingFrame extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this,"There is no player with that name. Make sure you are typing their name in correctly.","Invalid Name",1, new ImageIcon("Resources/Catan_Icon.png"));
                     return;
                 }
-                
+
                 if (cbRef.playerExists(playerName) && !playerName.equals(player.getName())) {
                     if (cbRef.getPlayerViaName(playerName).getClassTitle().equals("Assassin")) {
                         JOptionPane.showMessageDialog(this, "You cannot trade with assassins.", "Improper Trade Request", 1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -135,17 +135,17 @@ public class TradingFrame extends JFrame implements ActionListener {
             TradingFrame secondFrame = cbRef.secondFrame;
 
             //Changing resource totals
-            firstFrame.player.monoBrick((int)secondFrame.brickCheck.getSelectedItem()- (int) firstFrame.brickCheck.getSelectedItem());
-            firstFrame.player.monoLumber((int)secondFrame.woodCheck.getSelectedItem()-(int)firstFrame.woodCheck.getSelectedItem());
-            firstFrame.player.monoOre((int)secondFrame.oreCheck.getSelectedItem()-(int)firstFrame.oreCheck.getSelectedItem());
-            firstFrame.player.monoWheat((int)secondFrame.wheatCheck.getSelectedItem()-(int)firstFrame.wheatCheck.getSelectedItem());
-            firstFrame.player.monoWool((int)secondFrame.sheepCheck.getSelectedItem()-(int)firstFrame.sheepCheck.getSelectedItem());
+            firstFrame.player.monoBrick(Math.max((int)secondFrame.brickCheck.getSelectedItem(),0)- (Math.max((int) firstFrame.brickCheck.getSelectedItem(), 0)));
+            firstFrame.player.monoLumber(Math.max((int)secondFrame.woodCheck.getSelectedItem(),0)- (Math.max((int) firstFrame.woodCheck.getSelectedItem(), 0)));
+            firstFrame.player.monoOre(Math.max((int)secondFrame.oreCheck.getSelectedItem(),0)- (Math.max((int) firstFrame.oreCheck.getSelectedItem(), 0)));
+            firstFrame.player.monoWheat(Math.max((int)secondFrame.wheatCheck.getSelectedItem(),0)- (Math.max((int) firstFrame.wheatCheck.getSelectedItem(), 0)));
+            firstFrame.player.monoWool(Math.max((int)secondFrame.sheepCheck.getSelectedItem(),0)- (Math.max((int) firstFrame.sheepCheck.getSelectedItem(), 0)));
 
-            secondFrame.player.monoBrick((int)firstFrame.brickCheck.getSelectedItem()-(int)secondFrame.brickCheck.getSelectedItem());
-            secondFrame.player.monoLumber((int)firstFrame.woodCheck.getSelectedItem()-(int)secondFrame.woodCheck.getSelectedItem());
-            secondFrame.player.monoOre((int)firstFrame.oreCheck.getSelectedItem()-(int)secondFrame.oreCheck.getSelectedItem());
-            secondFrame.player.monoWheat((int)firstFrame.wheatCheck.getSelectedItem()-(int)secondFrame.wheatCheck.getSelectedItem());
-            secondFrame.player.monoWool((int)firstFrame.sheepCheck.getSelectedItem()- (int) secondFrame.sheepCheck.getSelectedItem());
+            secondFrame.player.monoBrick(Math.max((int)firstFrame.brickCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.brickCheck.getSelectedItem(), 0)));
+            secondFrame.player.monoLumber(Math.max((int)firstFrame.woodCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.woodCheck.getSelectedItem(), 0)));
+            secondFrame.player.monoOre(Math.max((int)firstFrame.oreCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.oreCheck.getSelectedItem(), 0)));
+            secondFrame.player.monoWheat(Math.max((int)firstFrame.wheatCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.wheatCheck.getSelectedItem(), 0)));
+            secondFrame.player.monoWool(Math.max((int)firstFrame.sheepCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.sheepCheck.getSelectedItem(), 0)));
 
             firstFrame.setVisible(false);
             secondFrame.setVisible(false);
@@ -159,6 +159,27 @@ public class TradingFrame extends JFrame implements ActionListener {
         confirmButton.setEnabled(true);
         askButton.setEnabled(true);
         Arrays.stream(new JComboBox[]{brickCheck,wheatCheck,oreCheck,woodCheck,sheepCheck}).forEach(JComboBox::removeAllItems);
+
+        if(player.getBrickNum()<0) {
+            brickCheck.addItem(player.getBrickNum());
+            brickCheck.setEnabled(false);
+        }
+        if(player.getGrainNum()<0) {
+            wheatCheck.addItem(player.getGrainNum());
+            wheatCheck.setEnabled(false);
+        }
+        if(player.getOreNum()<0) {
+            oreCheck.addItem(player.getOreNum());
+            oreCheck.setEnabled(false);
+        }
+        if(player.getLumberNum()<0) {
+            woodCheck.addItem(player.getLumberNum());
+            woodCheck.setEnabled(false);
+        }
+        if(player.getWoolNum()<0) {
+            sheepCheck.addItem(player.getWoolNum());
+            sheepCheck.setEnabled(false);
+        }
 
         for(int x=0; x<player.getBrickNum()+1; x++)
             brickCheck.addItem(x);
@@ -174,8 +195,6 @@ public class TradingFrame extends JFrame implements ActionListener {
 
         for(int x=0; x<player.getWoolNum()+1; x++)
             sheepCheck.addItem(x);
-
-        Arrays.stream(new JComboBox[]{brickCheck,wheatCheck,oreCheck,woodCheck,sheepCheck}).forEach(box -> box.setEnabled(box.getItemCount()!=1));
 
         confirmButton.setEnabled(!asker);
         askButton.setEnabled(asker);
