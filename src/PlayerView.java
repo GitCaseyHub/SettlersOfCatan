@@ -678,7 +678,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         else if(e.getSource()==rollDice){
             diceRoll=0;
-            if(this.player.isLeader()){
+            if(this.player.isLeader() || this.player.getClassTitle().equals("Deity")){
                 while(diceRoll==0) {
                     try {
                         diceRoll = Integer.parseInt((String) JOptionPane.showInputDialog(this, "Select the number you'd like to roll this turn: ", "Democracy Action", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null));
