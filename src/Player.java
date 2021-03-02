@@ -77,7 +77,7 @@ public class Player {
         return referenceNumber;
     }
 
-    //Testing Constructor
+    //Generic Constructor
     public Player(){}
 
     public boolean isTurn() {
