@@ -272,10 +272,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     if(tile.getNum()!=7) {
                         BufferedImage dice = ImageIO.read(new File("Rolls/" + tile.getNum() + ".png"));
                         g.drawImage(dice, tile.getPosition()[0] + 42, tile.getPosition()[1] + 25, null);
-
-                        //Aura Testing
-                        //BufferedImage aura = ImageIO.read(new File("Tiles/Sun_Aura.png"));
-                        //g.drawImage(aura, tile.getPosition()[0]+29, tile.getPosition()[1]+12, null);
                     }
                 }
 
@@ -764,10 +760,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         indexes[settlementIndex].setOwner(getCurrentPlayer());
                         indexes[settlementIndex].setSettlement(true);
                         getCurrentPlayer().addIndex(indexes[settlementIndex]);
+                        getCurrentPlayer().changeVictoryPoints(1);
+                        getCurrentPlayer().changeSettlementNum(-1);
                         isSettlementBuilding = false;
                         settlementPaintCondition = true;
                         repaint();
-                        getCurrentPlayer().changeSettlementNum(-1);
                     }
                 }
             }
@@ -811,6 +808,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 redrawEverything = true;
                 performStaleReferenceReset(true);
                 repaint();
+                getCurrentPlayer().changeVictoryPoints(1);
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                 getCurrentPlayer().changeCityNum(-1);
                 showBuiltImage("Resources/Preview_Images/City.png","City Construction");
@@ -1617,8 +1615,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (!doingStartup && isPlayerActing) {
                 if (isSettlementBuilding) {
                     isSettlementBuilding = false;
-                    getCurrentPlayer().changeAll(1,1,1,0,1);
-                    getCurrentPlayer().changeVictoryPoints(-1);
+                    getCurrentPlayer().monoAll(1,1,1,0,1);
                 } else if (isMovingRobber) {
                     isMovingRobber = false;
                     isDoneMovingRobber = false;
@@ -1632,12 +1629,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     isDoneRoadBuilding = false;
                     roadCondition = 0;
                     checkedIndexes.clear();
-                    getCurrentPlayer().changeAll(1,0,1,0,0);
+                    getCurrentPlayer().monoAll(1,0,1,0,0);
 
                 } else if (isCityUpgrading) {
                     isCityUpgrading = false;
-                    getCurrentPlayer().changeAll(0,0,0,3,2);
-                    getCurrentPlayer().changeVictoryPoints(-1);
+                    getCurrentPlayer().monoAll(0,0,0,3,2);
                 }
                 else if(isSettingFire){
                     isSettingFire=false;
