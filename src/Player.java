@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Player {
@@ -9,6 +11,12 @@ public class Player {
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
     CatanBoard cb;
     boolean costMultiplier=false;
+
+    //Victory Frame
+    JFrame victory = new JFrame();
+    JLabel victoryLabel = new JLabel("",SwingConstants.CENTER);
+    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads, boolean leader, int votes){
         this.color=color;
@@ -33,6 +41,16 @@ public class Player {
         this.leader=leader;
         this.votes=votes;
         this.costMultiplier = (classTitle.equals("Pirate") || classTitle.equals("Serf"));
+    }
+
+    public void loadUpVictoryFrame(){
+        victory.setUndecorated(true);
+        victory.setSize(810,533);
+        victory.setLocation(dim.width/2-victory.getSize().width/2, dim.height/2-victory.getSize().height/2);
+        victory.add(victoryLabel);
+        victoryLabel.setIcon(new ImageIcon("Resources/Victory.png"));
+        victoryLabel.setBorder(compound);
+        victory.setVisible(true);
     }
 
     public boolean isLeader() {
@@ -342,7 +360,8 @@ public class Player {
     public void winTheGame(){
         cb.updateAllStatusMenus();
         if (this.getVictoryPointTotal() >= 10) {
-            JOptionPane.showMessageDialog(null, this.getName() + ", you've won this 'Settlers of Catan'® game. Please play again, everyone.", "Game's End", 1, new ImageIcon("Resources/Catan_Icon.png"));
+            loadUpVictoryFrame();
+            JOptionPane.showMessageDialog(victory, this.getName() + ", you've won this 'Settlers of Catan'® game.", "Game's End", 1, new ImageIcon("Resources/Catan_Icon.png"));
             System.exit(0);
         }
 
