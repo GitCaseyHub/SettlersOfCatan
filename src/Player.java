@@ -8,6 +8,7 @@ public class Player {
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
     CatanBoard cb;
+    boolean costMultiplier=false;
 
     public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads, boolean leader, int votes){
         this.color=color;
@@ -31,6 +32,7 @@ public class Player {
         this.roads=roads;
         this.leader=leader;
         this.votes=votes;
+        this.costMultiplier = (classTitle.equals("Pirate") || classTitle.equals("Serf"));
     }
 
     public boolean isLeader() {
@@ -325,12 +327,12 @@ public class Player {
         this.grainNum-=1;
     }
 
-    public void changeAll(int lumber, int wool, int brick, int ore, int grain){
-        this.changeLumber(lumber);
-        this.changeWool(wool);
-        this.changeBrick(brick);
-        this.changeOre(ore);
-        this.changeGrain(grain);
+    public void monoAll(int lumber, int wool, int brick, int ore, int grain){
+        this.monoLumber(costMultiplier?2*lumber:lumber);
+        this.monoWool(costMultiplier?2*wool:wool);
+        this.monoBrick(costMultiplier?2*brick:brick);
+        this.monoOre(costMultiplier?2*ore:ore);
+        this.monoWheat(costMultiplier?2*grain:grain);
     }
 
     public void pass(){
@@ -339,9 +341,10 @@ public class Player {
 
     public void winTheGame(){
         cb.updateAllStatusMenus();
-        if(this.getVictoryPointTotal()>=10){
-            JOptionPane.showMessageDialog(null,this.getName()+", you've won this 'Settlers of Catan'® game. Please play again, everyone.","Game's End",1, new ImageIcon("Resources/Catan_Icon.png"));
+        if (this.getVictoryPointTotal() >= 10) {
+            JOptionPane.showMessageDialog(null, this.getName() + ", you've won this 'Settlers of Catan'® game. Please play again, everyone.", "Game's End", 1, new ImageIcon("Resources/Catan_Icon.png"));
             System.exit(0);
         }
+
     }
 }
