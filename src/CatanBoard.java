@@ -411,7 +411,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 //Drawing Settlements
                 BufferedImage settlement = ImageIO.read(new File("Pieces/" + getCurrentPlayer().getColor() + "_Settlement.png"));
                 g.drawImage(settlement, chosen_x, chosen_y, null);
-                getCurrentPlayer().changeVictoryPoints(1);
                 settlementPaintCondition = false;
                 if(!doingStartup){
                     JOptionPane.showMessageDialog(this,"You've built a new settlement.","Settlement Construction",1,new ImageIcon("Resources/Catan_Icon.png"));
