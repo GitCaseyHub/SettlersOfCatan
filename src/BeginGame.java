@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
@@ -180,7 +181,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             playerCreation = new PlayerSelect[numPlayers];
 
             for(int x=0; x<numPlayers; x++) {
-                playerCreation[x] = new PlayerSelect(this, x);
+                playerCreation[x] = new PlayerSelect(this, x,false);
                 playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
                 playerCreation[x].setVisible(true);
                 playerCreation[x].setTitle("Player "+(playerCreation[x].referenceNumber+1)+" Select Screen");
@@ -229,6 +230,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
     public static void main(String[] args){new BeginGame();}
 
+    public PlayerSelect findPlayerSelectFrame(Player player){
+        return Arrays.stream(playerCreation).filter(frame -> frame.nameField.getText().equalsIgnoreCase(player.getName()) && !frame.submitted).collect(Collectors.toCollection(ArrayList::new)).get(0);
+    }
+
     public void addPlayer(Player addedPlayer,int referenceNumber){
         if(catanPlayerList.size()==0){
             PlayerSelect referenceView = playerCreation[referenceNumber];
@@ -246,7 +251,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             boolean playerRegistration=false;
             for (Player player : catanPlayerList)
                 if (player.getName().equals(addedPlayer.getName())) {
-                    JOptionPane.showMessageDialog(this, "That name has already been registered. Choose another name.", "Name Error", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(findPlayerSelectFrame(player), "That name has already been registered. Choose another name.", "Name Error", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
                     playerRegistration = true;
                     break;
                 }
