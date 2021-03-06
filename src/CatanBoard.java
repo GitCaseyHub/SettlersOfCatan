@@ -629,9 +629,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     port.isDestroyed=true;
                     getPlayerStatusMenu(getCurrentPlayer()).hasPillaged=true;
                     isPortDestroying=false;
-                    JOptionPane.showMessageDialog(this,"You have pillaged a "+ port.getType().toLowerCase()+" port. It is no longer accessible.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                     redrawEverything=true;
                     repaint();
+                    JOptionPane.showMessageDialog(this,"You have pillaged a "+ port.getType().toLowerCase()+" port. It is no longer accessible.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                     return;
                 }
             return;
