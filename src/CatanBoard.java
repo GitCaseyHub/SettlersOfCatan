@@ -623,7 +623,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             for (Port port : ports)
                 if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) port.getLocations()[2].getX() + 25, (int) port.getLocations()[2].getY() + 25, 50, 50))) {
                     if(port.isDestroyed){
-                        JOptionPane.showMessageDialog(this,"That port has already been pillaged.","Port Already Destroyed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this,"That "+port.getType().toLowerCase()+" port has already been pillaged.","Port Already Destroyed",1, new ImageIcon("Resources/Catan_Icon.png"));
                         return;
                     }
                     port.isDestroyed=true;
@@ -652,15 +652,15 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                 }
 
                                 else
-                                    JOptionPane.showMessageDialog(this,"That port has been pillaged and is now controlled by pirates. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
+                                    JOptionPane.showMessageDialog(this,"This "+port.getType().toLowerCase()+" port has been pillaged and is now controlled by pirates. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                                 return;
                             }
                             else {
                                 if (!port.isDestroyed)
-                                    JOptionPane.showMessageDialog(this, "You don't have access to this port.", "Port inaccessible", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                                    JOptionPane.showMessageDialog(this, "You do not have access to this "+port.getType().toLowerCase()+" port.", "Port inaccessible", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
                                 else
-                                    JOptionPane.showMessageDialog(this,"That port has been pillaged. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
+                                    JOptionPane.showMessageDialog(this,"This "+port.getType().toLowerCase()+" port has been pillaged. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                                 return;
                             }
                         }
