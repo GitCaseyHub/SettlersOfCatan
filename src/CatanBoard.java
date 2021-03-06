@@ -59,7 +59,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean wildfire=false;
     boolean devCardTransparency=false;
     boolean isPortDestroying=false;
-    boolean hasPillaged=false;
     int count = 0;
 
     //Awards
@@ -624,13 +623,13 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             for (Port port : ports)
                 if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) port.getLocations()[2].getX() + 25, (int) port.getLocations()[2].getY() + 25, 50, 50))) {
                     if(port.isDestroyed){
-                        JOptionPane.showMessageDialog(this,"That port has already been destroyed.","Port Already Destroyed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this,"That port has already been pillaged.","Port Already Destroyed",1, new ImageIcon("Resources/Catan_Icon.png"));
                         return;
                     }
                     port.isDestroyed=true;
-                    hasPillaged=true;
+                    getPlayerStatusMenu(getCurrentPlayer()).hasPillaged=true;
                     isPortDestroying=false;
-                    JOptionPane.showMessageDialog(this,"You have destroyed a "+ port.getType().toLowerCase()+" port. It is no longer accessible.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this,"You have pillaged a "+ port.getType().toLowerCase()+" port. It is no longer accessible.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                     redrawEverything=true;
                     repaint();
                     return;
@@ -653,7 +652,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                 }
 
                                 else
-                                    JOptionPane.showMessageDialog(this,"That port has been destroyed. It cannot be used.","Port Destroyed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                                    JOptionPane.showMessageDialog(this,"That port has been pillaged and is now controlled by pirates. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                                 return;
                             }
                             else {
@@ -661,7 +660,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                     JOptionPane.showMessageDialog(this, "You don't have access to this port.", "Port inaccessible", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
                                 else
-                                    JOptionPane.showMessageDialog(this,"That port is destroyed. It can no longer be used.","Port Destroyed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                                    JOptionPane.showMessageDialog(this,"That port has been pillaged. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                                 return;
                             }
                         }
@@ -1648,7 +1647,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        if ((e.getKeyCode() != KeyEvent.VK_C && e.getKeyCode()!=KeyEvent.VK_X) || doingStartup) {
+        if ((e.getKeyCode() != KeyEvent.VK_C && e.getKeyCode()!=KeyEvent.VK_X)) {
             return;
         }
         else if(e.getKeyCode()==KeyEvent.VK_X){
@@ -1659,7 +1658,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             }
             return;
         }
-        if(isPlayerActing) {
+        if(isPlayerActing && !doingStartup) {
             int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png"));
             if (confirmCancellation != 0) {
                 JOptionPane.showMessageDialog(this, "Please continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
