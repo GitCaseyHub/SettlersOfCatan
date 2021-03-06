@@ -68,11 +68,13 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     BeginGame bgReference;
     int referenceNumber;
     boolean loadedIn=false;
+    boolean submitted=false;
 
-    public PlayerSelect(BeginGame bgReference, int referenceNumber){
+    public PlayerSelect(BeginGame bgReference, int referenceNumber, boolean submitted){
         this.setResizable(false);
         this.bgReference=bgReference;
         this.referenceNumber=referenceNumber;
+        this.submitted=submitted;
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         this.add(holder);
@@ -167,6 +169,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
                     if(before!=bgReference.catanPlayerList.size())
                         JOptionPane.showMessageDialog(bgReference,"A new character, "+newPlayer.getName()+" the "+newPlayer.getClassTitle()+", has been created.","Character Created",1,new ImageIcon("Resources/Catan_Icon.png"));
+                    this.submitted=true;
                 }
             }
             else
