@@ -98,6 +98,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenuItem cultivate = new JMenuItem("Cultivate");
     boolean hasCultivated = false;
 
+    //Pirate Menu
+    JMenu pirate = new JMenu("Pirate");
+    JMenuItem pillage = new JMenuItem("Pillage");
+
     //Special Classes
     JCheckBox[] playerNames;
     Player chosenPlayer;
@@ -132,6 +136,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         assassin.addSeparator();
         arsonist.addSeparator();
         cultivator.addSeparator();
+        pirate.addSeparator();
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -198,6 +203,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 cultivate.addActionListener(this);
                 cultivator.setEnabled(false);
                 cultivate.setEnabled(false);
+            }
+            if(player.getClassTitle().equals("Pirate")){
+                mb.add(pirate);
+                pirate.add(pillage);
+                pillage.addActionListener(this);
+                pillage.setEnabled(false);
+                pirate.setEnabled(false);
             }
         }
 
@@ -289,6 +301,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         assassin.addSeparator();
         arsonist.addSeparator();
         cultivator.addSeparator();
+        pirate.addSeparator();
         initializeCostFrame();
         initializeDevCardFrame();
     }
@@ -408,6 +421,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             assassinate.setEnabled(true);
             setFire.setEnabled(true);
             cultivate.setEnabled(true);
+            pillage.setEnabled(!reference.hasPillaged);
             loadedSpecialClasses=true;
         }
         rollDice.setEnabled(false);
@@ -854,7 +868,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.showBuiltImage("Resources/Preview_Images/Cultivate.png","Cultivator Special Action");
                 JOptionPane.showMessageDialog(this,"Select the tile you'd like to cultivate.","Cultivator Special Ability", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 reference.isCultivating=true;
-                reference.isPlayerActing=true;
                 hasCultivated=true;
                 cultivate.setEnabled(false);
             }
@@ -862,6 +875,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         else if(e.getSource() == devCardsRemaining)
             devFrame.setVisible(!devFrame.isVisible());
+
+        else if(e.getSource()==pillage){
+            resetReference(false);
+            reference.isPortDestroying=true;
+            reference.showBuiltImage("Resources/Preview_Images/Pillage.png","Pirate Special Action");
+            JOptionPane.showMessageDialog(this,"Select a port to pillage and destroy.","Pirate Pillaging",1, new ImageIcon("Resources/Catan_Icon.png"));
+            pillage.setEnabled(false);
+        }
 
         else if(e.getSource()==remainingResources)
             JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -944,7 +965,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void resetReference(boolean state){
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate}).forEach(menu -> menu.setEnabled(state));
     }
 
     public void mousePressed(MouseEvent e) {
