@@ -101,6 +101,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     //Pirate Menu
     JMenu pirate = new JMenu("Pirate");
     JMenuItem pillage = new JMenuItem("Pillage");
+    boolean hasPillaged=false;
 
     //Special Classes
     JCheckBox[] playerNames;
@@ -421,7 +422,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             assassinate.setEnabled(true);
             setFire.setEnabled(true);
             cultivate.setEnabled(true);
-            pillage.setEnabled(!reference.hasPillaged);
+            pillage.setEnabled(!hasPillaged && reference.usablePorts);
             loadedSpecialClasses=true;
         }
         rollDice.setEnabled(false);
