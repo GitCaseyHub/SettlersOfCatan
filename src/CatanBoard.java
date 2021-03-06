@@ -524,6 +524,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
                             g.drawImage(port, (int) value.getLocations()[2].getX(), (int) value.getLocations()[2].getY(), null);
                         }
+                        else{
+                            BufferedImage pPort = ImageIO.read(new File("Resources/Port/Pillaged_Port.png"));
+                            g.drawImage(pPort, (int)value.getLocations()[2].getX(),(int)value.getLocations()[2].getY(),null);
+                        }
                     }
                 }
 
