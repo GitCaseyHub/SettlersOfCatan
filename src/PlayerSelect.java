@@ -68,7 +68,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     BeginGame bgReference;
     int referenceNumber;
     boolean loadedIn=false;
-    boolean submitted=false;
+    boolean submitted;
 
     public PlayerSelect(BeginGame bgReference, int referenceNumber, boolean submitted){
         this.setResizable(false);
@@ -138,8 +138,10 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             }
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
 
-            if (classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman") || classTitles[classBox.getSelectedIndex()].equals("Assassin") || classTitles[classBox.getSelectedIndex()].equals("Arsonist")|| classTitles[classBox.getSelectedIndex()].equals("Cultivator")|| classTitles[classBox.getSelectedIndex()].equals("Deity")|| classTitles[classBox.getSelectedIndex()].equals("Pirate"));
-                descriptionArea.select(0, 0);
+            if (!classTitles[classBox.getSelectedIndex()].equals("Gambler") && !classTitles[classBox.getSelectedIndex()].equals("Highwayman") && !classTitles[classBox.getSelectedIndex()].equals("Assassin") && !classTitles[classBox.getSelectedIndex()].equals("Arsonist") && !classTitles[classBox.getSelectedIndex()].equals("Cultivator") && !classTitles[classBox.getSelectedIndex()].equals("Deity")) {
+                classBox.getSelectedIndex();
+            }
+            descriptionArea.select(0, 0);
 
             imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
             specialAbility.setText((classBox.getSelectedIndex()!=0)?" Ability: "+actions[classBox.getSelectedIndex()]:"");
