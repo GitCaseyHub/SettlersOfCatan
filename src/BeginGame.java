@@ -30,6 +30,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JFrame openingFrame = new JFrame();
     JLabel openingLabel = new JLabel("",SwingConstants.CENTER);
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    CatanBoard cbMain;
 
     //Bonus space filling objects when on player select screen
     JFrame imageFrame = new JFrame();
@@ -196,7 +197,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
             this.setVisible(false);
             imageFrame.setVisible(false);
-            CatanBoard cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
+            cbMain = new CatanBoard(catanPlayerList, statusGenerationPoints, playerCreation, this);
             cbMain.razing = razing.isSelected();
             cbMain.cataclysmsActive=cataclysms.isSelected();
             cbMain.previewFrames=previewMenu.isSelected();
@@ -289,6 +290,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
