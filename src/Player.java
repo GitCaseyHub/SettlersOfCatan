@@ -16,7 +16,6 @@ public class Player {
     JFrame victory = new JFrame();
     JLabel victoryLabel = new JLabel("",SwingConstants.CENTER);
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-    Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads, boolean leader, int votes){
         this.color=color;
@@ -49,7 +48,7 @@ public class Player {
         victory.setLocation(dim.width/2-victory.getSize().width/2, dim.height/2-victory.getSize().height/2);
         victory.add(victoryLabel);
         victoryLabel.setIcon(new ImageIcon("Resources/Victory.png"));
-        victoryLabel.setBorder(compound);
+        victoryLabel.setBorder(cb.compound);
         victory.setVisible(true);
     }
 
