@@ -8,13 +8,12 @@ import java.awt.event.MouseListener;
 
 public class CustomSwitch extends JPanel implements MouseListener {
     Border etched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-    Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     JLabel title = new JLabel("",SwingConstants.CENTER);
     JTextField on = new JTextField("ON");
     JTextField off = new JTextField("OFF");
     JPanel on_off = new JPanel(new GridLayout(1,2));
-    boolean state = true;
+    boolean state;
     String text;
     Color green = new Color(60,255,110);
     Color red = new Color(255,0,50);
