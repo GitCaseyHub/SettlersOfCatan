@@ -738,6 +738,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
             else{
                 try{
+                    if(JOptionPane.showConfirmDialog(this,"Would you like to attempt to steal from another player?","Highwayman Special Action",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
+                        return;
+                    
                     reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     playerNames = new JCheckBox[possiblePlayers.size()];
                     for(int x=0; x<playerNames.length; x++)
@@ -810,6 +813,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 if (possibleKills.size() == 0)
                     JOptionPane.showMessageDialog(this, "None of the other players have played a knight card. You cannot assassinate this turn.", "Failed Assassination", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 else {
+                    if(JOptionPane.showConfirmDialog(this,"Would you like to assassinate another player's knight?","Assassin Special Action",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
+                        return;
+                    
                     playerNames = new JCheckBox[possibleKills.size()];
                     for (int x = 0; x < playerNames.length; x++)
                         playerNames[x] = new JCheckBox(possibleKills.get(x).getName());
@@ -863,21 +869,26 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this,"You have no resources. You cannot use the 'cultivator' special ability.","No Resources",1,new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
-            int confirmCultivation = JOptionPane.showConfirmDialog(this,"Would you like to double production on a tile?","Cultivator Special Ability", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"));
-            if(confirmCultivation==JOptionPane.YES_OPTION){
-                resetReference(false);
-                reference.showBuiltImage("Resources/Preview_Images/Cultivate.png","Cultivator Special Action");
-                JOptionPane.showMessageDialog(this,"Select the tile you'd like to cultivate.","Cultivator Special Ability", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                reference.isCultivating=true;
-                hasCultivated=true;
-                cultivate.setEnabled(false);
-            }
+            
+            if(JOptionPane.showConfirmDialog(this,"Would you like to double production on a tile?","Cultivator Special Ability", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
+                return;
+            
+            resetReference(false);
+            reference.showBuiltImage("Resources/Preview_Images/Cultivate.png","Cultivator Special Action");
+            JOptionPane.showMessageDialog(this,"Select the tile you'd like to cultivate.","Cultivator Special Ability", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+            reference.isCultivating=true;
+            hasCultivated=true;
+            cultivate.setEnabled(false);
+            
         }
 
         else if(e.getSource() == devCardsRemaining)
             devFrame.setVisible(!devFrame.isVisible());
 
         else if(e.getSource()==pillage){
+            if (JOptionPane.showConfirmDialog(this, "Would you like to pillage a port?", "Settlement Building", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png")) != JOptionPane.YES_OPTION)
+                return;
+            
             resetReference(false);
             reference.isPortDestroying=true;
             reference.showBuiltImage("Resources/Preview_Images/Pillage.png","Pirate Special Action");
