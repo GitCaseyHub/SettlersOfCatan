@@ -27,7 +27,6 @@ public class TradingFrame extends JFrame implements ActionListener {
     Player player;
     boolean asker;
     CatanBoard cbRef;
-    boolean self=false;
 
     public TradingFrame(Player player, boolean asker){
         this.setResizable(false);
@@ -146,7 +145,7 @@ public class TradingFrame extends JFrame implements ActionListener {
             secondFrame.player.monoOre(Math.max((int)firstFrame.oreCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.oreCheck.getSelectedItem(), 0)));
             secondFrame.player.monoWheat(Math.max((int)firstFrame.wheatCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.wheatCheck.getSelectedItem(), 0)));
             secondFrame.player.monoWool(Math.max((int)firstFrame.sheepCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.sheepCheck.getSelectedItem(), 0)));
-            
+
             Arrays.stream(new TradingFrame[]{firstFrame,secondFrame}).forEach(frame -> frame.setVisible(false));
             cbRef.updateAllStatusMenus();
         }
@@ -159,23 +158,23 @@ public class TradingFrame extends JFrame implements ActionListener {
         askButton.setEnabled(true);
         Arrays.stream(new JComboBox[]{brickCheck,wheatCheck,oreCheck,woodCheck,sheepCheck}).forEach(JComboBox::removeAllItems);
 
-        if(player.getBrickNum()<0) {
+        if(player.getBrickNum()<=0) {
             brickCheck.addItem(player.getBrickNum());
             brickCheck.setEnabled(false);
         }
-        if(player.getGrainNum()<0) {
+        if(player.getGrainNum()<=0) {
             wheatCheck.addItem(player.getGrainNum());
             wheatCheck.setEnabled(false);
         }
-        if(player.getOreNum()<0) {
+        if(player.getOreNum()<=0) {
             oreCheck.addItem(player.getOreNum());
             oreCheck.setEnabled(false);
         }
-        if(player.getLumberNum()<0) {
+        if(player.getLumberNum()<=0) {
             woodCheck.addItem(player.getLumberNum());
             woodCheck.setEnabled(false);
         }
-        if(player.getWoolNum()<0) {
+        if(player.getWoolNum()<=0) {
             sheepCheck.addItem(player.getWoolNum());
             sheepCheck.setEnabled(false);
         }
