@@ -7,9 +7,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
 public class PlayerView extends JFrame implements ActionListener, MouseMotionListener, MouseListener {
-    //Fancy Border
-    Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
-
     //GUI Assets
     JPanel[] graphicPanels = new JPanel[5];
     JPanel graphicHolder = new JPanel(new GridLayout(1, 5));
@@ -222,35 +219,35 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         this.setResizable(false);
         this.add(graphicHolder, BorderLayout.CENTER);
         this.add(borderNorth,BorderLayout.NORTH);
-        borderNorth.setBorder(compound);
+        borderNorth.setBorder(reference.compound);
         borderNorth.add(infoPanel,BorderLayout.CENTER);
         borderNorth.add(colorDisplayLabel,BorderLayout.WEST);
         this.add(borderSouth,BorderLayout.SOUTH);
         borderSouth.add(vpPointHolder,BorderLayout.WEST);
         borderSouth.add(turnBorderPanel, BorderLayout.EAST);
-        turnBorderPanel.setBorder(compound);
+        turnBorderPanel.setBorder(reference.compound);
         turnBorderPanel.add(turnHolder);
         turnHolder.add(new JLabel("  "),BorderLayout.WEST);
         turnHolder.add(turnBox,BorderLayout.CENTER);
         turnHolder.add(new JLabel("  "),BorderLayout.EAST);
         turnHolder.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Turn"));
-        vpPointHolder.setBorder(compound);
+        vpPointHolder.setBorder(reference.compound);
         vpPointHolder.add(victoryPointLabel);
         borderSouth.add(borderInfoPanel,BorderLayout.CENTER);
         turnBox.setEnabled(false);
         turnBox.setToolTipText("This box is checked if it's your turn");
-        borderInfoPanel.setBorder(compound);
+        borderInfoPanel.setBorder(reference.compound);
         borderInfoPanel.add(awardPanel);
         victoryPointLabel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"VPs"));
         borderNorth.setBackground(Color.white);
-        colorDisplayLabel.setBorder(compound);
+        colorDisplayLabel.setBorder(reference.compound);
         infoPanel.add(devPanel);
-        infoPanel.setBorder(compound);
+        infoPanel.setBorder(reference.compound);
         devPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Development Cards"));
         devPanel.add(unplayed);
-        unplayed.setBorder(compound);
+        unplayed.setBorder(reference.compound);
         devPanel.add(played);
-        played.setBorder(compound);
+        played.setBorder(reference.compound);
         unplayed.addItem("Hidden Cards");
         played.addItem("Revealed Cards");
         victoryPointLabel.setFont(new Font(victoryPointLabel.getFont().getName(),Font.PLAIN,16));
@@ -282,19 +279,19 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             graphicImageLabels[x] = new JLabel("", SwingConstants.CENTER);
             graphicImageLabels[x].setIcon(new ImageIcon("Resources/" + graphicStrings[x] + "_Image.png"));
             graphicPanels[x].add(graphicImageLabels[x], BorderLayout.CENTER);
-            graphicImageLabels[x].setBorder(compound);
+            graphicImageLabels[x].setBorder(reference.compound);
             graphicHolder.add(graphicPanels[x]);
         }
         graphicPanels[0].add(brickNum, BorderLayout.SOUTH);
-        brickNum.setBorder(compound);
+        brickNum.setBorder(reference.compound);
         graphicPanels[1].add(oreNum, BorderLayout.SOUTH);
-        oreNum.setBorder(compound);
+        oreNum.setBorder(reference.compound);
         graphicPanels[2].add(sheepNum, BorderLayout.SOUTH);
-        sheepNum.setBorder(compound);
+        sheepNum.setBorder(reference.compound);
         graphicPanels[3].add(wheatNum, BorderLayout.SOUTH);
-        wheatNum.setBorder(compound);
+        wheatNum.setBorder(reference.compound);
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
-        woodNum.setBorder(compound);
+        woodNum.setBorder(reference.compound);
         build.addSeparator();
         development.addSeparator();
         options.addSeparator();
@@ -740,7 +737,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 try{
                     if(JOptionPane.showConfirmDialog(this,"Would you like to attempt to steal from another player?","Highwayman Special Action",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
                         return;
-                    
+
                     reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     playerNames = new JCheckBox[possiblePlayers.size()];
                     for(int x=0; x<playerNames.length; x++)
@@ -815,7 +812,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 else {
                     if(JOptionPane.showConfirmDialog(this,"Would you like to assassinate another player's knight?","Assassin Special Action",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
                         return;
-                    
+
                     playerNames = new JCheckBox[possibleKills.size()];
                     for (int x = 0; x < playerNames.length; x++)
                         playerNames[x] = new JCheckBox(possibleKills.get(x).getName());
@@ -869,17 +866,17 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this,"You have no resources. You cannot use the 'cultivator' special ability.","No Resources",1,new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
-            
+
             if(JOptionPane.showConfirmDialog(this,"Would you like to double production on a tile?","Cultivator Special Ability", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
                 return;
-            
+
             resetReference(false);
             reference.showBuiltImage("Resources/Preview_Images/Cultivate.png","Cultivator Special Action");
             JOptionPane.showMessageDialog(this,"Select the tile you'd like to cultivate.","Cultivator Special Ability", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             reference.isCultivating=true;
             hasCultivated=true;
             cultivate.setEnabled(false);
-            
+
         }
 
         else if(e.getSource() == devCardsRemaining)
@@ -888,7 +885,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         else if(e.getSource()==pillage){
             if (JOptionPane.showConfirmDialog(this, "Would you like to pillage a port?", "Settlement Building", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png")) != JOptionPane.YES_OPTION)
                 return;
-            
+
             resetReference(false);
             reference.isPortDestroying=true;
             reference.showBuiltImage("Resources/Preview_Images/Pillage.png","Pirate Special Action");
