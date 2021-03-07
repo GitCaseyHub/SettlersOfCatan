@@ -146,9 +146,8 @@ public class TradingFrame extends JFrame implements ActionListener {
             secondFrame.player.monoOre(Math.max((int)firstFrame.oreCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.oreCheck.getSelectedItem(), 0)));
             secondFrame.player.monoWheat(Math.max((int)firstFrame.wheatCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.wheatCheck.getSelectedItem(), 0)));
             secondFrame.player.monoWool(Math.max((int)firstFrame.sheepCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.sheepCheck.getSelectedItem(), 0)));
-
-            firstFrame.setVisible(false);
-            secondFrame.setVisible(false);
+            
+            Arrays.stream(new TradingFrame[]{firstFrame,secondFrame}).forEach(frame -> frame.setVisible(false));
             cbRef.updateAllStatusMenus();
         }
     }
