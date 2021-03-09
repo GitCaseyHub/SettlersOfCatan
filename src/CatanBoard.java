@@ -1264,7 +1264,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     for (Index index : indexes)
                         if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
                             for (Player player : catanPlayerList)
-                                if (index.getOwner() == player && !getPlayerStatusMenu(player).hasStolen && !tile.isOnFire())
+                                if (index.getOwner().equals(player) && !getPlayerStatusMenu(player).hasStolen && !tile.isOnFire())
                                     switch (tile.getType()) {
                                         case "Grain":
                                             player.changeGrain((tile.isCultivated()?2:1)*(index.isCity()?2:1));
