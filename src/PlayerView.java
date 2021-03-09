@@ -961,16 +961,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         return player.getOwnedIndexes().stream().anyMatch(Index::isSettlement);
     }
 
-    public boolean multiples(String type){
-        return player.getUnPlayedCards().stream().filter(card -> card.getType().equals(type)).count() > 1;
-    }
-
     public boolean findNumSelected(JCheckBox[] checkboxes){
         return Arrays.stream(checkboxes).filter(AbstractButton::isSelected).count() > 1 || Arrays.stream(checkboxes).noneMatch(AbstractButton::isSelected);
-    }
-
-    public boolean boughtAllOnSameTurn(String type){
-        return player.getUnPlayedCards().stream().filter(card -> card.getType().equals(type)).count() - (player.getUnPlayedCards()).stream().filter(card -> card.isBoughtThisTurn() && card.getType().equals(type)).count()==0;
     }
 
     public void mouseDragged(MouseEvent e) {}
