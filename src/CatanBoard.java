@@ -490,6 +490,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         JOptionPane.showMessageDialog(this, "You've created your two roads.", "Finished Action",1, new ImageIcon("Resources/Catan_Icon.png"));
                         performStaleReferenceReset(true);
                         finishedRoadCard = false;
+                        isRoadBuilding=false;
+                        finishedRoadCard=true;
                     }
                 }
             }
