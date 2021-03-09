@@ -225,7 +225,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void initializeDevelopmentDeck(){
         for(String str: devCards)
-            devCardDeck.add(new DevelopmentCard(str,new Player(),new ArrayList<Player>(),this,false));
+            devCardDeck.add(new DevelopmentCard(str,new Player(),new ArrayList<Player>(),this,true));
     }
 
     public DevelopmentCard drawDevelopmentCard(){
@@ -497,8 +497,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             if (redrawEverything) {
                 this.setVisible(false);
                 //Redraws Tiles
-                g.clearRect(0,0,1000,1000);
-                Thread.yield();
                 for (Tile value : tiles) {
                     BufferedImage tile = ImageIO.read(new File("Tiles/" + value.getType() + ".png"));
                     g.drawImage(tile, value.getPosition()[0], value.getPosition()[1], null);
@@ -1191,7 +1189,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         String[] appositives = {"1  ⇒  ","2  ⇒  ","3  ⇒  ","4  ⇒  "};
         StringBuilder turnString = new StringBuilder("The turn order: \n");
         for(int x=0; x<order.size()/2; x++)
-            turnString.append(appositives[x]).append(order.get(x)).append("\n");
+            turnString.append(appositives[x]).append("'").append(order.get(x)).append("'").append(" the ").append(getPlayerViaName(order.get(x)).getClassTitle()).append("\n");
 
         return turnString.toString();
     }
