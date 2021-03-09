@@ -133,7 +133,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
 
         if (player.getRoads() ==1)
             JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You only have one road left to build with, so this development card will only create a single road.", "Single Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
-
+        cbReference.performStaleReferenceReset(false);
         showDevelopmentImage("Resources/Preview_Images/Road_Building.png");
         Arrays.stream(new Boolean[]{cbReference.roadDevCard,cbReference.isRoadBuilding,cbReference.isPlayerActing}).forEach(bool -> bool=true);
         cbReference.finishedRoadCard=false;
