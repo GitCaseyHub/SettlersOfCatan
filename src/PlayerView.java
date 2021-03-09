@@ -338,6 +338,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     
     public void initializePlayFrame(){
         playFrame.add(playImagePanel);
+        playFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         playFrame.setBounds(devFrame.getBounds());
         playFrame.setTitle("Development Card Frame");
 
