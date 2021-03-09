@@ -262,9 +262,8 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             if(cbReference.highwaymanIsPresent())
                 otherPlayers.removeIf(player -> player.getClassTitle().equals("Highwayman"));
 
-            int confirm = JOptionPane.showConfirmDialog(cbReference.getPlayerStatusMenu(player),"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
-            if(confirm==0) {
-                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Okay. You will be given all resources of that type from other players.", "Monopoly Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+            if(JOptionPane.showConfirmDialog(cbReference.getPlayerStatusMenu(player),"Are you sure this is the resource you'd like to steal from other players?","Confirmation",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0) {
+                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You will be given all resources of that type from other players.", "Monopoly Action",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 for (Player otherPlayer : otherPlayers) {
                     if (brickCheck.isSelected()) {
                         player.monoBrick(otherPlayer.getBrickNum());
