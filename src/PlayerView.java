@@ -431,6 +431,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         resetReference(true);
         rollDice.setEnabled(true);
+        playedOneDevCard=false;
         Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,devCardsRemaining,setFire,cultivate}).forEach(item -> item.setEnabled(false));
         Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire,hasCultivated}).forEach(bool -> bool=false);
     }
