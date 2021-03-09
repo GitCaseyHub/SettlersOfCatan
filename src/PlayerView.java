@@ -637,6 +637,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             enableAppropriateDevCardImages();
             resetReference(false);
             playFrame.setVisible(true);
+            JOptionPane.showMessageDialog(playFrame,"Select the card you'd like to play.","Development Card Selection",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         else if(e.getSource()==exchange){
