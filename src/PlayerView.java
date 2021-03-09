@@ -120,6 +120,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     HashMap<Integer,String> alphaNumeric = new HashMap<>();
     String[] strNums = {"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"};
     int[] actNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+    
+    //Playing Development Cards
+    JFrame playFrame = new JFrame();
+    JPanel playImagePanel = new JPanel(new GridLayout(1,5));
+    JLabel[] playImages = new JLabel[5];
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
@@ -302,6 +307,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         pirate.addSeparator();
         initializeCostFrame();
         initializeDevCardFrame();
+        initializePlayFrame();
     }
 
     public void update(){
@@ -328,6 +334,21 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 afterRoll();
             else
                 startTurn();
+    }
+    
+    public void initializePlayFrame(){
+        playFrame.add(playImagePanel);
+        playFrame.setBounds(devFrame.getBounds());
+        playFrame.setTitle("Development Card Frame");
+
+        for(int x=0; x<5; x++){
+            playImages[x]= new JLabel("", SwingConstants.CENTER);
+            playImages[x].setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+            playImages[x].setIcon(new ImageIcon("Resources/Preview_Images/DevCardsResized/"+devPaths[x]+".png"));
+            playImages[x].addMouseListener(this);
+            playImagePanel.add(playImages[x]);
+        }
+        playFrame.revalidate();
     }
 
     public void initializeDevCardFrame(){
@@ -428,6 +449,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void initializeCostFrame(){
         costFrame.add(imageCostLabel);
         imageCostLabel.setIcon(new ImageIcon("Resources/Building_Costs.png"));
+        imageCostLabel.addMouseListener(this);
 
         costFrame.setBounds((int)this.getBounds().getX(),(int)this.getBounds().getY(),291,357);
         costFrame.setUndecorated(true);
@@ -600,34 +622,21 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
         }
 
-        else if(e.getSource()==playCard){
-            if(unplayed.getSelectedIndex()==0)
-                JOptionPane.showMessageDialog(this,"You must select a card name from your 'Hidden Cards' list. The name you have selected will be the card that is played.","Unplayable Card", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-            else {
-                DevelopmentCard playedCard = new DevelopmentCard();
-                for (int x = 0; x < player.getUnPlayedCards().size(); x++)
-                    if (Objects.requireNonNull(unplayed.getSelectedItem()).toString().equals(player.getUnPlayedCards().get(x).getType())) {
-                        playedCard = player.getUnPlayedCards().get(x);
-                        break;
-                    }
-
-                if ((multiples(playedCard.getType()) && !boughtAllOnSameTurn(playedCard.getType())) || !playedCard.isBoughtThisTurn()) {
-                    resetReference(false);
-                    JOptionPane.showMessageDialog(this, "You are playing a '" + Objects.requireNonNull(unplayed.getSelectedItem()).toString() + " Card'. Its effects are now being activated.", "Development Card Played", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                    playedCard.playCard();
-                    reference.managedCards.add(playedCard.getType());
-                    player.addDevelopmentCardToPlayed(playedCard);
-                    unplayed.removeItem(playedCard.getType());
-                    played.addItem(playedCard.getType());
-                    player.removeDevelopmentCardFromUnplayed(playedCard);
-                    reference.updateAllStatusMenus();
-                    unplayed.setSelectedIndex(0);
-                    playCard.setEnabled(false);
-                }
-                else {
-                    JOptionPane.showMessageDialog(this, "You cannot play a development card the same turn it was drawn. Wait until next turn to do so.", "Development Card Action Failed", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                }
+        else if(e.getSource()==playCard) {
+            if (player.getUnPlayedCards().size() == 0) {
+                JOptionPane.showMessageDialog(this, "You don't have any development cards.", "No Development Cards Available", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
             }
+            if (player.getUnPlayedCards().stream().allMatch(DevelopmentCard::isBoughtThisTurn)){
+                 JOptionPane.showMessageDialog(this, "All of your development cards have been purchased this turn. You must wait at least one turn to play one.", "All Development Cards Bought This Turn", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                 return;
+            }
+            if(JOptionPane.showConfirmDialog(this,"Would you like to play a development card?","Playing Development Card",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))!=JOptionPane.YES_OPTION)
+                return;
+
+            enableAppropriateDevCardImages();
+            resetReference(false);
+            playFrame.setVisible(true);
         }
 
         else if(e.getSource()==exchange){
@@ -666,6 +675,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         turnOrder.get(0).setTurn(true);
                         name=turnOrder.get(0).getName();
                     }
+
+            costFrame.setVisible(false);
+            playFrame.setVisible(false);
+            devFrame.setVisible(false);
+
             if((cataclysmOccurrence!=0 && reference.cataclysmsActive) || cataclysmOccurrence==69)
                 JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
@@ -678,7 +692,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 player.getUnPlayedCards().get(x).setBoughtThisTurn(false);
             tf.rejections.clear();
             tf.setVisible(false);
-            costFrame.setVisible(false);
             unplayed.setSelectedIndex(0);
             played.setSelectedIndex(0);
             update();
@@ -977,8 +990,22 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate}).forEach(menu -> menu.setEnabled(state));
     }
 
-    public void mousePressed(MouseEvent e) {
+    public void enableAppropriateDevCardImages(){
+        Arrays.stream(playImages).forEach(image -> image.setEnabled(false));
 
+        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Knight") && !card.isBoughtThisTurn()))
+            playImages[0].setEnabled(true);
+        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Monopoly") && !card.isBoughtThisTurn()))
+            playImages[1].setEnabled(true);
+        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Road Building") && !card.isBoughtThisTurn()))
+            playImages[2].setEnabled(true);
+        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Year of Plenty") && !card.isBoughtThisTurn()))
+            playImages[3].setEnabled(true);
+        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Victory Points") && !card.isBoughtThisTurn()))
+            playImages[4].setEnabled(true);
+    }
+
+    public void mousePressed(MouseEvent e) {
         if(e.getSource()==devImages[0])
             JOptionPane.showMessageDialog(devFrame, "There "+(reference.numDevCardsOfATypeLeft("Knight")==1?"is":"are") + (reference.devCardTransparency || reference.devCardDeck.size() == reference.size ? " " : ", at most, ") + alphaNumeric.get((int) reference.numDevCardsOfATypeLeft("Knight")) + " 'Knight' card"+(reference.numDevCardsOfATypeLeft("Knight")==1?"":"s")+ " remaining in the deck.","Knight Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
         if(e.getSource()==devImages[1])
@@ -989,6 +1016,30 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             JOptionPane.showMessageDialog(devFrame,"There "+(reference.numDevCardsOfATypeLeft("Year of Plenty")==1?"is":"are")+(reference.devCardTransparency || reference.devCardDeck.size() == reference.size ? " " : ", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Year of Plenty")))+" 'Year of Plenty' card"+(reference.numDevCardsOfATypeLeft("Year of Plenty")==1?"":"s")+" remaining in the deck.","Year of Plenty Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
         if(e.getSource()==devImages[4])
             JOptionPane.showMessageDialog(devFrame,"There "+(reference.numDevCardsOfATypeLeft("Victory Points")==1?"is":"are")+(reference.devCardTransparency || reference.devCardDeck.size() == reference.size ? " " : ", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Victory Points")))+" 'Victory Point' card"+(reference.numDevCardsOfATypeLeft("Victory Points")==1?"":"s")+" remaining in the deck.","Victory Point Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
+        if(e.getSource() == imageCostLabel)
+            costFrame.setVisible(false);
+
+        if(e.getSource()==playImages[0] && playImages[0].isEnabled()){playAppropriateCard("Knight");}
+        if(e.getSource()==playImages[1] && playImages[1].isEnabled()){playAppropriateCard("Monopoly");}
+        if(e.getSource()==playImages[2] && playImages[2].isEnabled()){playAppropriateCard("Road Building");}
+        if(e.getSource()==playImages[3] && playImages[3].isEnabled()){playAppropriateCard("Year of Plenty");}
+        if(e.getSource()==playImages[4] && playImages[4].isEnabled()){playAppropriateCard("Victory Points");}
+    }
+
+    public void playAppropriateCard(String devCard){
+        DevelopmentCard playedCard = player.getUnPlayedCards().stream().filter(card -> card.getType().equals(devCard) && !card.isBoughtThisTurn()).findFirst().orElse(new DevelopmentCard());
+        playFrame.setVisible(false);
+        JOptionPane.showMessageDialog(this, "You are playing a '"+devCard+" Card'. Its effects are now being activated.", "Development Card Played", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+        playedCard.playCard();
+        reference.managedCards.add(playedCard.getType());
+        player.addDevelopmentCardToPlayed(playedCard);
+        unplayed.removeItem(playedCard.getType());
+        played.addItem(playedCard.getType());
+        player.removeDevelopmentCardFromUnplayed(playedCard);
+        reference.updateAllStatusMenus();
+        unplayed.setSelectedIndex(0);
+        playCard.setEnabled(false);
+        resetReference(true);
     }
 
     @Override
