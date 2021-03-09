@@ -42,6 +42,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     //MenuBar manipulation
     boolean hasRolled=false;
     boolean loadedSpecialClasses=false;
+    boolean playedOneDevCard=false;
 
     //MenuBar
     JMenuBar mb = new JMenuBar();
@@ -435,7 +436,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void afterRoll() {
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,remainingResources,devCardsRemaining}).forEach(item -> item.setEnabled(true));
+        playCard.setEnabled(!playedOneDevCard);
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,exchange,fourForOne,endTurn,remainingResources,devCardsRemaining}).forEach(item -> item.setEnabled(true));
         if(!loadedSpecialClasses){
             steal.setEnabled(true);
             assassinate.setEnabled(true);
@@ -602,8 +604,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 return;
             }
 
-            int devInput = JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
-            if(devInput==0){
+            if(JOptionPane.showConfirmDialog(this,"Would you like to draw a development card?","Development Card Draw",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
                 if((player.getOreNum()>=1 && player.getWoolNum()>=1 && player.getGrainNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getOreNum()>=2 && player.getWoolNum()>=2 && player.getGrainNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     DevelopmentCard newDc = reference.drawDevelopmentCard();
                     newDc.setPlayer(this.player);
@@ -611,7 +612,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     JOptionPane.showMessageDialog(this,"You have purchased a development card."+((reference.devCardDeck.size()>0)?" There "+((reference.devCardDeck.size()==1)?"is ":"are ")+reference.devCardDeck.size()+" cards remaining.":" There are now no more development cards."),"Development Card", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     player.addDevelopmentCardToUnplayed(newDc);
                     unplayed.addItem(newDc.getType());
-
+                    readdDevCards(unplayed);
                     player.monoWool(isPirateOrSerf?-2:-1);
                     player.monoOre(isPirateOrSerf?-2:-1);
                     player.monoWheat(isPirateOrSerf?-2:-1);
@@ -638,7 +639,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             enableAppropriateDevCardImages();
             resetReference(false);
             playFrame.setVisible(true);
-            JOptionPane.showMessageDialog(playFrame,"Select the card you'd like to play.","Development Card Selection",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this,"Select the card you'd like to play.","Development Card Selection",1, new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         else if(e.getSource()==exchange){
@@ -1028,12 +1029,22 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         reference.managedCards.add(playedCard.getType());
         player.addDevelopmentCardToPlayed(playedCard);
         unplayed.removeItem(playedCard.getType());
-        played.addItem(playedCard.getType());
         player.removeDevelopmentCardFromUnplayed(playedCard);
+        readdDevCards(played);
         reference.updateAllStatusMenus();
         unplayed.setSelectedIndex(0);
         playCard.setEnabled(false);
+        playedOneDevCard=true;
         resetReference(true);
+    }
+
+    public void readdDevCards(JComboBox<Object> box){
+        String[] lookAppr = new String[]{"Knight","Monopoly","Road Building","Year of Plenty","Victory Points"};
+        box.removeAllItems();
+        box.addItem("Revealed Cards");
+        for (String s : lookAppr)
+            for (int y = 0; y < ((box.equals(played)?player.getPlayedCards():player.getUnPlayedCards())).stream().filter(card -> card.getType().equalsIgnoreCase(s)).count(); y++)
+                box.addItem(s);
     }
 
     @Override
