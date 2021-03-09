@@ -80,14 +80,15 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     public void playCard() {
         switch (this.type) {
             case "Knight":
+                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You will now play a knight that will move the robber to a new location.", "Knight Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 performKnightAction();
                 break;
             case "Victory Points":
                 JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You are awarded one victory point. This will now be reflected in your status screen.", "Victory Point Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 performVictoryPoints();
                 break;
-            case "Road Builder":
-                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You will now select two sets of indices to build roads on.", "Road Building Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+            case "Road Building":
+                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Select two sets of indices to build roads on.", "Road Building Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 performRoadBuilding();
                 break;
             case "Year of Plenty":
@@ -133,10 +134,10 @@ public class DevelopmentCard implements ActionListener, MouseListener {
 
         if (player.getRoads() ==1)
             JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You only have one road left to build with, so this development card will only create a single road.", "Single Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
-        cbReference.performStaleReferenceReset(false);
+
+        cbReference.getPlayerStatusMenu(player).resetReference(false);
         showDevelopmentImage("Resources/Preview_Images/Road_Building.png");
-        Arrays.stream(new Boolean[]{cbReference.roadDevCard,cbReference.isRoadBuilding,cbReference.isPlayerActing}).forEach(bool -> bool=true);
-        cbReference.finishedRoadCard=false;
+        cbReference.resetRoadBuilding();
     }
 
     public void performYearOfPlenty() {
@@ -214,7 +215,6 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             counter += (sheepCheck.isSelected()) ? 1 : -1;
             if ((counter == 2 && yearOfPlenty) || (counter==1 && monopoly))
                 disableAppropriateCheckBoxes();
-
             else
                 changeAllCheckBoxes(true);
         }
