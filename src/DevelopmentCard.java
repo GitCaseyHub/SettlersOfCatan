@@ -32,6 +32,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     boolean yearOfPlenty=false;
     boolean monopoly=false;
     boolean boughtThisTurn;
+    boolean singleUse=false;
 
     //Card Frame
     JFrame cardFrame = new JFrame();
@@ -92,7 +93,8 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                 performRoadBuilding();
                 break;
             case "Year of Plenty":
-                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Select two of the following five resources. You will be given one of each. These resources will still be amplified by your class.", "Year of Plenty Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                singleUse=JOptionPane.showConfirmDialog(cbReference.getPlayerStatusMenu(player),"Would you like two of the same resource?","Two of a Single Resource",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0;
+                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), (singleUse)?"Select the resource you'd like two of. This resource will not be amplified or diminished by your class.":"Select two of the following five resources. You will be given one of each. These resources will not be amplified or diminished because of your class.", "Year of Plenty Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 performYearOfPlenty();
                 break;
             case "Monopoly":
@@ -162,6 +164,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             graphicPanels[x] = new JPanel(new BorderLayout());
             graphicImageLabels[x] = new JLabel("", SwingConstants.CENTER);
             graphicImageLabels[x].setIcon(new ImageIcon("Resources/" + graphicStrings[x] + "_Image.png"));
+            graphicImageLabels[x].addMouseListener(this);
             graphicPanels[x].add(graphicImageLabels[x], BorderLayout.CENTER);
             graphicImageLabels[x].setBorder(compound);
             graphicHolder.add(graphicPanels[x]);
@@ -242,10 +245,24 @@ public class DevelopmentCard implements ActionListener, MouseListener {
             else
                 changeAllCheckBoxes(true);
         }
+        
+        if(counter==1 && yearOfPlenty && singleUse){
+            if (JOptionPane.showConfirmDialog(cbReference.getPlayerStatusMenu(player), "Are you sure you would like two of this resource?", "Confirmation", JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Okay. You will be given two of that resource.", "Resource Chosen", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                player.monoAll((woodCheck.isSelected() ? 2 : 0),(sheepCheck.isSelected() ? 2 : 0),(brickCheck.isSelected() ? 2 : 0),(oreCheck.isSelected() ? 2 : 0),(wheatCheck.isSelected() ? 2 : 0));
+                cbReference.getPlayerStatusMenu(player).update();
+                choiceFrame.setVisible(false);
+                deselectAll();
+                cbReference.getPlayerStatusMenu(player).resetReference(true);
+                yearOfPlenty=false;
+                return;
+            }
+            deselectAll();
+            JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Okay. Select the resource you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+        }
 
-        if (counter == 2 && yearOfPlenty) {
-            int confirmation = JOptionPane.showConfirmDialog(cbReference.getPlayerStatusMenu(player), "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
-            if (confirmation == 0) {
+        if (counter == 2 && yearOfPlenty &&!singleUse) {
+            if (JOptionPane.showConfirmDialog(cbReference.getPlayerStatusMenu(player), "Are you sure you would like these two resources?", "Confirmation", JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
                 JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Okay. You will be given your chosen resources.", "Resources Chosen", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 player.monoAll((woodCheck.isSelected() ? 1 : 0),(sheepCheck.isSelected() ? 1 : 0),(brickCheck.isSelected() ? 1 : 0),(oreCheck.isSelected() ? 1 : 0),(wheatCheck.isSelected() ? 1 : 0));
                 cbReference.getPlayerStatusMenu(player).update();
@@ -253,9 +270,10 @@ public class DevelopmentCard implements ActionListener, MouseListener {
                 deselectAll();
                 cbReference.getPlayerStatusMenu(player).resetReference(true);
                 yearOfPlenty=false;
-
-            } else
-                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Okay. Reselect the resources you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            deselectAll();
+            JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "Okay. Reselect the resources you want.", "Cancellation",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         if(counter==1 && monopoly){
