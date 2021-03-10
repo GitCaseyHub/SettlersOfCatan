@@ -492,6 +492,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if((!player.getClassTitle().equals("Pirate") && player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4) || (player.getClassTitle().equalsIgnoreCase("Pirate") && player.returnTotalResources()>0))
                 JOptionPane.showMessageDialog(this,"You don't have sufficient resources to do a trade of this kind.","Insufficient Resources", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             else{
+                if (player.isInDebt()) {
+                    JOptionPane.showMessageDialog(this, "You are in debt. You cannot make 4:1 exchanges until you have all non-negative resource values.", "In-Debt Player", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                    return;
+                }
                 boolean isPirate = player.getClassTitle().equalsIgnoreCase("Pirate");
                 int confirm = JOptionPane.showConfirmDialog(this,isPirate?"Would you like to trade in one resource for another one resource?":"Would you like to trade in four of a resource for one of another resource?","Generic Resource Exchange",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
                 if(confirm==JOptionPane.YES_OPTION) {
@@ -644,13 +648,17 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==exchange){
-            if(tf.isVisible())
-                JOptionPane.showMessageDialog(this,"You already have your trading frame open.","Already Open", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-            else {
-                reference.showBuiltImage("Resources/Preview_Images/Trade.png","Resource Exchange");
-                this.tf.setVisible(true);
-                this.tf.updateComboBoxes();
+            if(tf.isVisible()) {
+                JOptionPane.showMessageDialog(this, "You already have your trading frame open.", "Already Open", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
             }
+            if (player.isInDebt()) {
+                JOptionPane.showMessageDialog(this, "You are in debt. You cannot trade with other players until you have all non-negative resource values.", "In-Debt Player", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            reference.showBuiltImage("Resources/Preview_Images/Trade.png", "Resource Exchange");
+            this.tf.setVisible(true);
+            this.tf.updateComboBoxes();
         }
 
         else if(e.getSource()==endTurn){
@@ -1042,7 +1050,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void readdDevCards(JComboBox<Object> box){
         String[] lookAppr = new String[]{"Knight","Monopoly","Road Building","Year of Plenty","Victory Points"};
         box.removeAllItems();
-        box.addItem("Revealed Cards");
+        box.addItem((box.equals(played)?"Revealed Cards":"Hidden Cards"));
         for (String s : lookAppr)
             for (int y = 0; y < ((box.equals(played)?player.getPlayedCards():player.getUnPlayedCards())).stream().filter(card -> card.getType().equalsIgnoreCase(s)).count(); y++)
                 box.addItem(s);
