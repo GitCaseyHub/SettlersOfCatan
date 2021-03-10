@@ -95,6 +95,10 @@ public class TradingFrame extends JFrame implements ActionListener {
                         JOptionPane.showMessageDialog(this, "You cannot trade with assassins.", "Improper Trade Request", 1, new ImageIcon("Resources/Catan_Icon.png"));
                         return;
                     }
+                    if(cbRef.getPlayerViaName(playerName).isInDebt()) {
+                        JOptionPane.showMessageDialog(this, "You cannot trade with players who are in debt.", "Debtor Trade Denied", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
 
                     if (rejections.contains(playerName)) {
                         JOptionPane.showMessageDialog(this, "That player has already rejected your trade request.", "Previous Rejection", 1, new ImageIcon("Resources/Catan_Icon.png"));
