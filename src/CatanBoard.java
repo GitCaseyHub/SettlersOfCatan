@@ -651,6 +651,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                             if (index.isTaken() && index.getOwner().getName().equals(getCurrentPlayer().getName())) {
                                 if(!port.isDestroyed) {
+                                    if (getCurrentPlayer().isInDebt()) {
+                                        JOptionPane.showMessageDialog(this, "You are in debt. You cannot use ports until you have all non-negative resource values.", "In-Debt Player", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                                        return;
+                                    }
                                     usePort(port);
                                     return;
                                 }
