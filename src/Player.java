@@ -1,7 +1,7 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Player {
     String color,name,classTitle;
@@ -350,6 +350,10 @@ public class Player {
         this.monoBrick(costMultiplier?2*brick:brick);
         this.monoOre(costMultiplier?2*ore:ore);
         this.monoWheat(costMultiplier?2*grain:grain);
+    }
+
+    public boolean isInDebt(){
+        return Arrays.stream(new int[]{lumberNum,woolNum,brickNum,grainNum,oreNum}).anyMatch(resource -> resource<0);
     }
 
     public void pass(){
