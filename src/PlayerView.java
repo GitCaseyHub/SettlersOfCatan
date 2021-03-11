@@ -64,6 +64,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     //Development Card Prep
     String[] devCardTypes = {"Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Year of Plenty","Year of Plenty","Victory Points","Victory Points","Victory Points","Victory Points","Victory Points","Monopoly","Monopoly","Road Builder","Road Builder"};
+    String[] lookAppr = new String[]{"Knight","Monopoly","Road Building","Year of Plenty","Victory Points"};
 
     //Building Costs Frame
     JFrame costFrame = new JFrame();
@@ -998,17 +999,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void enableAppropriateDevCardImages(){
         Arrays.stream(playImages).forEach(image -> image.setEnabled(false));
-
-        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Knight") && !card.isBoughtThisTurn()))
-            playImages[0].setEnabled(true);
-        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Monopoly") && !card.isBoughtThisTurn()))
-            playImages[1].setEnabled(true);
-        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Road Building") && !card.isBoughtThisTurn()))
-            playImages[2].setEnabled(true);
-        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Year of Plenty") && !card.isBoughtThisTurn()))
-            playImages[3].setEnabled(true);
-        if(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals("Victory Points") && !card.isBoughtThisTurn()))
-            playImages[4].setEnabled(true);
+        for(int x=0; x<lookAppr.length; x++) {
+            int finalX = x;
+            playImages[x].setEnabled(player.getUnPlayedCards().stream().anyMatch(card -> card.getType().equals(lookAppr[finalX]) && !card.isBoughtThisTurn()));
+        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -1050,7 +1044,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void readdDevCards(JComboBox<Object> box){
-        String[] lookAppr = new String[]{"Knight","Monopoly","Road Building","Year of Plenty","Victory Points"};
         box.removeAllItems();
         box.addItem((box.equals(played)?"Revealed Cards":"Hidden Cards"));
         for (String s : lookAppr)
