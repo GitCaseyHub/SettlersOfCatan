@@ -127,6 +127,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JPanel playImagePanel = new JPanel(new GridLayout(1,5));
     JLabel[] playImages = new JLabel[5];
 
+    public PlayerView(){}
+
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         //Relating global variables to class variables
         this.player = player;
@@ -959,7 +961,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public Player findPlayerMatch(JCheckBox[] cbs){
-        return reference.getPlayerViaName(Arrays.stream(cbs).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0).getText());
+        return reference.getPlayerViaName(Arrays.stream(cbs).filter(AbstractButton::isSelected).findFirst().get().getText());
     }
 
     public ArrayList<String> getCardNames(){
