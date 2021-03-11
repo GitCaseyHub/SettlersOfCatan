@@ -13,6 +13,8 @@ public class Index {
         this.isSettlement=isSettlement;
     }
 
+    public Index(){}
+
     public boolean isSettlement() {
         return isSettlement;
     }
