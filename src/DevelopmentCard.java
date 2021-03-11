@@ -81,7 +81,6 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     public void playCard() {
         switch (this.type) {
             case "Knight":
-                JOptionPane.showMessageDialog(cbReference.getPlayerStatusMenu(player), "You will now play a knight that will move the robber to a new location.", "Knight Action", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 performKnightAction();
                 break;
             case "Victory Points":
