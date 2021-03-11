@@ -1029,11 +1029,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public Index returnAppropriateIndex(int chosen_x, int chosen_y) {
-        return Arrays.stream(indexes).filter(index -> index.getLocation()[0] == chosen_x && index.getLocation()[1] == chosen_y).collect(Collectors.toCollection(ArrayList::new)).get(0);
+        return Arrays.stream(indexes).filter(index -> index.getLocation()[0] == chosen_x && index.getLocation()[1] == chosen_y).findFirst().orElse(new Index());
     }
 
     public Player getPlayerViaName(String name) {
-        return catanPlayerList.stream().filter(player -> player.getName().equals(name)).collect(Collectors.toCollection(ArrayList::new)).get(0);
+        return catanPlayerList.stream().filter(player -> player.getName().equals(name)).findFirst().orElse(new Player());
     }
 
     public boolean playerExists(String name){
@@ -1108,7 +1108,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     //Returns the player whose turn is currently taking place
     public Player getCurrentPlayer(){
-        return catanPlayerList.stream().filter(Player::isTurn).collect(Collectors.toCollection(ArrayList::new)).get(0);
+        return catanPlayerList.stream().filter(Player::isTurn).findFirst().orElse(new Player());
     }
 
     //Building condition for settlements (one of them)
@@ -1255,7 +1255,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public PlayerView getPlayerStatusMenu(Player player) {
-        return Arrays.stream(statusViewer).filter(players -> players.player.equals(player)).collect(Collectors.toCollection(ArrayList::new)).get(0);
+        return Arrays.stream(statusViewer).filter(players -> players.player.equals(player)).findFirst().orElse(new PlayerView());
     }
 
     public ArrayList<Index> getOwnedIndexes(Player player) {
@@ -1721,7 +1721,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public Port getPortAtLocation(Point[] points){
-        return Arrays.stream(ports).filter(port -> Arrays.equals(port.getLocations(), points)).collect(Collectors.toCollection(ArrayList::new)).get(0);
+        return Arrays.stream(ports).filter(port -> Arrays.equals(port.getLocations(), points)).findFirst().orElse(new Port());
     }
 
     public void cataclysm(){
@@ -1843,7 +1843,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 if (statusViewer[0].findNumSelected(democracyBoxes))
                     JOptionPane.showMessageDialog(getPlayerStatusMenu(catanPlayerList.get(x)), "You must vote for a single player to be leader.", "Democracy Failure", 1, new ImageIcon("Resources/Catan_Icon.png"));
             }
-            JCheckBox selectedBox = Arrays.stream(democracyBoxes).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
+            JCheckBox selectedBox = Arrays.stream(democracyBoxes).filter(AbstractButton::isSelected).findFirst().orElse(new JCheckBox());
             for(Player player:catanPlayerList)
                 player.addVotes(selectedBox.getText().equals(player.getName())?1:0);
 
