@@ -961,7 +961,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         }
 
                         if (cultivateResource.equals("")) {
-                            JOptionPane.showMessageDialog(this, "You cannot cultivate a desert. Good luck on that.", "Desert Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                            JOptionPane.showMessageDialog(this, "You cannot cultivate a desert. It is completely barren.", "Desert Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             return;
                         }
 
