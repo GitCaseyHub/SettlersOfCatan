@@ -119,6 +119,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JPanel devImagePanel =new JPanel(new GridLayout(1,5));
     JLabel[] devImages = new JLabel[5];
     String[] devPaths = new String[]{"Knight","Monopoly","Road_Building","Year_Of_Plenty","University"};
+    HashMap<String,String> plurals = new HashMap<>();
+    String[] pluralStrings = new String[]{"Knights","Monopolies","Road Buildings","Year of Plentys","Victory Points"};
     HashMap<Integer,String> alphaNumeric = new HashMap<>();
     String[] strNums = {"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"};
     int[] actNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
@@ -310,9 +312,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         arsonist.addSeparator();
         cultivator.addSeparator();
         pirate.addSeparator();
+        pluralInitialization();
         initializeCostFrame();
         initializeDevCardFrame();
         initializePlayFrame();
+    }
+
+    public void pluralInitialization(){
+        for(int x=0; x<pluralStrings.length; x++)
+            plurals.put(lookAppr[x],pluralStrings[x]);
     }
 
     public void update(){
@@ -1049,7 +1057,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         for (String s : lookAppr) {
             if((box.equals(played) ? player.getPlayedCards() : player.getUnPlayedCards()).stream().anyMatch(card -> card.getType().equalsIgnoreCase(s))) {
                 num = (box.equals(played) ? player.getPlayedCards() : player.getUnPlayedCards()).stream().filter(card -> card.getType().equalsIgnoreCase(s)).count();
-                box.addItem(s + ((num > 1) ? (" x " + num) : ""));
+                box.addItem(num+" "+((num>1)?plurals.get(s):s));
             }
         }
     }
