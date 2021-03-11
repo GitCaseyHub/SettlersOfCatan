@@ -70,6 +70,8 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     boolean loadedIn=false;
     boolean submitted;
 
+    public PlayerSelect(){}
+
     public PlayerSelect(BeginGame bgReference, int referenceNumber, boolean submitted){
         this.setResizable(false);
         this.bgReference=bgReference;
