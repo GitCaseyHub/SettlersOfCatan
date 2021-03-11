@@ -232,7 +232,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     public static void main(String[] args){new BeginGame();}
 
     public PlayerSelect findPlayerSelectFrame(Player player){
-        return Arrays.stream(playerCreation).filter(frame -> frame.nameField.getText().equalsIgnoreCase(player.getName()) && !frame.submitted).collect(Collectors.toCollection(ArrayList::new)).get(0);
+        return Arrays.stream(playerCreation).filter(frame -> frame.nameField.getText().equalsIgnoreCase(player.getName()) && !frame.submitted).findFirst().orElse(new PlayerSelect());
     }
 
     public void addPlayer(Player addedPlayer,int referenceNumber){
