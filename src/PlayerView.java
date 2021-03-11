@@ -122,6 +122,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     HashMap<Integer,String> alphaNumeric = new HashMap<>();
     String[] strNums = {"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"};
     int[] actNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+    long num;
     
     //Playing Development Cards
     JFrame playFrame = new JFrame();
@@ -1033,7 +1034,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         playedCard.playCard();
         reference.managedCards.add(playedCard.getType());
         player.addDevelopmentCardToPlayed(playedCard);
-        unplayed.removeItem(playedCard.getType());
         player.removeDevelopmentCardFromUnplayed(playedCard);
         readdDevCards(played);
         reference.updateAllStatusMenus();
@@ -1046,9 +1046,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void readdDevCards(JComboBox<Object> box){
         box.removeAllItems();
         box.addItem((box.equals(played)?"Revealed Cards":"Hidden Cards"));
-        for (String s : lookAppr)
-            for (int y = 0; y < ((box.equals(played)?player.getPlayedCards():player.getUnPlayedCards())).stream().filter(card -> card.getType().equalsIgnoreCase(s)).count(); y++)
-                box.addItem(s);
+        for (String s : lookAppr) {
+            if((box.equals(played) ? player.getPlayedCards() : player.getUnPlayedCards()).stream().anyMatch(card -> card.getType().equalsIgnoreCase(s))) {
+                num = (box.equals(played) ? player.getPlayedCards() : player.getUnPlayedCards()).stream().filter(card -> card.getType().equalsIgnoreCase(s)).count();
+                box.addItem(s + ((num > 1) ? (" x " + num) : ""));
+            }
+        }
     }
 
     @Override
