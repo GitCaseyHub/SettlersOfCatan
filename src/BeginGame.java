@@ -15,7 +15,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel borderPanel = new JPanel(new BorderLayout());
     JButton generateChars = new JButton("Create Characters");
     JButton startGame = new JButton("Start Game");
-    CustomSwitch activePorts = new CustomSwitch("Trading w/ Ports",false);
+    CustomSwitch activePorts = new CustomSwitch("Port Trading",false);
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms",false);
     CustomSwitch base = new CustomSwitch("Character Uniformity",false);
     CustomSwitch razing = new CustomSwitch("Tile Desertification",false);
@@ -41,11 +41,11 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JMenu optionMenu = new JMenu("Features");
     JMenu help = new JMenu("Help");
     JMenu modes = new JMenu("Modes");
-    JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable Preview Frame");
-    JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable MotionListener Frame");
+    JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable 'Preview' Frame");
+    JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable 'Awards' Frame");
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
-    JCheckBoxMenuItem devCardTransparency = new JCheckBoxMenuItem("Enable Development Card Transparency");
+    JCheckBoxMenuItem devCardTransparency = new JCheckBoxMenuItem("Enable Card Transparency");
     JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
     JCheckBoxMenuItem democracyMode = new JCheckBoxMenuItem("Democracy Mode");
     JMenuItem helpMenu = new JMenuItem("How-To Guide");
