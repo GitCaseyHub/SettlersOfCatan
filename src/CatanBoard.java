@@ -857,6 +857,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 getCurrentPlayer().changeVictoryPoints(1);
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                 getCurrentPlayer().changeCityNum(-1);
+                getCurrentPlayer().changeSettlementNum(1);
                 showBuiltImage("Resources/Preview_Images/City.png","City Construction");
             }
         }
