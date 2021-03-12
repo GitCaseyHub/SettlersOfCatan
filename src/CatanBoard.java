@@ -1315,13 +1315,15 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         int knightCounter = (int)(player.getPlayedCards()).stream().filter(card -> card.getType().equals("Knight")).count();
 
         if (knightCounter > currentLargestArmy && largestArmyPlayer != getCurrentPlayer()) {
-            largestArmyPlayer.setLargestArmy(false);
-            largestArmyPlayer.changeVictoryPoints(-2);
+            if(currentLargestArmy!=2) {
+                largestArmyPlayer.setLargestArmy(false);
+                largestArmyPlayer.changeVictoryPoints(-2);
+            }
             player.setLargestArmy(true);
             player.changeVictoryPoints(2);
             largestArmyPlayer = player;
             currentLargestArmy = knightCounter;
-            JOptionPane.showMessageDialog(this, "There is a new largest army of size " + knightCounter + " controlled by " + player.getName() + ".", "New Largest Army",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this, "There is a new largest army of size " + getPlayerStatusMenu(getCurrentPlayer()).alphaNumeric.get(knightCounter) + " controlled by " + player.getName() + ".", "New Largest Army",1, new ImageIcon("Resources/Catan_Icon.png"));
             updateAllStatusMenus();
         }
     }
