@@ -1044,6 +1044,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         player.addDevelopmentCardToPlayed(playedCard);
         player.removeDevelopmentCardFromUnplayed(playedCard);
         readdDevCards(played);
+        readdDevCards(unplayed);
         reference.updateAllStatusMenus();
         unplayed.setSelectedIndex(0);
         playCard.setEnabled(false);
