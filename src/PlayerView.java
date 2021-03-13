@@ -101,6 +101,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenu pirate = new JMenu("Pirate");
     JMenuItem pillage = new JMenuItem("Pillage");
     boolean hasPillaged=false;
+    boolean isPirate;
 
     //Special Classes
     JCheckBox[] playerNames;
@@ -125,6 +126,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     String[] strNums = {"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"};
     int[] actNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
     long num;
+    int numRepeats;
     
     //Playing Development Cards
     JFrame playFrame = new JFrame();
@@ -324,11 +326,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void update(){
-        brickNum.setText((!player.isTurn()?"?":""+player.getBrickNum()));
-        oreNum.setText((!player.isTurn()?"?":""+player.getOreNum()));
-        sheepNum.setText((!player.isTurn()?"?":""+player.getWoolNum()));
-        wheatNum.setText((!player.isTurn()?"?":""+player.getGrainNum()));
-        woodNum.setText((!player.isTurn()?"?":""+player.getLumberNum()));
+        brickNum.setText((!player.isTurn()?"-":""+player.getBrickNum()));
+        oreNum.setText((!player.isTurn()?"-":""+player.getOreNum()));
+        sheepNum.setText((!player.isTurn()?"-":""+player.getWoolNum()));
+        wheatNum.setText((!player.isTurn()?"-":""+player.getGrainNum()));
+        woodNum.setText((!player.isTurn()?"-":""+player.getLumberNum()));
         largestArmyBox.setSelected(player.hasLargestArmy());
         longestRoadBox.setSelected(player.hasLongestRoad());
         victoryPointLabel.setText("   "+player.getVictoryPointTotal()+"   ");
@@ -501,14 +503,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==fourForOne) {
-            if((!player.getClassTitle().equals("Pirate") && player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4) || (player.getClassTitle().equalsIgnoreCase("Pirate") && player.returnTotalResources()>0))
+            if((!player.getClassTitle().equals("Pirate") && player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4) || (player.getClassTitle().equalsIgnoreCase("Pirate") && player.returnTotalResources()==0))
                 JOptionPane.showMessageDialog(this,"You don't have sufficient resources to do a trade of this kind.","Insufficient Resources", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             else{
                 if (player.isInDebt()) {
                     JOptionPane.showMessageDialog(this, "You are in debt. You cannot make 4:1 exchanges until you have all non-negative resource values.", "In-Debt Player", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                     return;
                 }
-                boolean isPirate = player.getClassTitle().equalsIgnoreCase("Pirate");
+                isPirate = player.getClassTitle().equalsIgnoreCase("Pirate");
                 int confirm = JOptionPane.showConfirmDialog(this,isPirate?"Would you like to trade in one resource for another one resource?":"Would you like to trade in four of a resource for one of another resource?","Generic Resource Exchange",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
                 if(confirm==JOptionPane.YES_OPTION) {
                     try {
@@ -519,12 +521,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                             if (!exchangeResource.equalsIgnoreCase("Sheep") && !exchangeResource.equalsIgnoreCase("Lumber") && !exchangeResource.equalsIgnoreCase("Ore") && !exchangeResource.equalsIgnoreCase("Brick") && !exchangeResource.equalsIgnoreCase("Wheat"))
                                 JOptionPane.showMessageDialog(this, "That is not one of the resource choices. Please choose again.", "Invalid Resource", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
-                            if (!isPirate && (exchangeResource.equalsIgnoreCase("Sheep") && player.getWoolNum() < 4) || (exchangeResource.equalsIgnoreCase("Lumber") && player.getLumberNum() < 4) || (exchangeResource.equalsIgnoreCase("Ore") && player.getOreNum() < 4) || (exchangeResource.equalsIgnoreCase("Bric") && player.getBrickNum() < 4) || (exchangeResource.equalsIgnoreCase("Wheat") && player.getGrainNum() < 4)) {
+                            if (!isPirate && (exchangeResource.equalsIgnoreCase("Sheep") && player.getWoolNum() < 4) || !isPirate && (exchangeResource.equalsIgnoreCase("Lumber") && player.getLumberNum() < 4) || !isPirate && (exchangeResource.equalsIgnoreCase("Ore") && player.getOreNum() < 4) || !isPirate && (exchangeResource.equalsIgnoreCase("Bric") && player.getBrickNum() < 4) || !isPirate && (exchangeResource.equalsIgnoreCase("Wheat") && player.getGrainNum() < 4)) {
                                 JOptionPane.showMessageDialog(this, "You do not have at least four of that resource to complete an exchange.", "Invalid Resource", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                                 exchangeResource = "";
                             }
                         }
-                        JCheckBox[] optionResources = new JCheckBox[]{new JCheckBox("Sheep"), new JCheckBox("Lumber"), new JCheckBox("Ore"), new JCheckBox("Brick"), new JCheckBox("Wheat")};
+                        JCheckBox[] optionResources = new JCheckBox[]{new JCheckBox("Brick"), new JCheckBox("Ore"), new JCheckBox("Sheep"), new JCheckBox("Wheat"), new JCheckBox("Lumber")};
                         for (JCheckBox optionResource : optionResources)
                             if (optionResource.getText().equalsIgnoreCase(exchangeResource))
                                 optionResource.setEnabled(false);
@@ -534,28 +536,40 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                             if (findNumSelected(optionResources))
                                 JOptionPane.showMessageDialog(this, "You must select a single resource to trade in for.", "Invalid Selection", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                         }
+                        try {
+                            numRepeats = Integer.parseInt((String) JOptionPane.showInputDialog(this, "How many times would you like to make this resource exchange?", "Resource Exchange Repetition", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null));
 
-                        if (optionResources[0].isSelected())
-                            player.monoWool(1);
-                        else if (optionResources[1].isSelected())
-                            player.monoLumber(1);
-                        else if (optionResources[2].isSelected())
-                            player.monoOre(1);
-                        else if (optionResources[3].isSelected())
-                            player.monoBrick(1);
-                        else if (optionResources[4].isSelected())
-                            player.monoWheat(1);
+                            if(!canRepeat(numRepeats,exchangeResource))
+                                JOptionPane.showMessageDialog(this,"You cannot make that exchange "+alphaNumeric.get(numRepeats) +" times. It will be done a single time by default.","Resource Exchange Denial",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        }
+                        catch(Exception f){
+                            numRepeats = 1;
+                            JOptionPane.showMessageDialog(this,"That is not an acceptable value. You will make the exchange a single time.","Resource Exchange Denial",1, new ImageIcon("Resources/Catan_Icon.png"));
+                        }
+                        int reps = (canRepeat(numRepeats,exchangeResource)?numRepeats:1);
+                        for(int x=0; x<reps;x++) {
+                            if (optionResources[0].isSelected())
+                                player.monoWool(1);
+                            else if (optionResources[1].isSelected())
+                                player.monoLumber(1);
+                            else if (optionResources[2].isSelected())
+                                player.monoOre(1);
+                            else if (optionResources[3].isSelected())
+                                player.monoBrick(1);
+                            else if (optionResources[4].isSelected())
+                                player.monoWheat(1);
 
-                        if (exchangeResource.equalsIgnoreCase("Sheep"))
-                            player.monoWool(isPirate?-1:-4);
-                        else if (exchangeResource.equalsIgnoreCase("Lumber"))
-                            player.monoLumber(isPirate?-1:-4);
-                        else if (exchangeResource.equalsIgnoreCase("Brick"))
-                            player.monoBrick(isPirate?-1:-4);
-                        else if (exchangeResource.equalsIgnoreCase("Ore"))
-                            player.monoOre(isPirate?-1:-4);
-                        else if (exchangeResource.equalsIgnoreCase("Wheat"))
-                            player.monoWheat(isPirate?-1:-4);
+                            if (exchangeResource.equalsIgnoreCase("Sheep"))
+                                player.monoWool(isPirate ? -1 : -4);
+                            else if (exchangeResource.equalsIgnoreCase("Lumber"))
+                                player.monoLumber(isPirate ? -1 : -4);
+                            else if (exchangeResource.equalsIgnoreCase("Brick"))
+                                player.monoBrick(isPirate ? -1 : -4);
+                            else if (exchangeResource.equalsIgnoreCase("Ore"))
+                                player.monoOre(isPirate ? -1 : -4);
+                            else if (exchangeResource.equalsIgnoreCase("Wheat"))
+                                player.monoWheat(isPirate ? -1 : -4);
+                        }
 
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Exchange Complete", JOptionPane.INFORMATION_MESSAGE);
                     } catch (NullPointerException cancelCaught) {
@@ -633,7 +647,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     player.monoWool(isPirateOrSerf?-2:-1);
                     player.monoOre(isPirateOrSerf?-2:-1);
                     player.monoWheat(isPirateOrSerf?-2:-1);
-
                     update();
                 }
                 else
@@ -987,6 +1000,25 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public boolean findNumSelected(JCheckBox[] checkboxes){
         return Arrays.stream(checkboxes).filter(AbstractButton::isSelected).count() > 1 || Arrays.stream(checkboxes).noneMatch(AbstractButton::isSelected);
+    }
+
+    public boolean canRepeat(int numRepetitions, String resource){
+        if(resource.equalsIgnoreCase("Sheep"))
+            return player.getWoolNum()>=numRepetitions*((isPirate)?1:4);
+
+        if(resource.equalsIgnoreCase("Lumber"))
+            return player.getLumberNum()>=numRepetitions*((isPirate)?1:4);
+
+        if(resource.equalsIgnoreCase("Brick"))
+            return player.getBrickNum()>=numRepetitions*((isPirate)?1:4);
+
+        if(resource.equalsIgnoreCase("Ore"))
+            return player.getOreNum()>=numRepetitions*((isPirate)?1:4);
+
+        if(resource.equalsIgnoreCase("Wheat"))
+            return player.getGrainNum()>=numRepetitions*((isPirate)?1:4);
+
+        return false;
     }
 
     public void mouseDragged(MouseEvent e) {}
