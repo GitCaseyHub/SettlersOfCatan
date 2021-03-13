@@ -15,7 +15,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JPanel borderPanel = new JPanel(new BorderLayout());
     JButton generateChars = new JButton("Create Characters");
     JButton startGame = new JButton("Start Game");
-    CustomSwitch activePorts = new CustomSwitch("Port Trading",false);
+    CustomSwitch activePorts = new CustomSwitch("Port Exchanges",false);
     CustomSwitch cataclysms = new CustomSwitch("Cataclysms",false);
     CustomSwitch base = new CustomSwitch("Character Uniformity",false);
     CustomSwitch razing = new CustomSwitch("Tile Desertification",false);
