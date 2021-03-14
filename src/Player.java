@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class Player {
     String color,name,classTitle;
@@ -333,7 +334,7 @@ public class Player {
     }
 
     public int returnTotalResources(){
-        return grainNum+brickNum+lumberNum+woolNum+oreNum;
+        return IntStream.of(grainNum,brickNum,lumberNum,woolNum,oreNum).sum();
     }
 
     public void failGamble(){
