@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -48,6 +50,17 @@ public class Player {
         victory.setSize(810,533);
         victory.setLocation(dim.width/2-victory.getSize().width/2, dim.height/2-victory.getSize().height/2);
         victory.add(victoryLabel);
+
+        victoryLabel.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                try{Thread.sleep(500);}
+                catch(InterruptedException ignored){}
+                JOptionPane.showMessageDialog(victory,"Thanks for playing.","Game Over",1, new ImageIcon("Resources/Catan_Icon.png"));
+                victory.setVisible(false);
+                System.exit(0);
+            }
+        });
+
         victoryLabel.setIcon(new ImageIcon("Resources/Victory.png"));
         victoryLabel.setBorder(cb.compound);
         victory.setVisible(true);
@@ -366,7 +379,7 @@ public class Player {
         if (this.getVictoryPointTotal() >= 10) {
             cb.endGame();
             loadUpVictoryFrame();
-            JOptionPane.showMessageDialog(victory, this.getName() + ", you've won this 'Settlers of Catan'® game.", "Game's End", 1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(victory, this.getName() + ", you've won Settlers of Catan®.", "Game Over", 1, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 }
