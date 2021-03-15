@@ -1873,4 +1873,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
         catanPlayerList.forEach(player-> player.votes=0);
     }
+
+    public void endGame(){
+        this.setVisible(false);
+        Arrays.stream(statusViewer).forEach(frame -> frame.setVisible(false));
+    }
 }
