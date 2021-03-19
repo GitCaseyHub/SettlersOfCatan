@@ -3,7 +3,6 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
 public class PlayerView extends JFrame implements ActionListener, MouseMotionListener, MouseListener {
@@ -103,6 +102,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     boolean hasPillaged=false;
     boolean isPirate;
 
+    //Brewer Menu
+    JMenu brewer = new JMenu("Brewer");
+    JMenuItem confound = new JMenuItem("Confound");
+    boolean hasConfounded=false;
+
     //Special Classes
     JCheckBox[] playerNames;
     Player chosenPlayer;
@@ -149,6 +153,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         arsonist.addSeparator();
         cultivator.addSeparator();
         pirate.addSeparator();
+        brewer.addSeparator();
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -222,6 +227,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 pillage.addActionListener(this);
                 pillage.setEnabled(false);
                 pirate.setEnabled(false);
+            }
+            if(player.getClassTitle().equals("Brewer")){
+                mb.add(brewer);
+                brewer.add(confound);
+                confound.addActionListener(this);
+                confound.setEnabled(false);
+                brewer.setEnabled(false);
             }
         }
 
@@ -313,6 +325,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         assassin.addSeparator();
         arsonist.addSeparator();
         cultivator.addSeparator();
+        brewer.addSeparator();
         pirate.addSeparator();
         pluralInitialization();
         initializeCostFrame();
@@ -446,8 +459,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         resetReference(true);
         rollDice.setEnabled(true);
         playedOneDevCard=false;
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,devCardsRemaining,setFire,cultivate}).forEach(item -> item.setEnabled(false));
-        Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire,hasCultivated}).forEach(bool -> bool=false);
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,devCardsRemaining,setFire,cultivate,confound}).forEach(item -> item.setEnabled(false));
+        Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire,hasCultivated,hasConfounded}).forEach(bool -> bool=false);
     }
 
     public void afterRoll() {
@@ -458,6 +471,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             assassinate.setEnabled(true);
             setFire.setEnabled(true);
             cultivate.setEnabled(true);
+            confound.setEnabled(true);
             pillage.setEnabled(!hasPillaged && reference.usablePorts);
             loadedSpecialClasses=true;
         }
@@ -479,6 +493,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void actionPerformed(ActionEvent e){
         if (e.getSource()==settlement) {
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to create a new settlement.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                settlement.setEnabled(false);
+                return;
+            }
             if (player.getSettlements()==0) {
                 JOptionPane.showMessageDialog(this, "You no longer have settlements available to build with.", "Settlement Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
@@ -503,6 +522,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==fourForOne) {
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to exchange resources through a 4:1 trade.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                fourForOne.setEnabled(false);
+                return;
+            }
             if((!player.getClassTitle().equals("Pirate") && player.getLumberNum()<4 && player.getBrickNum()<4 && player.getWoolNum()<4 && player.getGrainNum()<4 && player.getOreNum()<4) || (player.getClassTitle().equalsIgnoreCase("Pirate") && player.returnTotalResources()==0))
                 JOptionPane.showMessageDialog(this,"You don't have sufficient resources to do a trade of this kind.","Insufficient Resources", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             else{
@@ -580,6 +604,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==city){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to upgrade a settlement into a city.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                city.setEnabled(false);
+                return;
+            }
             if(player.getCities()==0) {
                 JOptionPane.showMessageDialog(this, "You no longer have cities available to upgrade with.", "City Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
@@ -607,6 +636,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==road){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to build a road.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                road.setEnabled(false);
+                return;
+            }
             if(player.getRoads()==0) {
                 JOptionPane.showMessageDialog(this, "You no longer have roads available to build with.", "Road Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
@@ -630,6 +664,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==buyCard){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to buy a development card.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                buyCard.setEnabled(false);
+                return;
+            }
             if(reference.devCardDeck.size()==0){
                 JOptionPane.showMessageDialog(this,"There are no development cards left.","Development Card Deck Empty",1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
@@ -659,6 +698,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this, "You don't have any development cards.", "No Development Cards Available", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
+
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to play a development card.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                playCard.setEnabled(false);
+                return;
+            }
             if (player.getUnPlayedCards().stream().allMatch(DevelopmentCard::isBoughtThisTurn)){
                  JOptionPane.showMessageDialog(this, "All of your development cards have been purchased this turn. You must wait at least one turn to play one.", "All Development Cards Bought This Turn", 1, new ImageIcon("Resources/Catan_Icon.png"));
                  return;
@@ -673,6 +718,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==exchange){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed this action.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                exchange.setEnabled(false);
+                return;
+            }
             if(tf.isVisible()) {
                 JOptionPane.showMessageDialog(this, "You already have your trading frame open.", "Already Open", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
@@ -694,6 +744,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 cataclysmOccurrence = new Random().nextInt(20);
                 if(cataclysmOccurrence==0)
                     reference.cataclysm();
+            }
+            if(player.isDrunk){
+                colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/"+player.getColor()+"_City_Large.png"));
+                JOptionPane.showMessageDialog(this,"You sober up and are no longer confounded.","Sobering Up",1, new ImageIcon("Resources/Catan_Icon.png"));
+                player.isDrunk=false; 
             }
 
             ArrayList<Player> turnOrder = new ArrayList<>();
@@ -779,6 +834,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==steal){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to steal.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                steal.setEnabled(false);
+                return;
+            }
             possiblePlayers = reference.catanPlayerList.stream().filter(player -> !player.getClassTitle().equals("Highwayman") && !player.equals(this.player)).collect(Collectors.toCollection(ArrayList::new));
             if(possiblePlayers.size()==0)
                 JOptionPane.showMessageDialog(this,"There are no players who you can steal from.","Steal Unsuccessful", JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
@@ -855,6 +915,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
         }
         else if(e.getSource()==assassinate) {
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to assassinate.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                assassinate.setEnabled(false);
+                return;
+            }
             if(numNonNullCategories()>=2) {
                 possibleKills = reference.catanPlayerList.stream().filter(player -> !player.getClassTitle().equals("Assassin") && reference.getPlayerStatusMenu(player).getCardNames().contains("Knight")).collect(Collectors.toCollection(ArrayList::new));
                 if (possibleKills.size() == 0)
@@ -896,6 +961,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this,"You must have at least one of each of two distinct resources to assassinate another player's knight.","Assassination Requirements Not Met",3,new ImageIcon("Resources/Catan_Icon.png"));
         }
         else if(e.getSource()==setFire){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to set fire to a tile.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                setFire.setEnabled(false);
+                return;
+            }
             if(numNonNullCategories()==0){
                 JOptionPane.showMessageDialog(this,"You have no resources. You cannot use the 'arsonist' special ability.","No Resources",1,new ImageIcon("Resources/Catan_Icon.png"));
                 return;
@@ -912,6 +982,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
         }
         else if(e.getSource()==cultivate){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to cultivate.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                cultivate.setEnabled(false);
+                return;
+            }
             if(numNonNullCategories()==0){
                 JOptionPane.showMessageDialog(this,"You have no resources. You cannot use the 'cultivator' special ability.","No Resources",1,new ImageIcon("Resources/Catan_Icon.png"));
                 return;
@@ -933,6 +1008,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             devFrame.setVisible(!devFrame.isVisible());
 
         else if(e.getSource()==pillage){
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to pillage.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                pillage.setEnabled(false);
+                return;
+            }
             if (JOptionPane.showConfirmDialog(this, "Would you like to pillage a port?", "Settlement Building", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png")) != JOptionPane.YES_OPTION)
                 return;
 
@@ -941,6 +1021,44 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             reference.showBuiltImage("Resources/Preview_Images/Pillage.png","Pirate Special Action");
             JOptionPane.showMessageDialog(this,"Select a port to pillage and destroy.","Pirate Pillaging",1, new ImageIcon("Resources/Catan_Icon.png"));
             pillage.setEnabled(false);
+        }
+
+        else if(e.getSource()==confound) {
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to confound another player.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                confound.setEnabled(false);
+                return;
+            }
+            if(player.getGrainNum()<3){
+                JOptionPane.showMessageDialog(this,"You do not have the necessary three wheat to create the alcohol to confound another player.","Inadequate Resources",1,new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            if (JOptionPane.showConfirmDialog(this, "Would you like to confound a player?", "Confound Action", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png")) != JOptionPane.YES_OPTION)
+                return;
+            reference.showBuiltImage("Resources/Preview_Images/Confound.png", "Player Confounding");
+
+            possiblePlayers = reference.catanPlayerList.stream().filter(players -> !players.getName().equals(player.getName())).collect(Collectors.toCollection(ArrayList::new));
+            playerNames = new JCheckBox[possiblePlayers.size()];
+            for (int x = 0; x < playerNames.length; x++)
+                playerNames[x] = new JCheckBox(possiblePlayers.get(x).getName());
+
+            while(findNumSelected(playerNames)){
+                JOptionPane.showMessageDialog(this,new Object[]{"Select the player you would like to confound: ",playerNames},"Brewer Special Action",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+
+                if(findNumSelected(playerNames))
+                    JOptionPane.showMessageDialog(this,"You must select one player to confound.","Brewer Special Action",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+            }
+            chosenPlayer = findPlayerMatch(playerNames);
+            if(chosenPlayer.isDrunk){
+                JOptionPane.showMessageDialog(this,"That player is already drunk.","Brewer Special Action",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            chosenPlayer.isDrunk=true;
+            reference.getPlayerStatusMenu(chosenPlayer).colorDisplayLabel.setIcon(new ImageIcon("Resources/Confounded.png"));
+            player.monoWheat(-3);
+            hasConfounded=true;
+            confound.setEnabled(false);
+            JOptionPane.showMessageDialog(this,"You have successfully confounded "+chosenPlayer.getName()+". Their actions may fail this turn.","Brewer Special Action", 1, new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         else if(e.getSource()==remainingResources)
@@ -994,6 +1112,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         return names;
     }
 
+    public boolean isConfounded(){
+        return player.isDrunk && new Random().nextInt(2)>0;
+    }
+
     public boolean playerHasSettlements(){
         return player.getOwnedIndexes().stream().anyMatch(Index::isSettlement);
     }
@@ -1035,7 +1157,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void resetReference(boolean state){
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer}).forEach(menu -> menu.setEnabled(state));
     }
 
     public void enableAppropriateDevCardImages(){
