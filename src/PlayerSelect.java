@@ -14,11 +14,12 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
 
     //Class reveal functionality
-    String[] classTitles = {"Character Class", "Arsonist", "Assassin", "Cultivator","Deity","Emperor", "Farmer", "Gambler", "Highwayman", "Mountaineer", "Pirate", "Serf", "Settler", "Shepard", "Woodsman"};
+    String[] classTitles = {"Character Class", "Arsonist", "Assassin","Brewer", "Cultivator","Deity","Emperor", "Farmer", "Gambler", "Highwayman", "Mountaineer", "Pirate", "Serf", "Settler", "Shepard", "Woodsman"};
     String[] colors = {"Building Color","Blue", "Orange", "Red", "White"};
     String[] actions = {"",
             "Tile Arson - Remove Production",
             "No Trading - Remove Opponent Knights",
+            "Confound - Cause Players to Fail Actions",
             "Cultivate - Double Tile Production",
             "Quadruple Resources - Control Roll",
             "Double Resources",
@@ -35,6 +36,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
     String[] classDescriptions = {" - Character Class Description -",
             "You are an arsonist, and you leave a wake of destruction wherever you go. Naturally, you play fast and loose and frequently cause 'accidents'. As a result, once per turn, you may set fire to a tile, preventing it from getting resources for a turn. However, you must use a resource of the type the tile could produce as 'kindling' to start the fire. Note that a fire will last an entire turn cycle. Prepare to be hated.",
             "You are a murderer, and you've honed your skills through years of royal contracts. People, however, don't trust you because of your swarthy demeanor and empty eyes. As a result, you cannot trade with other players. But, your skills as a contract killer allow you to remove a single knight card from a random player at the cost of one random resource.",
+            "You are a manufacturer of alcohol and you have a way with people. You are deceptive and can convince people of anything. As a result, you can confound other players and cause them to potentially fail their actions during their next turn. However, you need to create your brews at the cost of three wheat per confounding.",
             "You have a way with the land, and your hands till the earth quickly. The have a way with the earth; as a result, you can make a tile produce double its normal resources for the turn. But, your methods are risky in that they require some 'fertilizer'. You must pay one resource the tile could produce to get your methods off the ground.",
             "You are a literal god and you've come to Catan as an experiment to see how long it would take to completely rule over the land. Your mighty touch makes any tile prosper beyond reason and you will create with reckless abandon. All tiles produce quadruple the resources for you and you can control any roll you make. Prepare to win.\n(Super Easy Mode)",
             "You are a tyrant with a mercurial temper and as such, your servile population fears you. To avoid death, they contribute to your resource stores frequently to ensure you are sated and pacified. As a result, when you produce resources, you produce twice as much.\n(Easy Mode)",
@@ -129,7 +131,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                         player.descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
                         player.classBox.setSelectedIndex(classBox.getSelectedIndex());
 
-                        if (player.classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman") || player.classTitles[classBox.getSelectedIndex()].equals("Assassin") || player.classTitles[classBox.getSelectedIndex()].equals("Arsonist") || player.classTitles[classBox.getSelectedIndex()].equals("Cultivator")|| player.classTitles[classBox.getSelectedIndex()].equals("Deity")||player.classTitles[classBox.getSelectedIndex()].equals("Pirate"))
+                        if (player.classTitles[classBox.getSelectedIndex()].equals("Gambler") || classTitles[classBox.getSelectedIndex()].equals("Highwayman") || player.classTitles[classBox.getSelectedIndex()].equals("Assassin") || player.classTitles[classBox.getSelectedIndex()].equals("Arsonist") || player.classTitles[classBox.getSelectedIndex()].equals("Cultivator")|| player.classTitles[classBox.getSelectedIndex()].equals("Deity")||player.classTitles[classBox.getSelectedIndex()].equals("Pirate")||player.classTitles[classBox.getSelectedIndex()].equals("Brewer"))
                             player.descriptionArea.select(0, 0);
 
                         player.imageLabel.setIcon(new ImageIcon((classBox.getSelectedIndex() == 0) ? "ClassTitles/Nameless.png" : "ClassTitles/" + classBox.getSelectedItem() + ".jpg"));
@@ -140,7 +142,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             }
             descriptionArea.setText(classDescriptions[classBox.getSelectedIndex()]);
 
-            if (!classTitles[classBox.getSelectedIndex()].equals("Gambler") && !classTitles[classBox.getSelectedIndex()].equals("Highwayman") && !classTitles[classBox.getSelectedIndex()].equals("Assassin") && !classTitles[classBox.getSelectedIndex()].equals("Arsonist") && !classTitles[classBox.getSelectedIndex()].equals("Cultivator") && !classTitles[classBox.getSelectedIndex()].equals("Deity")) {
+            if (!classTitles[classBox.getSelectedIndex()].equals("Gambler") && !classTitles[classBox.getSelectedIndex()].equals("Highwayman") && !classTitles[classBox.getSelectedIndex()].equals("Assassin") && !classTitles[classBox.getSelectedIndex()].equals("Arsonist") && !classTitles[classBox.getSelectedIndex()].equals("Cultivator") && !classTitles[classBox.getSelectedIndex()].equals("Deity") && !classTitles[classBox.getSelectedIndex()].equals("Pirate") && !classTitles[classBox.getSelectedIndex()].equals("Brewer")) {
                 classBox.getSelectedIndex();
             }
             descriptionArea.select(0, 0);
@@ -162,10 +164,10 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
                 else {
                     //Testing Player
-                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), -100, 100, 100, 100, 100, 0, false, false, false,referenceNumber,99,99,99,false,0);
+                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), -100, 100, 100, 100, 100, 0, false, false, false,referenceNumber,99,99,99,false,0,false);
 
                     int before = bgReference.catanPlayerList.size();
-                    Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15,false,0);
+                    Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15,false,0,false);
                     bgReference.addPlayer(newPlayer,referenceNumber);
 
                     if(bgReference.base.isSelected())
