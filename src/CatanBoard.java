@@ -186,7 +186,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             rollNumList.add(x);
 
         for (int x = 0; x < indexes.length; x++)
-            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, false, false, false, 69,0,0,0,false,0), false, false);
+            indexes[x] = new Index(indexCoords[x], false, x, new Player("", "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, false, false, false, 69,0,0,0,false,0,false), false, false);
 
         for (int x = 0; x < types.length; x++) {
             int typeIndex = new Random().nextInt(typeList.size());
@@ -1184,6 +1184,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             pv.hwm.setEnabled(false);
             pv.assassin.setEnabled(false);
             pv.cultivator.setEnabled(false);
+            pv.brewer.setEnabled(false);
         });
 
         for (String s : turnNameList)
@@ -1784,13 +1785,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void performStaleReferenceReset(boolean state){
         PlayerView menuRef = getPlayerStatusMenu(getCurrentPlayer());
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist, menuRef.cultivator, menuRef.pirate}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist, menuRef.cultivator, menuRef.pirate,menuRef.brewer}).forEach(menu -> menu.setEnabled(state));
     }
-
-    @Override
-    public void keyTyped(KeyEvent e){}
-    public void keyReleased(KeyEvent e){}
-    public void mouseClicked(MouseEvent e){}
 
     public void randomize(){
         Arrays.stream(tiles).forEach(tile ->{
@@ -1878,4 +1874,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         this.setVisible(false);
         Arrays.stream(statusViewer).forEach(frame -> frame.setVisible(false));
     }
+
+    @Override
+    public void keyTyped(KeyEvent e){}
+    public void keyReleased(KeyEvent e){}
+    public void mouseClicked(MouseEvent e){}
 }
