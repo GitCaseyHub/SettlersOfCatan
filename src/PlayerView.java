@@ -20,6 +20,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JPanel infoPanel = new JPanel(new GridLayout(1,1));
     JPanel borderInfoPanel = new JPanel(new GridLayout(1,1));
     JLabel colorDisplayLabel = new JLabel("", SwingConstants.CENTER);
+    JLabel statusDisplayLabel = new JLabel("",SwingConstants.CENTER);
     JPanel devPanel = new JPanel(new GridLayout(1,2));
     JComboBox<Object> unplayed = new JComboBox<Object>();
     JComboBox<Object> played = new JComboBox<Object>();
@@ -248,6 +249,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         borderNorth.setBorder(reference.compound);
         borderNorth.add(infoPanel,BorderLayout.CENTER);
         borderNorth.add(colorDisplayLabel,BorderLayout.WEST);
+        borderNorth.add(statusDisplayLabel,BorderLayout.EAST);
         this.add(borderSouth,BorderLayout.SOUTH);
         borderSouth.add(vpPointHolder,BorderLayout.WEST);
         borderSouth.add(turnBorderPanel, BorderLayout.EAST);
@@ -267,6 +269,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         victoryPointLabel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"VPs"));
         borderNorth.setBackground(Color.white);
         colorDisplayLabel.setBorder(reference.compound);
+        statusDisplayLabel.setBorder(reference.compound);
+        colorDisplayLabel.setToolTipText("Player Color: "+player.getColor());
+        statusDisplayLabel.setToolTipText("Status: Normal");
         infoPanel.add(devPanel);
         infoPanel.setBorder(reference.compound);
         devPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Development Cards"));
@@ -296,6 +301,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         //Code for implementation
         colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/"+player.getColor()+"_City_Large.png"));
+        statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Normal_"+player.getColor()+".png"));
 
         unplayed.setEnabled(player.isTurn());
 
@@ -746,9 +752,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.cataclysm();
             }
             if(player.isDrunk){
-                colorDisplayLabel.setIcon(new ImageIcon("Pieces/Large_Icons/"+player.getColor()+"_City_Large.png"));
+                statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Normal_"+player.getColor()+".png"));
+                statusDisplayLabel.setToolTipText("Status: Normal");
                 JOptionPane.showMessageDialog(this,"You sober up and are no longer confounded.","Sobering Up",1, new ImageIcon("Resources/Catan_Icon.png"));
-                player.isDrunk=false; 
+                player.isDrunk=false;
             }
 
             ArrayList<Player> turnOrder = new ArrayList<>();
@@ -1054,7 +1061,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 return;
             }
             chosenPlayer.isDrunk=true;
-            reference.getPlayerStatusMenu(chosenPlayer).colorDisplayLabel.setIcon(new ImageIcon("Resources/Confounded.png"));
+            reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Confounded_"+chosenPlayer.getColor()+".png"));
+            reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setToolTipText("Status: Confounded");
             player.monoWheat(-3);
             hasConfounded=true;
             confound.setEnabled(false);
