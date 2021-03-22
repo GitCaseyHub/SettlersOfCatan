@@ -579,15 +579,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         int reps = (canRepeat(numRepeats,exchangeResource)?numRepeats:1);
                         for(int x=0; x<reps;x++) {
                             if (optionResources[0].isSelected())
-                                player.monoWool(1);
-                            else if (optionResources[1].isSelected())
-                                player.monoLumber(1);
-                            else if (optionResources[2].isSelected())
-                                player.monoOre(1);
-                            else if (optionResources[3].isSelected())
                                 player.monoBrick(1);
-                            else if (optionResources[4].isSelected())
+                            else if (optionResources[1].isSelected())
+                                player.monoOre(1);
+                            else if (optionResources[2].isSelected())
+                                player.monoWool(1);
+                            else if (optionResources[3].isSelected())
                                 player.monoWheat(1);
+                            else if (optionResources[4].isSelected())
+                                player.monoLumber(1);
 
                             if (exchangeResource.equalsIgnoreCase("Sheep"))
                                 player.monoWool(isPirate ? -1 : -4);
