@@ -577,29 +577,27 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                             JOptionPane.showMessageDialog(this,"That is not an acceptable value. You will make the exchange a single time.","Resource Exchange Denial",1, new ImageIcon("Resources/Catan_Icon.png"));
                         }
                         int reps = (canRepeat(numRepeats,exchangeResource)?numRepeats:1);
-                        for(int x=0; x<reps;x++) {
-                            if (optionResources[0].isSelected())
-                                player.monoBrick(1);
-                            else if (optionResources[1].isSelected())
-                                player.monoOre(1);
-                            else if (optionResources[2].isSelected())
-                                player.monoWool(1);
-                            else if (optionResources[3].isSelected())
-                                player.monoWheat(1);
-                            else if (optionResources[4].isSelected())
-                                player.monoLumber(1);
+                        if (optionResources[0].isSelected())
+                            player.monoBrick(reps);
+                        else if (optionResources[1].isSelected())
+                            player.monoOre(reps);
+                        else if (optionResources[2].isSelected())
+                            player.monoWool(reps);
+                        else if (optionResources[3].isSelected())
+                            player.monoWheat(reps);
+                        else if (optionResources[4].isSelected())
+                            player.monoLumber(reps);
 
-                            if (exchangeResource.equalsIgnoreCase("Sheep"))
-                                player.monoWool(isPirate ? -1 : -4);
-                            else if (exchangeResource.equalsIgnoreCase("Lumber"))
-                                player.monoLumber(isPirate ? -1 : -4);
-                            else if (exchangeResource.equalsIgnoreCase("Brick"))
-                                player.monoBrick(isPirate ? -1 : -4);
-                            else if (exchangeResource.equalsIgnoreCase("Ore"))
-                                player.monoOre(isPirate ? -1 : -4);
-                            else if (exchangeResource.equalsIgnoreCase("Wheat"))
-                                player.monoWheat(isPirate ? -1 : -4);
-                        }
+                        if (exchangeResource.equalsIgnoreCase("Sheep"))
+                            player.monoWool(reps*(isPirate ? -1 : -4));
+                        else if (exchangeResource.equalsIgnoreCase("Lumber"))
+                            player.monoLumber(reps*(isPirate ? -1 : -4));
+                        else if (exchangeResource.equalsIgnoreCase("Brick"))
+                            player.monoBrick(reps*(isPirate ? -1 : -4));
+                        else if (exchangeResource.equalsIgnoreCase("Ore"))
+                            player.monoOre(reps*(isPirate ? -1 : -4));
+                        else if (exchangeResource.equalsIgnoreCase("Wheat"))
+                            player.monoWheat(reps*(isPirate ? -1 : -4));
 
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Exchange Complete", JOptionPane.INFORMATION_MESSAGE);
                     } catch (NullPointerException cancelCaught) {
