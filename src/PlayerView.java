@@ -125,14 +125,16 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JPanel devImagePanel =new JPanel(new GridLayout(1,5));
     JLabel[] devImages = new JLabel[5];
     String[] devPaths = new String[]{"Knight","Monopoly","Road_Building","Year_Of_Plenty","University"};
+    long num;
+    int numRepeats;
+
+    //Hashmap String manipulation
     HashMap<String,String> plurals = new HashMap<>();
-    String[] pluralStrings = new String[]{"Knights","Monopolies","Road Buildings","Year of Plentys","Victory Points"};
+    String[] pluralStrings = new String[]{"Knights","Monopolies","Road Buildings","Year of Plenties","Victory Points"};
     HashMap<Integer,String> alphaNumeric = new HashMap<>();
     String[] strNums = {"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"};
     int[] actNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
-    long num;
-    int numRepeats;
-    
+
     //Playing Development Cards
     JFrame playFrame = new JFrame();
     JPanel playImagePanel = new JPanel(new GridLayout(1,5));
