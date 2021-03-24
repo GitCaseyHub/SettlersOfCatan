@@ -280,7 +280,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         devPanel.add(played);
         played.setBorder(reference.compound);
         unplayed.addItem("Hidden Cards");
-        played.addItem("Revealed Cards");
+        played.addItem("Played Cards");
         victoryPointLabel.setFont(new Font(victoryPointLabel.getFont().getName(),Font.PLAIN,16));
 
         if(player.getClassTitle().equals("Assassin"))
@@ -1214,7 +1214,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void readdDevCards(JComboBox<Object> box){
         box.removeAllItems();
-        box.addItem((box.equals(played)?"Revealed Cards":"Hidden Cards"));
+        box.addItem((box.equals(played)?"Played Cards":"Hidden Cards"));
         for (String s : lookAppr) {
             if((box.equals(played) ? player.getPlayedCards() : player.getUnPlayedCards()).stream().anyMatch(card -> card.getType().equalsIgnoreCase(s))) {
                 num = (box.equals(played) ? player.getPlayedCards() : player.getUnPlayedCards()).stream().filter(card -> card.getType().equalsIgnoreCase(s)).count();
