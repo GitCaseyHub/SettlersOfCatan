@@ -469,6 +469,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         playedOneDevCard=false;
         Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,devCardsRemaining,setFire,cultivate,confound}).forEach(item -> item.setEnabled(false));
         Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire,hasCultivated,hasConfounded}).forEach(bool -> bool=false);
+
+        if(player.isDrunk)
+            JOptionPane.showMessageDialog(this,"You are confounded, so some of your actions this turn have a 50% chance of failing.","Confounded Warning",1,new ImageIcon("Resources/Catan_Icon.png"));
     }
 
     public void afterRoll() {
