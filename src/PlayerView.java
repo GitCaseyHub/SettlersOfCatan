@@ -56,14 +56,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenu options = new JMenu("Options");
     JMenuItem exchange = new JMenuItem("Trade w/ Other Players");
     JMenuItem fourForOne = new JMenuItem();
-    JMenuItem buildingCard = new JMenuItem("Building Helper Card");
+    JMenuItem buildingCard = new JMenuItem("Building Cost Card");
     JMenuItem rollDice = new JMenuItem("Roll Dice");
     JMenuItem remainingResources = new JMenuItem("Remaining Materials");
     JMenuItem devCardsRemaining = new JMenuItem("Remaining Development Cards");
     JMenuItem endTurn = new JMenuItem("End Turn");
 
     //Development Card Prep
-    String[] devCardTypes = {"Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Year of Plenty","Year of Plenty","Victory Points","Victory Points","Victory Points","Victory Points","Victory Points","Monopoly","Monopoly","Road Builder","Road Builder"};
     String[] lookAppr = new String[]{"Knight","Monopoly","Road Building","Year of Plenty","Victory Points"};
 
     //Building Costs Frame
@@ -143,6 +142,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public PlayerView(){}
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
+        this.setUndecorated(true);
         //Relating global variables to class variables
         this.player = player;
         this.reference=reference;
@@ -160,6 +160,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         //Menubar creation
         this.setJMenuBar(mb);
+        mb.setBorder(reference.compound);
         mb.add(build);
         build.add(road);
         road.addActionListener(this);
@@ -755,8 +756,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.cataclysm();
             }
             if(player.isDrunk){
-                statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Normal_"+player.getColor()+".png"));
-                statusDisplayLabel.setToolTipText("Status: Normal");
+                statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/"+(player.isLeader()?"Leader_":"Normal_")+player.getColor()+".png"));
+                statusDisplayLabel.setToolTipText("Status: "+(player.isLeader()?"Leader":"Normal"));
                 JOptionPane.showMessageDialog(this,"You sober up and are no longer confounded.","Sobering Up",1, new ImageIcon("Resources/Catan_Icon.png"));
                 player.isDrunk=false;
             }
@@ -1064,11 +1065,20 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 return;
             }
             chosenPlayer.isDrunk=true;
-            reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Confounded_"+chosenPlayer.getColor()+".png"));
-            reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setToolTipText("Status: Confounded");
+
+            if(chosenPlayer.isLeader()) {
+                reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Leader_Confounded_" + chosenPlayer.getColor() + ".png"));
+                reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setToolTipText("Status: Leader & Confounded");
+            }
+            else{
+                reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Confounded_" + chosenPlayer.getColor() + ".png"));
+                reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.setToolTipText("Status: Confounded");
+            }
+
             player.monoWheat(-3);
             hasConfounded=true;
             confound.setEnabled(false);
+            reference.getPlayerStatusMenu(chosenPlayer).statusDisplayLabel.revalidate();
             JOptionPane.showMessageDialog(this,"You have successfully confounded "+chosenPlayer.getName()+". Their actions may fail this turn.","Brewer Special Action", 1, new ImageIcon("Resources/Catan_Icon.png"));
         }
 
@@ -1190,8 +1200,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             JOptionPane.showMessageDialog(devFrame,"There "+(reference.numDevCardsOfATypeLeft("Year of Plenty")==1?"is":"are")+(reference.devCardTransparency || reference.devCardDeck.size() == reference.size ? " " : ", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Year of Plenty")))+" 'Year of Plenty' card"+(reference.numDevCardsOfATypeLeft("Year of Plenty")==1?"":"s")+" remaining in the deck.","Year of Plenty Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
         if(e.getSource()==devImages[4])
             JOptionPane.showMessageDialog(devFrame,"There "+(reference.numDevCardsOfATypeLeft("Victory Points")==1?"is":"are")+(reference.devCardTransparency || reference.devCardDeck.size() == reference.size ? " " : ", at most, ")+alphaNumeric.get((int)(reference.numDevCardsOfATypeLeft("Victory Points")))+" 'Victory Point' card"+(reference.numDevCardsOfATypeLeft("Victory Points")==1?"":"s")+" remaining in the deck.","Victory Point Cards Remaining",1, new ImageIcon("Resources/Catan_Icon.png"));
-        if(e.getSource() == imageCostLabel)
+
+        if(e.getSource() == imageCostLabel) {
+            try {Thread.sleep(200);}
+            catch (InterruptedException ignored) {}
             costFrame.setVisible(false);
+        }
 
         if(e.getSource()==playImages[0] && playImages[0].isEnabled()){playAppropriateCard("Knight");}
         if(e.getSource()==playImages[1] && playImages[1].isEnabled()){playAppropriateCard("Monopoly");}
