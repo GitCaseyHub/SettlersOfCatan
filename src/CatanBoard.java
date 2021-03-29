@@ -1154,7 +1154,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             statusViewer[x].setBounds((int) statusGenerationalPoints[x].getX(), (int) statusGenerationalPoints[x].getY(), 475, 353);
             statusViewer[x].pack();
             statusViewer[x].setVisible(true);
-            statusViewer[x].setTitle(catanPlayerList.get(x).getName() + " - " + catanPlayerList.get(x).getClassTitle());
+            statusViewer[x].colorDisplayLabel.setToolTipText(catanPlayerList.get(x).getName() + " - " + catanPlayerList.get(x).getClassTitle());
         }
 
         //Construct starting pick order
@@ -1659,10 +1659,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        if ((e.getKeyCode() != KeyEvent.VK_C && e.getKeyCode()!=KeyEvent.VK_X)) {
-            return;
-        }
-        else if(e.getKeyCode()==KeyEvent.VK_X){
+        if(e.getKeyCode()==KeyEvent.VK_X){
             int quit = JOptionPane.showConfirmDialog(this,"Would you like to stop playing Settlers of Catan®?","Quit Game",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(quit==JOptionPane.YES_OPTION){
                 JOptionPane.showMessageDialog(this,"Thank you for playing.","See you next time",JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1670,7 +1667,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             }
             return;
         }
-        if(isPlayerActing && !doingStartup) {
+        if(e.getKeyCode()==KeyEvent.VK_C && isPlayerActing && !doingStartup) {
             int confirmCancellation = JOptionPane.showConfirmDialog(this, "Would you like to cancel your current action?", "Cancellation", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png"));
             if (confirmCancellation != 0) {
                 JOptionPane.showMessageDialog(this, "Please continue the action you were performing.", "Action Continued", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1820,7 +1817,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
         catanPlayerList.forEach(player -> {
             player.setLeader(false);
-            getPlayerStatusMenu(player).setTitle(player.getName()+" - "+player.getClassTitle());
         });
 
         if(!singleShowDemocracy) {
@@ -1829,9 +1825,28 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if(catanPlayerList.size()==2){
-            getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(leaderIndex).getName() + " - " + catanPlayerList.get(leaderIndex).getClassTitle()+" - Current Leader");
             JOptionPane.showMessageDialog(this,catanPlayerList.get(leaderIndex).getName()+" the "+catanPlayerList.get(leaderIndex).getClassTitle()+" has been selected as the leader for this round.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
             catanPlayerList.get(leaderIndex).setLeader(true);
+            catanPlayerList.forEach(player ->{
+                if(player.isDrunk && player.isLeader()){
+                    getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Leader_Confounded_"+player.getColor()+".png"));
+                    getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Leader & Confounded");
+                }
+                else if(player.isDrunk){
+                    getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Confounded_"+player.getColor()+".png"));
+                    getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Confounded");
+                }
+                else if(player.isLeader()){
+                    getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Leader_"+player.getColor()+".png"));
+                    getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Leader");
+                }
+                else {
+                    getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Normal_" + player.getColor() + ".png"));
+                    getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Normal");
+                }
+                getPlayerStatusMenu(player).update();
+                player.votes=0;
+            });
             return;
         }
 
@@ -1858,16 +1873,33 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 maxVotesPlayer.add(player);
 
         if(maxVotesPlayer.size()>2){
-            getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(leaderIndex).getName() + " - " + catanPlayerList.get(leaderIndex).getClassTitle()+" - Current Leader");
-            JOptionPane.showMessageDialog(this,((maxVotesPlayer.size()==2)?"Two":(maxVotesPlayer.size()==3)?"Three":"Four")+" players have received the same number of votes, so "+catanPlayerList.get(leaderIndex).getName()+" the "+catanPlayerList.get(leaderIndex).getClassTitle()+" has been randomly selected to be the leader.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
+            JOptionPane.showMessageDialog(this, (maxVotesPlayer.size() == 3 ? "Three" : "Four") + " players have received the same number of votes, so " + catanPlayerList.get(leaderIndex).getName() + " the " + catanPlayerList.get(leaderIndex).getClassTitle() + " has been randomly selected to be the leader.","Leader Randomized",1, new ImageIcon("Resources/Catan_Icon.png"));
             catanPlayerList.get(leaderIndex).setLeader(true);
         }
         else{
-            getPlayerStatusMenu(catanPlayerList.get(leaderIndex)).setTitle(catanPlayerList.get(0).getName() + " - " + catanPlayerList.get(0).getClassTitle()+" - Current Leader");
             JOptionPane.showMessageDialog(this,maxVotesPlayer.get(0).getName()+" the "+maxVotesPlayer.get(0).getClassTitle()+" has been elected leader for this turn cycle.","Leader Elected",1, new ImageIcon("Resources/Catan_Icon.png"));
             maxVotesPlayer.get(0).setLeader(true);
         }
-        catanPlayerList.forEach(player-> player.votes=0);
+        catanPlayerList.forEach(player ->{
+            if(player.isDrunk && player.isLeader()){
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Leader_Confounded_"+player.getColor()+".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Leader & Confounded");
+            }
+            else if(player.isDrunk && !player.isLeader()){
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Confounded_"+player.getColor()+".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Confounded");
+            }
+            else if(player.isLeader() && !player.isDrunk){
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Leader_"+player.getColor()+".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Leader");
+            }
+            else {
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Normal_" + player.getColor() + ".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Normal");
+            }
+            getPlayerStatusMenu(player).update();
+            player.votes=0;
+        });
     }
 
     public void endGame(){
