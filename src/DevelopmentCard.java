@@ -15,6 +15,7 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     Player player;
     CatanBoard cbReference;
     ArrayList<Player> otherPlayers;
+    ArrayList<String> playedCards = new ArrayList<>();
 
     //Year of Plenty & Monopoly
     JFrame choiceFrame = new JFrame();
@@ -323,8 +324,11 @@ public class DevelopmentCard implements ActionListener, MouseListener {
     }
 
     public void showDevelopmentImage(String name){
-        cardLabel.setIcon(new ImageIcon(name));
-        cardFrame.setVisible(true);
+        if(cbReference.previewFrames && !playedCards.contains(name)) {
+            cardLabel.setIcon(new ImageIcon(name));
+            cardFrame.setVisible(true);
+            playedCards.add(name);
+        }
     }
 
     public void mousePressed(MouseEvent e) {
