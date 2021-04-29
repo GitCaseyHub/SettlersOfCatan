@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
@@ -56,9 +55,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     String[] boxString = new String[]{"     ⇒     2 Players","     ⇒     3 Players","     ⇒     4 Players"};
     String[] imageTitles = new String[]{"Two_Players.png","Three_Players.png","Four_Players.png"};
 
-    public BeginGame(){
+    public BeginGame() {
         this.setUndecorated(true);
-
         this.setJMenuBar(mb);
         mb.setBorder(compound);
         mb.setBorderPainted(true);
@@ -92,7 +90,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
         wildfires.addActionListener(this);
-        wildfires.setToolTipText("If a tile is on fire (from the arsonist's special action), there is a 5% chance neighboring tiles will ignite after a turn cycle.");
+        wildfires.setToolTipText("If a tile is on fire, there is a 5% chance neighboring tiles will ignite after a turn cycle.");
         optionMenu.addSeparator();
         modes.addSeparator();
 
@@ -145,7 +143,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public boolean appropriateNumSelected(JCheckBox[] boxes){
-        return Arrays.stream(boxes).filter(AbstractButton::isSelected).count()==1;
+        return Arrays.stream(boxes).filter(AbstractButton::isSelected).count() != 1;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -168,10 +166,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             democracyMode.setSelected(false);
 
         else if(e.getSource()==generateChars){
-            while(!appropriateNumSelected(playerNumOptions)) {
+            while(appropriateNumSelected(playerNumOptions)) {
                 JOptionPane.showMessageDialog(imageFrame, new Object[]{"=======================\n   Number of People Playing\n=======================", playerNumOptions,"======================="}, "Number of Players", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
 
-                if(!appropriateNumSelected(playerNumOptions)) {
+                if(appropriateNumSelected(playerNumOptions)) {
                     JOptionPane.showMessageDialog(imageFrame, "You must select one of the options.", "Failed Registration", 1, new ImageIcon("Resources/Catan_Icon.png"));
                     Arrays.stream(playerNumOptions).forEach(box -> box.setSelected(false));
                 }
