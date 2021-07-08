@@ -139,6 +139,16 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JPanel playImagePanel = new JPanel(new GridLayout(1,5));
     JLabel[] playImages = new JLabel[5];
 
+    //Dice Frame
+    JFrame diceOne = new JFrame();
+    JFrame diceTwo = new JFrame();
+    JLabel diceOneLabel = new JLabel("", SwingConstants.CENTER);
+    JLabel diceTwoLabel = new JLabel("", SwingConstants.CENTER);
+    int diceOneInt = 0;
+    int diceTwoInt = 0;
+    boolean revealDiceAsNeeded=false;
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+
     public PlayerView(){}
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
@@ -340,11 +350,23 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         initializeCostFrame();
         initializeDevCardFrame();
         initializePlayFrame();
+        initializeDiceFrame();
     }
 
     public void pluralInitialization(){
         for(int x=0; x<pluralStrings.length; x++)
             plurals.put(lookAppr[x],pluralStrings[x]);
+    }
+
+    public void initializeDiceFrame(){
+        diceOne.setUndecorated(true);
+        diceTwo.setUndecorated(true);
+        diceOne.add(diceOneLabel);
+        diceTwo.add(diceTwoLabel);
+        diceOne.setSize(75,75);
+        diceTwo.setSize(75,75);
+        diceOneLabel.setBorder(reference.compound);
+        diceTwoLabel.setBorder(reference.compound);
     }
 
     public void update(){
@@ -804,21 +826,27 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         else if(e.getSource()==rollDice){
             diceRoll=0;
+            revealDiceAsNeeded=false;
             if(this.player.isLeader() || this.player.getClassTitle().equals("Deity")){
                 while(diceRoll==0) {
                     try {
                         diceRoll = Integer.parseInt((String) JOptionPane.showInputDialog(this, "Select the number you'd like to roll this turn: ", "Democracy Action", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null));
+
                         if (diceRoll < 2 || diceRoll > 12)
                             throw new Exception();
                     } catch (Exception f) {
                         JOptionPane.showMessageDialog(this, "You must select an integer between 2 and 12.", "Improper Number Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
                         diceRoll = 0;
                     }
+                    revealDiceAsNeeded=true;
                 }
             }
 
-            else
-                diceRoll = new Random().nextInt(11)+2;
+            else {
+                diceOneInt = new Random().nextInt(6) + 1;
+                diceTwoInt = new Random().nextInt(6) + 1;
+                diceRoll = diceOneInt + diceTwoInt;
+            }
 
             if(reference.gamblerIsPresent()){
                 if(new Random().nextInt(100) < 20) {
@@ -826,9 +854,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.catanPlayerList.stream().filter(player -> player.getClassTitle().equalsIgnoreCase("Gambler")).forEach(Player::failGamble);
                 }
             }
-
-            JOptionPane.showMessageDialog(this,"You've rolled a "+((diceRoll!=7)?diceRoll+". Resources will be distributed accordingly.":"7. Click on a tile you'd like to move the robber to."),"Roll For The Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-
+            if(!revealDiceAsNeeded)
+                showDiceFrames(diceOneInt,diceTwoInt);
+            JOptionPane.showMessageDialog(null,((diceRoll!=7)?reference.playersWhoGainedResources(diceRoll):"A 7 has been rolled. Click a tile the robber will be moved to."),this.player.getName()+"'s Roll: "+diceRoll, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+            hideDice();
             if(diceRoll==7) {
                 resetReference(false);
                 reference.isMovingRobber = true;
@@ -1121,7 +1150,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         return appropriatelyIndexed;
     }
-
     public Player findPlayerMatch(JCheckBox[] cbs){
         return reference.getPlayerViaName(Arrays.stream(cbs).filter(AbstractButton::isSelected).findFirst().get().getText());
     }
@@ -1240,6 +1268,22 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 box.addItem(num+" "+((num>1)?plurals.get(s):s));
             }
         }
+    }
+
+    public void showDiceFrames(int diceOneVal, int diceTwoVal){
+        diceOne.setVisible(true);
+        diceTwo.setVisible(true);
+        diceOneLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceOneVal+".png"));
+        diceTwoLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceTwoVal+".png"));
+        diceTwo.setLocation((int)screen.getWidth()/2,(int)screen.getHeight()/2 + 45);
+        diceOne.setLocation((int)screen.getWidth()/2 - 80, (int)screen.getHeight()/2 + 45);
+        diceOne.toFront();
+        diceTwo.toFront();
+    }
+
+    public void hideDice() {
+        diceOne.setVisible(false);
+        diceTwo.setVisible(false);
     }
 
     @Override
