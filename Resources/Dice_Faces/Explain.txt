@@ -1,0 +1,1 @@
+This folder holds the faces of the dice to be revealed when a player rolls.
