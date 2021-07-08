@@ -1268,7 +1268,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         Arrays.stream(statusViewer).forEach(PlayerView::update);
     }
 
-    //Maybe using a quad-nested for-loop is a bit inefficient lol
+    //Give out appropriate resources after roll
     public void giveOutResources(int roll) {
         for (Tile tile : tiles)
             if (tile.getNum() == roll)
@@ -1296,6 +1296,33 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                     }
 
     }
+
+    public String playersWhoGainedResources(int roll) {
+        ArrayList<String> gainedPlayers = new ArrayList<>();
+        StringBuilder returnString = new StringBuilder("The following players received resources: ");
+        for (Tile tile : tiles)
+            if (tile.getNum() == roll)
+                for (int y = 0; y < 6; y++)
+                    for (Index index : indexes)
+                        if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
+                            for (Player player : catanPlayerList)
+                                if (index.getOwner().equals(player) && !getPlayerStatusMenu(player).hasStolen && !tile.isOnFire())
+                                    switch (tile.getType()) {
+                                        case "Grain":
+                                        case "Plains":
+                                        case "Brick":
+                                        case "Forest":
+                                        case "Mountain":
+                                            if(!gainedPlayers.contains(player.getName()))
+                                                gainedPlayers.add(player.getName());
+                                            break;
+                                    }
+        for(int x=0; x<gainedPlayers.size(); x++)
+            returnString.append(gainedPlayers.get(x)).append(x != gainedPlayers.size() - 1 ? ", " : ".");
+
+        return (gainedPlayers.size()==0)?"No players receive resources this turn.": returnString.toString();
+    }
+
 
     public String giveRandomResource(Player player) {
         ArrayList<String> resources = new ArrayList<>();
