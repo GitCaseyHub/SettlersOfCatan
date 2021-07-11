@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 public class Player {
     String color,name,classTitle;
     int brickNum,lumberNum,grainNum,woolNum,oreNum,victoryPointTotal, referenceNumber, cities, settlements, roads,votes;
-    boolean turn,longestRoad,largestArmy,leader;
+    boolean turn,longestRoad,largestArmy,leader, isDrunk;
     ArrayList<Index> ownedIndexes;
     ArrayList<DevelopmentCard> playedCards, unPlayedCards;
     CatanBoard cb;
@@ -20,7 +20,7 @@ public class Player {
     JLabel victoryLabel = new JLabel("",SwingConstants.CENTER);
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
-    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads, boolean leader, int votes){
+    public Player(String color, String name, String classTitle, ArrayList<Index> ownedIndexes, ArrayList<DevelopmentCard> unPlayedCards, ArrayList<DevelopmentCard> playedCards, int brickNum, int lumberNum, int grainNum, int woolNum, int oreNum, int victoryPointTotal, boolean turn, boolean longestRoad, boolean largestArmy, int referenceNumber, int cities, int settlements, int roads, boolean leader, int votes, boolean isDrunk){
         this.color=color;
         this.name=name;
         this.classTitle=classTitle;
@@ -42,6 +42,7 @@ public class Player {
         this.roads=roads;
         this.leader=leader;
         this.votes=votes;
+        this.isDrunk=isDrunk;
         this.costMultiplier = (classTitle.equals("Pirate") || classTitle.equals("Serf"));
     }
 
@@ -57,7 +58,7 @@ public class Player {
                 catch(InterruptedException ignored){}
                 JOptionPane.showMessageDialog(victory,"Thanks for playing.","Game Over",1, new ImageIcon("Resources/Catan_Icon.png"));
                 victory.setVisible(false);
-                System.exit(0);
+                System.exit(1);
             }
         });
 
@@ -226,6 +227,26 @@ public class Player {
         }
     }
 
+    public int brickMult() {
+        switch(classTitle) {
+            case "Farmer":
+            case "Shepard":
+            case "Woodsman":
+                return 0;
+
+            case "Mountaineer":
+            case "Emperor":
+            case "Gambler":
+                return 2;
+
+            case "Deity":
+                return 4;
+
+            default:
+                return 1;
+        }
+    }
+
     public int getLumberNum() {
         return lumberNum;
     }
@@ -246,6 +267,21 @@ public class Player {
             default:
                 this.lumberNum += lumberNum;
                 break;
+        }
+    }
+
+    public int lumberMult(){
+        switch (this.classTitle) {
+            case "Woodsman":
+            case "Deity":
+                return 4;
+            case "Shepard":
+                 return 0;
+            case "Emperor":
+            case "Gambler":
+                return 2;
+            default:
+                return 1;
         }
     }
 
@@ -270,6 +306,23 @@ public class Player {
                 break;
             default:
                 this.grainNum += grainNum;
+        }
+    }
+
+    public int grainMult() {
+        switch(classTitle) {
+            case "Deity":
+                return 4;
+            case "Mountaineer":
+            case "Shepard":
+            case "Woodsman":
+                return 0;
+            case "Farmer":
+            case "Emperor":
+            case "Gambler":
+                return 2;
+            default:
+                return 1;
         }
     }
 
@@ -298,6 +351,26 @@ public class Player {
         }
     }
 
+    public int woolMult() {
+        switch (this.classTitle) {
+            case "Shepard":
+            case "Deity":
+                return 4;
+
+            case "Farmer":
+            case "Gambler":
+            case "Emperor":
+                return 2;
+
+            case "Woodsman":
+            case "Mountaineer":
+                return 0;
+
+            default:
+                return 1;
+        }
+    }
+
     public int getOreNum() {
         return oreNum;
     }
@@ -319,6 +392,23 @@ public class Player {
                 break;
             default:
                 this.oreNum += oreNum;
+        }
+    }
+
+    public int oreMult() {
+        switch(classTitle) {
+            case "Deity":
+                return 4;
+            case "Farmer":
+            case "Shepard":
+            case "Woodsman":
+                return 0;
+            case "Mountaineer":
+            case "Emperor":
+            case "Gambler":
+                return 2;
+            default:
+                return 1;
         }
     }
 
