@@ -1296,12 +1296,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                     }
 
     }
-    
-    //Returns the message of what resources players receive upon dice being rolled
-    public Object[] resourceValsGiven(int roll) {
+
+    //Updates status menus after dice is rolled
+    public boolean resourceValsGiven(int roll) {
         ArrayList<String> interim = new ArrayList<>();
         int check = 0;
-        StringBuilder returnString = new StringBuilder("Resources will now be distributed: \n");
         for (Player player : catanPlayerList) {
             interim.clear();
             interim.add(player.getName());
@@ -1335,26 +1334,13 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                     }
 
 
-            if (interim.size() > 1) {
-                returnString.append(interim.get(0)).append(" receives ");
-                returnString.append(interim.stream().noneMatch(str -> str.equals("Grain")) ? "" : (interim.stream().filter(str -> str.equals("Grain")).count() + " wheat, "));
-                returnString.append(interim.stream().noneMatch(str -> str.equals("Plains")) ? "" : (interim.stream().filter(str -> str.equals("Plains")).count() + " sheep, "));
-                returnString.append(interim.stream().noneMatch(str -> str.equals("Brick")) ? "" : (interim.stream().filter(str -> str.equals("Brick")).count() + " brick, "));
-                returnString.append(interim.stream().noneMatch(str -> str.equals("Forest")) ? "" : (interim.stream().filter(str -> str.equals("Forest")).count() + " wood, "));
-                returnString.append(interim.stream().noneMatch(str -> str.equals("Mountain")) ? "" : (interim.stream().filter(str -> str.equals("Mountain")).count() + " ore, "));
-                
-                if(returnString.toString().substring(returnString.toString().length()-2).equals(", "))
-                    returnString.delete(returnString.toString().length()-2,returnString.toString().length());
-
-                returnString.append((catanPlayerList.get(catanPlayerList.size() - 1).equals(player) ? "" : "\n"));
-                check++;
-            } else {
-                returnString.append(interim.get(0)).append(" receives nothing");
-                returnString.append((catanPlayerList.get(catanPlayerList.size() - 1).equals(player) ? "" : "\n"));
-            }
+            check += (interim.size() > 1) ? 1 : 0;
+            getPlayerStatusMenu(getPlayerViaName(interim.get(0))).showResourceChanges((int) interim.stream().filter(str -> str.equals("Brick")).count(), (int) interim.stream().filter(str -> str.equals("Mountain")).count(), (int) interim.stream().filter(str -> str.equals("Grain")).count(), (int) interim.stream().filter(str -> str.equals("Plains")).count(), (int) interim.stream().filter(str -> str.equals("Forest")).count());
         }
+        if(check==0)
+            catanPlayerList.forEach(player -> getPlayerStatusMenu(player).update());
 
-        return new Object[]{((check==0)?"No players receive resources":returnString.toString()), ((check==0)? 0:catanPlayerList.size())};
+        return check==0;
     }
 
     public String giveRandomResource(Player player) {
