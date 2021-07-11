@@ -1297,32 +1297,63 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     }
 
-    public String playersWhoGainedResources(int roll) {
-        ArrayList<String> gainedPlayers = new ArrayList<>();
-        StringBuilder returnString = new StringBuilder("The following players received resources: ");
-        for (Tile tile : tiles)
-            if (tile.getNum() == roll)
-                for (int y = 0; y < 6; y++)
-                    for (Index index : indexes)
-                        if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
-                            for (Player player : catanPlayerList)
+    public Object[] resourceValsGiven(int roll) {
+        ArrayList<String> interim = new ArrayList<>();
+        int check = 0;
+        StringBuilder returnString = new StringBuilder("Resources will now be distributed: \n");
+        for (Player player : catanPlayerList) {
+            interim.clear();
+            interim.add(player.getName());
+            for (Tile tile : tiles)
+                if (tile.getNum() == roll)
+                    for (int y = 0; y < 6; y++)
+                        for (Index index : indexes)
+                            if (Math.abs(tile.getVertices().get(y).getX() - index.getLocation()[0]) < 35 && Math.abs(tile.getVertices().get(y).getY() - index.getLocation()[1]) < 35 && !tile.isHasRobber())
                                 if (index.getOwner().equals(player) && !getPlayerStatusMenu(player).hasStolen && !tile.isOnFire())
                                     switch (tile.getType()) {
                                         case "Grain":
+                                            for (int x = 0; x < player.grainMult() * (tile.isCultivated() ? 2 : 1) * (index.isCity() ? 2 : 1); x++)
+                                                interim.add("Grain");
+                                            break;
                                         case "Plains":
+                                            for (int x = 0; x < player.woolMult() * (tile.isCultivated() ? 2 : 1) * (index.isCity() ? 2 : 1); x++)
+                                                interim.add("Plains");
+                                            break;
                                         case "Brick":
+                                            for (int x = 0; x < player.brickMult() * (tile.isCultivated() ? 2 : 1) * (index.isCity() ? 2 : 1); x++)
+                                                interim.add("Brick");
+                                            break;
                                         case "Forest":
+                                            for (int x = 0; x < player.lumberMult() * (tile.isCultivated() ? 2 : 1) * (index.isCity() ? 2 : 1); x++)
+                                                interim.add("Forest");
+                                            break;
                                         case "Mountain":
-                                            if(!gainedPlayers.contains(player.getName()))
-                                                gainedPlayers.add(player.getName());
+                                            for (int x = 0; x < player.oreMult() * (tile.isCultivated() ? 2 : 1) * (index.isCity() ? 2 : 1); x++)
+                                                interim.add("Mountain");
                                             break;
                                     }
-        for(int x=0; x<gainedPlayers.size(); x++)
-            returnString.append(gainedPlayers.get(x)).append(x != gainedPlayers.size() - 1 ? ", " : ".");
 
-        return (gainedPlayers.size()==0)?"No players receive resources this turn.": returnString.toString();
+
+            if (interim.size() > 1) {
+                returnString.append(interim.get(0)).append(" receives ");
+                returnString.append(interim.stream().noneMatch(str -> str.equals("Grain")) ? "" : (interim.stream().filter(str -> str.equals("Grain")).count() + " wheat, "));
+                returnString.append(interim.stream().noneMatch(str -> str.equals("Plains")) ? "" : (interim.stream().filter(str -> str.equals("Plains")).count() + " sheep, "));
+                returnString.append(interim.stream().noneMatch(str -> str.equals("Brick")) ? "" : (interim.stream().filter(str -> str.equals("Brick")).count() + " brick, "));
+                returnString.append(interim.stream().noneMatch(str -> str.equals("Forest")) ? "" : (interim.stream().filter(str -> str.equals("Forest")).count() + " wood, "));
+                returnString.append(interim.stream().noneMatch(str -> str.equals("Mountain")) ? "" : (interim.stream().filter(str -> str.equals("Mountain")).count() + " ore, "));
+                if(returnString.toString().substring(returnString.toString().length()-2).equals(", "))
+                    returnString.delete(returnString.toString().length()-2,returnString.toString().length());
+
+                returnString.append((catanPlayerList.get(catanPlayerList.size() - 1).equals(player) ? "" : "\n"));
+                check++;
+            } else {
+                returnString.append(interim.get(0)).append(" receives nothing");
+                returnString.append((catanPlayerList.get(catanPlayerList.size() - 1).equals(player) ? "" : "\n"));
+            }
+        }
+
+        return new Object[]{((check==0)?"No players receive resources":returnString.toString()), ((check==0)? 0:catanPlayerList.size())};
     }
-
 
     public String giveRandomResource(Player player) {
         ArrayList<String> resources = new ArrayList<>();
