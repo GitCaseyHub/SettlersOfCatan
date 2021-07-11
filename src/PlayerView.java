@@ -1277,8 +1277,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         diceTwo.setVisible(true);
         diceOneLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceOneVal+".png"));
         diceTwoLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceTwoVal+".png"));
-        diceTwo.setLocation((int)screen.getWidth()/2,(int)screen.getHeight()/2 + 45 + 5*numPlayers);
-        diceOne.setLocation((int)screen.getWidth()/2 - 80, (int)screen.getHeight()/2 + 45 + 5*numPlayers);
+        diceTwo.setLocation((int)screen.getWidth()/2,(int)screen.getHeight()/2 + 45 + 7*numPlayers);
+        diceOne.setLocation((int)screen.getWidth()/2 - 80, (int)screen.getHeight()/2 + 45 + 7*numPlayers);
         diceOne.toFront();
         diceTwo.toFront();
     }
