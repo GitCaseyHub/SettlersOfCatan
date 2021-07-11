@@ -147,6 +147,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     int diceOneInt = 0;
     int diceTwoInt = 0;
     boolean revealDiceAsNeeded=false;
+    Object[] resourceOutput = new Object[]{"",0};
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
     public PlayerView(){}
@@ -854,9 +855,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.catanPlayerList.stream().filter(player -> player.getClassTitle().equalsIgnoreCase("Gambler")).forEach(Player::failGamble);
                 }
             }
+            resourceOutput = reference.resourceValsGiven(diceRoll);
             if(!revealDiceAsNeeded)
-                showDiceFrames(diceOneInt,diceTwoInt);
-            JOptionPane.showMessageDialog(null,((diceRoll!=7)?reference.playersWhoGainedResources(diceRoll):"A 7 has been rolled. Click a tile the robber will be moved to."),this.player.getName()+"'s Roll: "+diceRoll, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                showDiceFrames(diceOneInt,diceTwoInt,(int)resourceOutput[1]);
+            JOptionPane.showMessageDialog(null,((diceRoll!=7)?resourceOutput[0].toString():"A 7 has been rolled. Click a tile the robber will be moved to."),this.player.getName()+" rolls a "+diceRoll, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             hideDice();
             if(diceRoll==7) {
                 resetReference(false);
@@ -1270,13 +1272,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
     }
 
-    public void showDiceFrames(int diceOneVal, int diceTwoVal){
+    public void showDiceFrames(int diceOneVal, int diceTwoVal, int numPlayers){
         diceOne.setVisible(true);
         diceTwo.setVisible(true);
         diceOneLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceOneVal+".png"));
         diceTwoLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceTwoVal+".png"));
-        diceTwo.setLocation((int)screen.getWidth()/2,(int)screen.getHeight()/2 + 45);
-        diceOne.setLocation((int)screen.getWidth()/2 - 80, (int)screen.getHeight()/2 + 45);
+        diceTwo.setLocation((int)screen.getWidth()/2,(int)screen.getHeight()/2 + 45 + 5*numPlayers);
+        diceOne.setLocation((int)screen.getWidth()/2 - 80, (int)screen.getHeight()/2 + 45 + 5*numPlayers);
         diceOne.toFront();
         diceTwo.toFront();
     }
