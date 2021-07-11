@@ -1296,7 +1296,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                     }
 
     }
-
+    
+    //Returns the message of what resources players receive upon dice being rolled
     public Object[] resourceValsGiven(int roll) {
         ArrayList<String> interim = new ArrayList<>();
         int check = 0;
@@ -1341,6 +1342,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 returnString.append(interim.stream().noneMatch(str -> str.equals("Brick")) ? "" : (interim.stream().filter(str -> str.equals("Brick")).count() + " brick, "));
                 returnString.append(interim.stream().noneMatch(str -> str.equals("Forest")) ? "" : (interim.stream().filter(str -> str.equals("Forest")).count() + " wood, "));
                 returnString.append(interim.stream().noneMatch(str -> str.equals("Mountain")) ? "" : (interim.stream().filter(str -> str.equals("Mountain")).count() + " ore, "));
+                
                 if(returnString.toString().substring(returnString.toString().length()-2).equals(", "))
                     returnString.delete(returnString.toString().length()-2,returnString.toString().length());
 
