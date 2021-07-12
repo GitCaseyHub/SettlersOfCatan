@@ -210,7 +210,7 @@ public class Player {
     public void changeBrick(int brickNum) {
         switch(classTitle) {
             case "Farmer":
-            case "Shepard":
+            case "Shepherd":
             case "Woodsman":
                 pass();
                 break;
@@ -230,7 +230,7 @@ public class Player {
     public int brickMult() {
         switch(classTitle) {
             case "Farmer":
-            case "Shepard":
+            case "Shepherd":
             case "Woodsman":
                 return 0;
 
@@ -257,7 +257,7 @@ public class Player {
             case "Deity":
                 this.lumberNum += 4 * lumberNum;
                 break;
-            case "Shepard":
+            case "Shepherd":
                 pass();
                 break;
             case "Emperor":
@@ -275,7 +275,7 @@ public class Player {
             case "Woodsman":
             case "Deity":
                 return 4;
-            case "Shepard":
+            case "Shepherd":
                  return 0;
             case "Emperor":
             case "Gambler":
@@ -295,7 +295,7 @@ public class Player {
                 this.grainNum+=4*grainNum;
                 break;
             case "Mountaineer":
-            case "Shepard":
+            case "Shepherd":
             case "Woodsman":
                 pass();
                 break;
@@ -314,7 +314,7 @@ public class Player {
             case "Deity":
                 return 4;
             case "Mountaineer":
-            case "Shepard":
+            case "Shepherd":
             case "Woodsman":
                 return 0;
             case "Farmer":
@@ -332,7 +332,7 @@ public class Player {
 
     public void changeWool(int woolNum) {
         switch (this.classTitle) {
-            case "Shepard":
+            case "Shepherd":
             case "Deity":
                 this.woolNum += 4 * woolNum;
                 break;
@@ -353,7 +353,7 @@ public class Player {
 
     public int woolMult() {
         switch (this.classTitle) {
-            case "Shepard":
+            case "Shepherd":
             case "Deity":
                 return 4;
 
@@ -381,7 +381,7 @@ public class Player {
                 this.oreNum+=4*oreNum;
                 break;
             case "Farmer":
-            case "Shepard":
+            case "Shepherd":
             case "Woodsman":
                 pass();
                 break;
@@ -400,7 +400,7 @@ public class Player {
             case "Deity":
                 return 4;
             case "Farmer":
-            case "Shepard":
+            case "Shepherd":
             case "Woodsman":
                 return 0;
             case "Mountaineer":
