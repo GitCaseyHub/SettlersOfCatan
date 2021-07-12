@@ -12,9 +12,9 @@ import java.util.Objects;
 public class PlayerSelect extends JFrame implements ActionListener, FocusListener {
     //Fancy Border
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
-
+    
     //Class reveal functionality
-    String[] classTitles = {"Character Class", "Arsonist", "Assassin","Brewer", "Cultivator","Deity","Emperor", "Farmer", "Gambler", "Highwayman", "Mountaineer", "Pirate", "Serf", "Settler", "Shepard", "Woodsman"};
+    String[] classTitles = {"Character Class", "Arsonist", "Assassin","Brewer", "Cultivator","Deity","Emperor", "Farmer", "Gambler", "Highwayman", "Mountaineer", "Pirate", "Serf", "Settler", "Shepherd", "Woodsman"};
     String[] colors = {"Building Color","Blue", "Orange", "Red", "White"};
     String[] actions = {"",
             "Tile Arson - Remove Production",
