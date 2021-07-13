@@ -149,6 +149,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     boolean revealDiceAsNeeded=false;
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
     boolean intermediaryCheck=false;
+    Color standard = brickNum.getBackground();
 
     public PlayerView(){}
 
@@ -379,6 +380,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         largestArmyBox.setSelected(player.hasLargestArmy());
         longestRoadBox.setSelected(player.hasLongestRoad());
         victoryPointLabel.setText("   "+player.getVictoryPointTotal()+"   ");
+
+        Arrays.stream(new JLabel[]{brickNum,oreNum,sheepNum,wheatNum,woodNum}).forEach(label -> label.setBackground(standard));
 
         unplayed.setEnabled(player.isTurn());
         longestRoadBox.setSelected(player.hasLongestRoad());
@@ -1284,6 +1287,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void showResourceChanges(int bricks, int ores, int wheats, int sheeps, int woods){
+        brickNum.setBackground((bricks>0)?new Color(155,20,30):standard);
+        oreNum.setBackground((ores>0)?new Color(51,51,51):standard);
+        wheatNum.setBackground((wheats>0)?new Color(255,204,51):standard);
+        sheepNum.setBackground((sheeps>0)?new Color(0,204,0):standard);
+        woodNum.setBackground((woods>0)?new Color(0,102,0):standard);
+
         brickNum.setText("+ "+bricks);
         oreNum.setText("+ "+ores);
         wheatNum.setText("+ "+wheats);
