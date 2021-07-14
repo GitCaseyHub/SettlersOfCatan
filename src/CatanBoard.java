@@ -663,14 +663,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                     JOptionPane.showMessageDialog(this,(port.getType().toLowerCase().equals("generic")?"This ":"The ")+port.getType().toLowerCase()+" port has been pillaged and is now controlled by pirates. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
                                 return;
                             }
-                            else {
-                                if (!port.isDestroyed)
-                                    JOptionPane.showMessageDialog(this, "You do not have access to "+(port.getType().toLowerCase().equals("generic")?"this ":"the ")+port.getType().toLowerCase()+" port.", "Port inaccessible", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-
-                                else
-                                    JOptionPane.showMessageDialog(this,(port.getType().toLowerCase().equals("generic")?"This ":"The ")+port.getType().toLowerCase()+" port has been pillaged. It can no longer be used.","Port Pillaged",1, new ImageIcon("Resources/Catan_Icon.png"));
-                                return;
-                            }
                         }
                     }
                 }
