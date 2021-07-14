@@ -29,11 +29,11 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             "Double Brick & Ore - No Sheep & Wheat",
             "Pillage Port - 1:1 TradeIn - Double Costs",
             "Every Cost is Doubled",
-            "No Special Characteristics",
+            "Normal Character - No Special Features",
             "Quadruple Sheep - No Other Resources",
             "Quadruple Lumber - No Other Resources"};
 
-    String[] classDescriptions = {" - Character Class Description -",
+    String[] classDescriptions = {"",
             "You are an arsonist, and you leave a wake of destruction wherever you go. Naturally, you play fast and loose and frequently cause 'accidents'. As a result, once per turn, you may set fire to a tile, preventing it from getting resources for a turn. However, you must use a resource of the type the tile could produce as 'kindling' to start the fire. Note that a fire will last an entire turn cycle. Prepare to be hated.",
             "You are a murderer, and you've honed your skills through years of royal contracts. People, however, don't trust you because of your swarthy demeanor and empty eyes. As a result, you cannot trade with other players. But, your skills as a contract killer allow you to remove a single knight card from a random player at the cost of one random resource.",
             "You are a manufacturer of alcohol and you have a way with people. You are deceptive and can convince people of anything. As a result, you can confound other players and cause them to potentially fail their actions during their next turn. However, you need to create your brews at the cost of three wheat per confounding.",
