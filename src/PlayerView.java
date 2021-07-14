@@ -767,6 +767,15 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this, "You are in debt. You cannot trade with other players until you have all non-negative resource values.", "In-Debt Player", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
+            if(player.returnTotalResources()==0){
+                JOptionPane.showMessageDialog(this, "You have no resources. You cannot trade with other players until you have at least one of a single resource.", "No Resources To Trade With", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+
+            if(reference.getOtherPlayers().stream().allMatch(player -> player.returnTotalResources() == 0)){
+                JOptionPane.showMessageDialog(this, "No other players have resources. You cannot trade currently.", "All Other Players Have No Resources", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
             reference.showBuiltImage("Resources/Preview_Images/Trade.png", "Resource Exchange");
             this.tf.setVisible(true);
             this.tf.updateComboBoxes();
@@ -990,10 +999,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     if (reference.largestArmyPlayer.equals(chosenPlayer))
                         reference.currentLargestArmy -= 1;
 
-                    for (Player player : reference.catanPlayerList) {
+                    for (Player player : reference.catanPlayerList)
                         reference.largestArmy(player);
-                        player.winTheGame();
-                    }
+
                     removedResources = assassinateResources();
                     JOptionPane.showMessageDialog(this, "You've assassinated " + chosenPlayer.getName() + "'s knight at the cost of one " + removedResources.get(0) + " and one " + removedResources.get(1) + ".", "Assassination Complete", 1, new ImageIcon("Resources/Catan_Icon.png"));
                     reference.showBuiltImage("Resources/Preview_Images/Assassinate.jpg", "Assassination");
@@ -1120,6 +1128,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
 
         reference.updateAllStatusMenus();
+        player.winTheGame();
     }
 
     public long numNonNullCategories(){
