@@ -19,8 +19,12 @@ public class Port {
     public String getType() {
         return type;
     }
-    
-    public void destroy(){
-        this.isDestroyed=true;
+
+    public void destroy() {
+        this.isDestroyed = true;
+    }
+
+    public boolean isDestroyed(){
+        return isDestroyed;
     }
 }
