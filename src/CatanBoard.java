@@ -91,7 +91,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             new Point[]{new Point(198, 235), new Point(197, 312), new Point(88, 244)}};
     String[] portTypes = {"Generic", "Generic", "Generic", "Generic", "Brick", "Ore", "Sheep", "Wheat", "Lumber"};
     Port[] ports = new Port[9];
-    int portCount = 0;
     JCheckBox[] checkOptions;
     Port currentPort;
 
@@ -642,7 +641,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if (usablePorts && !doingStartup) {
-            portCount = 0;
             for (Port port : ports) {
                 if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) port.getLocations()[2].getX() + 25, (int) port.getLocations()[2].getY() + 25, 50, 50))) {
                     for (Index index : indexes) {
