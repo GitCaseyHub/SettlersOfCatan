@@ -516,7 +516,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 //Redraws Port Ships
                 if(usablePorts) {
                     for (Port value : ports) {
-                        if(!value.isDestroyed) {
+                        if(!value.isDestroyed()) {
                             BufferedImage port = ImageIO.read(new File("Resources/Port/" + value.getType() + "_Port_Ship.png"));
                             g.drawImage(port, (int) value.getLocations()[2].getX(), (int) value.getLocations()[2].getY(), null);
                         }
@@ -557,9 +557,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     for (Point[] portPoint : portPoints) {
                         currentPort = getPortAtLocation(portPoint);
                         if (sharesLocation(new Point((int) portPoint[0].getX(), (int) portPoint[0].getY())))
-                            g.drawImage((currentPort.isDestroyed)?redX:circle, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
+                            g.drawImage((currentPort.isDestroyed())?redX:circle, (int) portPoint[0].getX(), (int) portPoint[0].getY(), null);
                         if (sharesLocation(new Point((int) portPoint[1].getX(), (int) portPoint[1].getY())))
-                            g.drawImage((currentPort.isDestroyed)?redX:circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
+                            g.drawImage((currentPort.isDestroyed())?redX:circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 }
 
@@ -625,11 +625,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         if(isPortDestroying){
             for (Port port : ports)
                 if (new Rectangle(xLoc, yLoc, 10, 10).intersects(new Rectangle((int) port.getLocations()[2].getX() + 25, (int) port.getLocations()[2].getY() + 25, 50, 50))) {
-                    if(port.isDestroyed){
+                    if(port.isDestroyed()){
                         JOptionPane.showMessageDialog(this,(port.getType().toLowerCase().equals("generic")?"That ":"The ")+port.getType().toLowerCase()+" port has already been pillaged.","Port Already Destroyed",1, new ImageIcon("Resources/Catan_Icon.png"));
                         return;
                     }
-                    port.isDestroyed=true;
+                    port.destroy();
                     getPlayerStatusMenu(getCurrentPlayer()).hasPillaged=true;
                     isPortDestroying=false;
                     redrawEverything=true;
@@ -648,7 +648,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                                 (Math.abs(port.getLocations()[1].getX() - index.getLocation()[0]) < 25 && Math.abs(port.getLocations()[1].getY() - index.getLocation()[1]) < 25)) {
 
                             if (index.isTaken() && index.getOwner().getName().equals(getCurrentPlayer().getName())) {
-                                if(!port.isDestroyed) {
+                                if(!port.isDestroyed()) {
                                     if (getCurrentPlayer().isInDebt()) {
                                         JOptionPane.showMessageDialog(this, "You are in debt. You cannot use ports until you have all non-negative resource values.", "In-Debt Player", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                                         return;
