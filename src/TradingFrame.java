@@ -86,7 +86,7 @@ public class TradingFrame extends JFrame implements ActionListener {
             try {
                 String playerName = (String) JOptionPane.showInputDialog(this, "Which player would you like to trade with?", "Trading Player", 1, new ImageIcon("Resources/Catan_Icon.png"), null, null);
                 if(!cbRef.playerExists(playerName)){
-                    JOptionPane.showMessageDialog(this,"There is no player with that name. Make sure you are typing their name in correctly.","Invalid Name",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(this,"That is not a valid entry. Please trade appropriately.","Invalid Name",1, new ImageIcon("Resources/Catan_Icon.png"));
                     return;
                 }
 
@@ -97,6 +97,11 @@ public class TradingFrame extends JFrame implements ActionListener {
                     }
                     if(cbRef.getPlayerViaName(playerName).isInDebt()) {
                         JOptionPane.showMessageDialog(this, "You cannot trade with players who are in debt.", "Debtor Trade Denied", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
+
+                    if(cbRef.getPlayerViaName(playerName).returnTotalResources()==0){
+                        JOptionPane.showMessageDialog(this,playerName+" has no resources. You cannot trade with them.","Player with No Resources",1, new ImageIcon("Resources/Catan_Icon.png"));
                         return;
                     }
 
