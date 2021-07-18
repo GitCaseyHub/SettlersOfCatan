@@ -111,6 +111,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenu shepherd = new JMenu("Shepherd");
     JMenuItem sheepify = new JMenuItem("Expand Sheep");
     boolean hasSheepified = false;
+    ArrayList<Tile> compatibleTiles;
 
     //Special Classes
     JCheckBox[] playerNames;
@@ -1145,7 +1146,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
 
             if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce sheep?","Sheepify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
-                ArrayList<Tile> compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Plains") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
+                compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Plains") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
                 compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Plains");
                 hasSheepified=true;
                 player.monoWool(-1);
