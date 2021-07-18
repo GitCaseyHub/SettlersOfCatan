@@ -107,6 +107,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenuItem confound = new JMenuItem("Confound");
     boolean hasConfounded=false;
 
+    //Shepherd Menu
+    JMenu shepherd = new JMenu("Shepherd");
+    JMenuItem sheepify = new JMenuItem("Expand Sheep");
+    boolean hasSheepified = false;
+
     //Special Classes
     JCheckBox[] playerNames;
     Player chosenPlayer;
@@ -250,6 +255,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 confound.addActionListener(this);
                 confound.setEnabled(false);
                 brewer.setEnabled(false);
+            }
+            if(player.getClassTitle().equals("Shepherd")){
+                mb.add(shepherd);
+                shepherd.add(sheepify);
+                sheepify.addActionListener(this);
+                sheepify.setEnabled(false);
+                shepherd.setEnabled(false);
             }
         }
 
@@ -511,6 +523,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             cultivate.setEnabled(true);
             confound.setEnabled(true);
             pillage.setEnabled(!hasPillaged && reference.usablePorts);
+            sheepify.setEnabled(!hasSheepified);
             loadedSpecialClasses=true;
         }
         rollDice.setEnabled(false);
@@ -755,6 +768,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
         else if(e.getSource()==exchange){
             if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed this action.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
                 JOptionPane.showMessageDialog(this,"You are confounded and have failed this action.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
                 exchange.setEnabled(false);
                 return;
@@ -1124,6 +1138,25 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             JOptionPane.showMessageDialog(this,"You have successfully confounded "+chosenPlayer.getName()+". Their actions may fail this turn.","Brewer Special Action", 1, new ImageIcon("Resources/Catan_Icon.png"));
         }
 
+        else if(e.getSource()==sheepify){
+            if(player.getWoolNum()==0){
+                JOptionPane.showMessageDialog(this,"You don't have the sheep necessary to perform this action.","Insufficient Sheep",1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+
+            if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce sheep?","Sheepify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+                ArrayList<Tile> compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Plains") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
+                compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Plains");
+                hasSheepified=true;
+                player.monoWool(-1);
+                reference.redrawEverything=true;
+                reference.repaint();
+                update();
+                JOptionPane.showMessageDialog(this,"A tile has converted. More sheep abound on Catan","Sheepification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+        }
+
         else if(e.getSource()==remainingResources)
             JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
 
@@ -1220,7 +1253,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void resetReference(boolean state){
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer,menuRef.shepherd}).forEach(menu -> menu.setEnabled(state));
     }
 
     public void enableAppropriateDevCardImages(){
