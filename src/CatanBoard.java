@@ -1175,6 +1175,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             pv.assassin.setEnabled(false);
             pv.cultivator.setEnabled(false);
             pv.brewer.setEnabled(false);
+            pv.shepherd.setEnabled(false);
         });
 
         for (String s : turnNameList)
@@ -1818,7 +1819,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void performStaleReferenceReset(boolean state){
         PlayerView menuRef = getPlayerStatusMenu(getCurrentPlayer());
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist, menuRef.cultivator, menuRef.pirate,menuRef.brewer}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist, menuRef.cultivator, menuRef.pirate,menuRef.brewer, menuRef.shepherd}).forEach(menu -> menu.setEnabled(state));
     }
 
     public void randomize(){
