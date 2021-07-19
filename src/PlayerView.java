@@ -113,6 +113,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     boolean hasSheepified = false;
     ArrayList<Tile> compatibleTiles;
 
+    //Shepherd Menu
+    JMenu woodsman = new JMenu("Woodsman");
+    JMenuItem forestExpansion = new JMenuItem("Expand Forests");
+    boolean hasForestified = false;
+
     //Special Classes
     JCheckBox[] playerNames;
     Player chosenPlayer;
@@ -161,6 +166,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public PlayerView(Player player, CatanBoard reference, TradingFrame tf) {
         this.setUndecorated(true);
+
         //Relating global variables to class variables
         this.player = player;
         this.reference=reference;
@@ -263,6 +269,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 sheepify.addActionListener(this);
                 sheepify.setEnabled(false);
                 shepherd.setEnabled(false);
+            }
+            if(player.getClassTitle().equals("Woodsman")){
+                mb.add(woodsman);
+                woodsman.add(forestExpansion);
+                forestExpansion.addActionListener(this);
+                forestExpansion.setEnabled(false);
+                woodsman.setEnabled(false);
             }
         }
 
@@ -525,6 +538,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             confound.setEnabled(true);
             pillage.setEnabled(!hasPillaged && reference.usablePorts);
             sheepify.setEnabled(!hasSheepified);
+            forestExpansion.setEnabled(!hasForestified);
             loadedSpecialClasses=true;
         }
         rollDice.setEnabled(false);
@@ -1153,7 +1167,30 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.redrawEverything=true;
                 reference.repaint();
                 update();
-                JOptionPane.showMessageDialog(this,"A tile has converted. More sheep abound on Catan","Sheepification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                reference.showBuiltImage("Resources/Preview_Images/Sheepify.png", "Resource Exchange");
+                JOptionPane.showMessageDialog(this,"A tile has converted. More sheep abound on Catan.","Sheepification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                sheepify.setEnabled(false);
+                return;
+            }
+        }
+
+        else if(e.getSource()==forestExpansion){
+            if(player.getLumberNum()==0){
+                JOptionPane.showMessageDialog(this,"You don't have the wood necessary to perform this action.","Insufficient Wood",1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+
+            if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce wood?","Forestify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+                compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Forest") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
+                compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Forest");
+                hasForestified=true;
+                player.monoLumber(-1);
+                reference.redrawEverything=true;
+                reference.repaint();
+                update();
+                reference.showBuiltImage("Resources/Preview_Images/Forestify.png", "Resource Exchange");
+                JOptionPane.showMessageDialog(this,"A tile has converted. A forest has grown overnight in Catan.","Forestification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                forestExpansion.setEnabled(false);
                 return;
             }
         }
@@ -1254,7 +1291,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void resetReference(boolean state){
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer,menuRef.shepherd}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer,menuRef.shepherd, menuRef.woodsman}).forEach(menu -> menu.setEnabled(state));
     }
 
     public void enableAppropriateDevCardImages(){
