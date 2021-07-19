@@ -164,7 +164,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
 
                 else {
                     //Testing Player
-                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), -100, 100, 100, 100, 100, 0, false, false, false,referenceNumber,99,99,99,false,0,false);
+                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), -100, 100, 100, 100, 100, 10, false, false, false,referenceNumber,99,99,99,false,0,false);
 
                     int before = bgReference.catanPlayerList.size();
                     Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15,false,0,false);
