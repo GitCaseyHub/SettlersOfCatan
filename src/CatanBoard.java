@@ -93,6 +93,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     Port[] ports = new Port[9];
     JCheckBox[] checkOptions;
     Port currentPort;
+    JCheckBox chosenPort;
 
     //Robber Objects
     Tile robberTile;
@@ -1176,6 +1177,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             pv.cultivator.setEnabled(false);
             pv.brewer.setEnabled(false);
             pv.shepherd.setEnabled(false);
+            pv.woodsman.setEnabled(false);
         });
 
         for (String s : turnNameList)
@@ -1381,22 +1383,23 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             return;
                         }
                         while (numberChecked() == 0 || numberChecked() > 1) {
-                            checkOptions[1].setEnabled(false);
+                            Arrays.stream(checkOptions).filter(checkBox-> checkBox.getText().equals("Wheat")).collect(Collectors.toCollection(ArrayList::new)).get(0).setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange wheat for:", checkOptions}, "Wheat Exchange", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
                                 JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
+                        chosenPort = Arrays.stream(checkOptions).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
 
-                        if (checkOptions[0].isSelected())
+                        if (chosenPort.getText().equals("Sheep"))
                             getCurrentPlayer().monoWool(1);
 
-                        if (checkOptions[2].isSelected())
+                        if (chosenPort.getText().equals("Ore"))
                             getCurrentPlayer().monoOre(1);
 
-                        if (checkOptions[3].isSelected())
+                        if (chosenPort.getText().equals("Brick"))
                             getCurrentPlayer().monoBrick(1);
 
-                        if (checkOptions[4].isSelected())
+                        if (chosenPort.getText().equals("Lumber"))
                             getCurrentPlayer().monoLumber(1);
 
                         getCurrentPlayer().monoWheat(-2);
@@ -1413,23 +1416,25 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             return;
                         }
                         while (numberChecked() == 0 || numberChecked() > 1) {
-                            checkOptions[0].setEnabled(false);
+                            Arrays.stream(checkOptions).filter(checkBox-> checkBox.getText().equals("Sheep")).collect(Collectors.toCollection(ArrayList::new)).get(0).setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange sheep for:", checkOptions}, "Sheep Exchange", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
                                 JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
-                        if (checkOptions[1].isSelected())
-                            getCurrentPlayer().monoWheat(1);
+                        chosenPort = Arrays.stream(checkOptions).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
 
-                        if (checkOptions[2].isSelected())
+                        if (chosenPort.getText().equals("Ore"))
                             getCurrentPlayer().monoOre(1);
 
-                        if (checkOptions[3].isSelected())
+                        if (chosenPort.getText().equals("Brick"))
                             getCurrentPlayer().monoBrick(1);
 
-                        if (checkOptions[4].isSelected())
+                        if (chosenPort.getText().equals("Lumber"))
                             getCurrentPlayer().monoLumber(1);
+
+                        if(chosenPort.getText().equals("Wheat"))
+                            getCurrentPlayer().monoWheat(1);
 
                         getCurrentPlayer().monoWool(-2);
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1445,23 +1450,24 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             return;
                         }
                         while (numberChecked() == 0 || numberChecked() > 1) {
-                            checkOptions[2].setEnabled(false);
+                            Arrays.stream(checkOptions).filter(checkBox-> checkBox.getText().equals("Ore")).collect(Collectors.toCollection(ArrayList::new)).get(0).setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange ore for:", checkOptions}, "Ore Exchange", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
                                 JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
+                        chosenPort = Arrays.stream(checkOptions).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
 
-                        if (checkOptions[0].isSelected())
+                        if (chosenPort.getText().equals("Sheep"))
                             getCurrentPlayer().monoWool(1);
 
-                        if (checkOptions[1].isSelected())
-                            getCurrentPlayer().monoWheat(1);
-
-                        if (checkOptions[3].isSelected())
+                        if (chosenPort.getText().equals("Brick"))
                             getCurrentPlayer().monoBrick(1);
 
-                        if (checkOptions[4].isSelected())
+                        if (chosenPort.getText().equals("Lumber"))
                             getCurrentPlayer().monoLumber(1);
+
+                        if(chosenPort.getText().equals("Wheat"))
+                            getCurrentPlayer().monoWheat(1);
 
                         getCurrentPlayer().monoOre(-2);
                         JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1477,23 +1483,25 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             return;
                         }
                         while (numberChecked() == 0 || numberChecked() > 1) {
-                            checkOptions[3].setEnabled(false);
+                            Arrays.stream(checkOptions).filter(checkBox-> checkBox.getText().equals("Brick")).collect(Collectors.toCollection(ArrayList::new)).get(0).setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange brick for:", checkOptions}, "Brick Exchange", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
                                 JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
 
-                        if (checkOptions[1].isSelected())
-                            getCurrentPlayer().monoWheat(1);
+                        chosenPort = Arrays.stream(checkOptions).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
 
-                        if (checkOptions[2].isSelected())
-                            getCurrentPlayer().monoOre(1);
-
-                        if (checkOptions[0].isSelected())
+                        if (chosenPort.getText().equals("Sheep"))
                             getCurrentPlayer().monoWool(1);
 
-                        if (checkOptions[4].isSelected())
+                        if (chosenPort.getText().equals("Ore"))
+                            getCurrentPlayer().monoOre(1);
+
+                        if (chosenPort.getText().equals("Lumber"))
                             getCurrentPlayer().monoLumber(1);
+
+                        if(chosenPort.getText().equals("Wheat"))
+                            getCurrentPlayer().monoWheat(1);
                     }
 
                     getCurrentPlayer().monoBrick(-2);
@@ -1509,23 +1517,24 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             return;
                         }
                         while (numberChecked() == 0 || numberChecked() > 1) {
-                            checkOptions[4].setEnabled(false);
+                            Arrays.stream(checkOptions).filter(checkBox-> checkBox.getText().equals("Lumber")).collect(Collectors.toCollection(ArrayList::new)).get(0).setEnabled(false);
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange lumber for:", checkOptions}, "Lumber Exchange", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
                                 JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
+                        chosenPort = Arrays.stream(checkOptions).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
 
-                        if (checkOptions[1].isSelected())
-                            getCurrentPlayer().monoWheat(1);
-
-                        if (checkOptions[2].isSelected())
-                            getCurrentPlayer().monoOre(1);
-
-                        if (checkOptions[0].isSelected())
+                        if (chosenPort.getText().equals("Sheep"))
                             getCurrentPlayer().monoWool(1);
 
-                        if (checkOptions[3].isSelected())
+                        if (chosenPort.getText().equals("Ore"))
+                            getCurrentPlayer().monoOre(1);
+
+                        if (chosenPort.getText().equals("Brick"))
                             getCurrentPlayer().monoBrick(1);
+
+                        if(chosenPort.getText().equals("Wheat"))
+                            getCurrentPlayer().monoWheat(1);
                     }
                     getCurrentPlayer().monoLumber(-2);
                     JOptionPane.showMessageDialog(this, "The exchange has been made.", "Port Used", 1, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1564,34 +1573,28 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         }
 
                         while (numberChecked() == 0 || numberChecked() > 1) {
-                            if (resourceChoice.equalsIgnoreCase("Sheep"))
-                                checkOptions[0].setEnabled(false);
-                            if (resourceChoice.equalsIgnoreCase("Wheat"))
-                                checkOptions[1].setEnabled(false);
-                            if (resourceChoice.equalsIgnoreCase("Ore"))
-                                checkOptions[2].setEnabled(false);
-                            if (resourceChoice.equalsIgnoreCase("Brick"))
-                                checkOptions[3].setEnabled(false);
-                            if (resourceChoice.equalsIgnoreCase("Lumber"))
-                                checkOptions[4].setEnabled(false);
+                            String finalResourceChoice = resourceChoice;
+                            Arrays.stream(checkOptions).filter(box -> box.getText().equalsIgnoreCase(finalResourceChoice)).collect(Collectors.toCollection(ArrayList::new)).get(0).setEnabled(false);
 
                             JOptionPane.showMessageDialog(this, new Object[]{"Choose the resource you'd like to exchange for:", checkOptions}, "Generic Exchange", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                             if (numberChecked() > 1)
                                 JOptionPane.showMessageDialog(this, "You must select a single resource.", "Improper Choice", 3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
-                        if (checkOptions[0].isSelected())
+                        chosenPort = Arrays.stream(checkOptions).filter(AbstractButton::isSelected).collect(Collectors.toCollection(ArrayList::new)).get(0);
+
+                        if (chosenPort.getText().equals("Sheep"))
                             getCurrentPlayer().monoWool(1);
 
-                        if (checkOptions[1].isSelected())
-                            getCurrentPlayer().monoWheat(1);
-
-                        if (checkOptions[2].isSelected())
+                        if (chosenPort.getText().equals("Ore"))
                             getCurrentPlayer().monoOre(1);
 
-                        if (checkOptions[3].isSelected())
+                        if (chosenPort.getText().equals("Brick"))
                             getCurrentPlayer().monoBrick(1);
 
-                        if (checkOptions[4].isSelected())
+                        if(chosenPort.getText().equals("Wheat"))
+                            getCurrentPlayer().monoWheat(1);
+
+                        if(chosenPort.getText().equals("Lumber"))
                             getCurrentPlayer().monoLumber(1);
 
                         if (resourceChoice.equalsIgnoreCase("Wheat"))
@@ -1819,7 +1822,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void performStaleReferenceReset(boolean state){
         PlayerView menuRef = getPlayerStatusMenu(getCurrentPlayer());
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist, menuRef.cultivator, menuRef.pirate,menuRef.brewer, menuRef.shepherd}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.development,menuRef.build,menuRef.assassin,menuRef.hwm,menuRef.arsonist, menuRef.cultivator, menuRef.pirate,menuRef.brewer, menuRef.shepherd,menuRef.woodsman}).forEach(menu -> menu.setEnabled(state));
     }
 
     public void randomize(){
