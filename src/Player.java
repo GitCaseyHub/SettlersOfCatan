@@ -465,6 +465,10 @@ public class Player {
         return Arrays.stream(new int[]{lumberNum,woolNum,brickNum,grainNum,oreNum}).anyMatch(resource -> resource<0);
     }
 
+    public boolean hasInsufficientGenericResources(int x){
+        return Arrays.stream(new int[]{lumberNum,woolNum,brickNum,grainNum,oreNum}).noneMatch(resource->resource>=x);
+    }
+
     public void pass(){
         //Tells the class that nothing needs to be done, but an if statement needs to be caught because of the 'else' statement. Python-inspired
     }
