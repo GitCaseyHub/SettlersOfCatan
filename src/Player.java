@@ -54,11 +54,16 @@ public class Player {
 
         victoryLabel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                try{Thread.sleep(500);}
-                catch(InterruptedException ignored){}
-                JOptionPane.showMessageDialog(victory,"Thanks for playing.","Game Over",1, new ImageIcon("Resources/Catan_Icon.png"));
-                victory.setVisible(false);
-                System.exit(1);
+                new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                JOptionPane.showMessageDialog(victory,"Thanks for playing.","Game Over",1, new ImageIcon("Resources/Catan_Icon.png"));
+                                victory.setVisible(false);
+                                System.exit(1);
+                            }
+                        },
+                        500);
             }
         });
 
