@@ -465,11 +465,18 @@ public class Player {
     }
 
     public void winTheGame(){
-        cb.updateAllStatusMenus();
         if (this.getVictoryPointTotal() >= 10) {
-            cb.endGame();
-            loadUpVictoryFrame();
-            JOptionPane.showMessageDialog(victory, this.getName() + ", you've won Settlers of Catan®.", "Game Over", 1, new ImageIcon("Resources/Catan_Icon.png"));
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            cb.endGame();
+                            loadUpVictoryFrame();
+                            JOptionPane.showMessageDialog(victory, name + ", you've won Settlers of Catan®.", "Game Over", 1, new ImageIcon("Resources/Catan_Icon.png"));
+
+                        }
+                    },
+                    500);
         }
     }
 }
