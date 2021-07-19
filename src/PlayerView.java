@@ -784,7 +784,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         else if(e.getSource()==exchange){
             if(isConfounded()){
                 JOptionPane.showMessageDialog(this,"You are confounded and have failed this action.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
-                JOptionPane.showMessageDialog(this,"You are confounded and have failed this action.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
                 exchange.setEnabled(false);
                 return;
             }
@@ -1032,8 +1031,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         reference.largestArmy(player);
 
                     removedResources = assassinateResources();
-                    JOptionPane.showMessageDialog(this, "You've assassinated " + chosenPlayer.getName() + "'s knight at the cost of one " + removedResources.get(0) + " and one " + removedResources.get(1) + ".", "Assassination Complete", 1, new ImageIcon("Resources/Catan_Icon.png"));
                     reference.showBuiltImage("Resources/Preview_Images/Assassinate.jpg", "Assassination");
+                    JOptionPane.showMessageDialog(this, "You've assassinated " + chosenPlayer.getName() + "'s knight at the cost of one " + removedResources.get(0) + " and one " + removedResources.get(1) + ".", "Assassination Complete", 1, new ImageIcon("Resources/Catan_Icon.png"));
 
                     hasKilled = true;
                     assassinate.setEnabled(false);
