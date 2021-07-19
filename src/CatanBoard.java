@@ -415,8 +415,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 g.drawImage(settlement, chosen_x, chosen_y, null);
                 settlementPaintCondition = false;
                 if(!doingStartup){
-                    JOptionPane.showMessageDialog(this,"You've built a new settlement.","Settlement Construction",1,new ImageIcon("Resources/Catan_Icon.png"));
                     showBuiltImage("Resources/Preview_Images/Settlement.png","Settlement Construction");
+                    JOptionPane.showMessageDialog(this,"You've built a new settlement.","Settlement Construction",1,new ImageIcon("Resources/Catan_Icon.png"));
                 }
                 else
                     isRoadBuilding = true;
@@ -475,8 +475,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 }
                 else {
                     if (!roadDevCard && !finishedRoadCard) {
-                        JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
                         showBuiltImage("Resources/Preview_Images/Road.png","Road Construction");
+                        JOptionPane.showMessageDialog(this, "You've built a new road.", "Road Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
                     }
 
                     else if (roadDevCard) {
@@ -846,10 +846,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 performStaleReferenceReset(true);
                 repaint();
                 getCurrentPlayer().changeVictoryPoints(1);
+                showBuiltImage("Resources/Preview_Images/City.png","City Construction");
                 JOptionPane.showMessageDialog(this, "Your settlement has been upgraded. Your city grants you double the resources it would normally provide.", "Settlement Upgrade Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                 getCurrentPlayer().changeCityNum(-1);
                 getCurrentPlayer().changeSettlementNum(1);
-                showBuiltImage("Resources/Preview_Images/City.png","City Construction");
             }
         }
 
@@ -1770,33 +1770,33 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         Player afflictedPlayer = catanPlayerList.get(new Random().nextInt(catanPlayerList.size()));
         switch(chosenCataclysm) {
             case "Famine":
+                showBuiltImage("Resources/Preview_Images/Famine.png","Cataclysm - Famine");
                 JOptionPane.showMessageDialog(this,"A famine sweeps over "+afflictedPlayer.getName()+"'s  lands, forcing them to eat all their sheep to stay alive. "+afflictedPlayer.getName()+" loses all sheep resources.","Ravaging Famine",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setWoolNum(0);
-                showBuiltImage("Resources/Preview_Images/Famine.png","Cataclysm - Famine");
                 break;
 
             case "Locust":
+                showBuiltImage("Resources/Preview_Images/Locust.png","Cataclysm - Swarm of Locust");
                 JOptionPane.showMessageDialog(this,"A swarm of locusts flood from the desert and ravage all of "+afflictedPlayer.getName()+"'s wheat fields. "+afflictedPlayer.getName()+" loses all wheat resources.","Locust Invasion",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setGrainNum(0);
-                showBuiltImage("Resources/Preview_Images/Locust.png","Cataclysm - Swarm of Locust");
                 break;
 
             case "Fire":
+                showBuiltImage("Resources/Preview_Images/Fires.png","Cataclysm - Forest Fires");
                 JOptionPane.showMessageDialog(this,"A terrible drought engulfs "+afflictedPlayer.getName()+"'s woodlands and causes massive fires, burning down their forests. "+afflictedPlayer.getName()+" loses all lumber resources.","Massive Drought",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setLumberNum(0);
-                showBuiltImage("Resources/Preview_Images/Fires.png","Cataclysm - Forest Fires");
                 break;
 
             case "Strike":
+                showBuiltImage("Resources/Preview_Images/Revolt.jpg","Cataclysm - Serf Uprising");
                 JOptionPane.showMessageDialog(this,afflictedPlayer.getName()+"'s serf laborers revolt because of poor treatment and take all their building supplies with them. "+afflictedPlayer.getName()+" loses all brick resources.","Labor Revolt",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setBrickNum(0);
-                showBuiltImage("Resources/Preview_Images/Revolt.jpg","Cataclysm - Serf Uprising");
                 break;
 
             case "Monsoon":
+                showBuiltImage("Resources/Preview_Images/Monsoon.png","Cataclysm - Rainstorms");
                 JOptionPane.showMessageDialog(this,"There are massive rainstorms emerging over "+afflictedPlayer.getName()+"'s mountains, instigating quick-erosion of their ore. "+afflictedPlayer.getName()+" loses all ore resources.","Labor Revolt",3, new ImageIcon("Resources/Catan_Icon.png"));
                 afflictedPlayer.setOreNum(0);
-                showBuiltImage("Resources/Preview_Images/Monsoon.png","Cataclysm - Rainstorms");
                 break;
         }
         updateAllStatusMenus();
