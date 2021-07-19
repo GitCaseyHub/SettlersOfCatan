@@ -30,8 +30,8 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             "Pillage Port - 1:1 TradeIn - Double Costs",
             "Every Cost is Doubled",
             "Normal Character - No Special Features",
-            "Quadruple Sheep - No Other Resources",
-            "Quadruple Lumber - No Other Resources"};
+            "Quadruple Sheep - Expand Plains",
+            "Quadruple Wood - Expand Forests"};
 
     String[] classDescriptions = {"",
             "You are an arsonist, and you leave a wake of destruction wherever you go. Naturally, you play fast and loose and frequently cause 'accidents'. As a result, once per turn, you may set fire to a tile, preventing it from getting resources for a turn. However, you must use a resource of the type the tile could produce as 'kindling' to start the fire. Note that a fire will last an entire turn cycle. Prepare to be hated.",
@@ -48,7 +48,7 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
             "You are the lowest of the low. Society has long held you down, and today is no different. You're a serf, and everyone looks down on you. You are a laborer and people see you as such; as a result, no one goes easy on you. Everything costs you double as normal.\n(Hard Mode)",
             "You are a normal Settler of Catan: you have access to all ports (if active), you receive the standard amount of resources, and you can build using standard prices.\n(Normal Mode)",
             "You live amongst the sheep; you know nothing but sheep. You forgot common language, but you have sheep. As a result, you produce four times normal wool; and, once per game, you can permanently turn a random non-sheep producing tile into a sheep-producing tile at the cost of one sheep resource. But given your status as a depraved sheep-loving-hermit, you can produce nothing else.",
-            "You left society long ago to live in the woods. It's where you belong, and you would rather forsake your kind than to ever return. All you need is an axe and a forest. As a result, you produce four times lumber than normal, but you can produce nothing else."};
+            "You left society long ago to live in the woods. It's where you belong, and you would rather forsake your kind than to ever return. All you need is an axe and a forest. As a result, you produce four times lumber than normal, but you can produce nothing else. Also, once per game, you can permanently turn a random non-wood producing tile into a wood-producing tile at the cost of one wood resource."};
 
     //Frame Assets
     JPanel upperPanel = new JPanel(new GridLayout(1,2));
