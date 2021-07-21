@@ -128,6 +128,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     //Turn cycles
     boolean singleRandomize=false;
     boolean singleDemocracy=false;
+    boolean singleMonarchy=false;
     int diceRoll=0;
 
     //DevCard Frame
@@ -510,12 +511,18 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 singleRandomize = true;
                 reference.randomize();
             }
-        if(!singleDemocracy && !reference.doingStartup) {
+
+        if(!singleDemocracy && !reference.doingStartup)
             if (reference.turnNameList.get(0).equals(this.player.getName()) && reference.democracy) {
                 singleDemocracy=true;
                 reference.performDemocracyVoting();
             }
-        }
+
+        if(!singleMonarchy && !reference.doingStartup)
+            if (reference.turnNameList.get(0).equals(this.player.getName()) && reference.monarchy) {
+                singleMonarchy=true;
+                reference.performMonarchSelection();
+            }
 
         resetReference(true);
         rollDice.setEnabled(true);
@@ -812,6 +819,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         else if(e.getSource()==endTurn){
             singleRandomize=false;
             singleDemocracy=false;
+            singleMonarchy=false;
             int cataclysmOccurrence = 69;
             if(reference.cataclysmsActive){
                 cataclysmOccurrence = new Random().nextInt(20);
