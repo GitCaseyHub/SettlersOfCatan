@@ -37,16 +37,17 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
     //JMenuBar
     JMenuBar mb = new JMenuBar();
-    JMenu optionMenu = new JMenu("Features");
+    JMenu optionMenu = new JMenu("Options");
     JMenu help = new JMenu("Help");
     JMenu modes = new JMenu("Modes");
-    JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("Enable 'Preview' Frame");
-    JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("Enable 'Awards' Frame");
+    JCheckBoxMenuItem previewMenu = new JCheckBoxMenuItem("'Preview' Frame Active");
+    JCheckBoxMenuItem motionMenu = new JCheckBoxMenuItem("'Awards' Frame Active");
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
     JCheckBoxMenuItem devCardTransparency = new JCheckBoxMenuItem("Enable Card Transparency");
     JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
     JCheckBoxMenuItem democracyMode = new JCheckBoxMenuItem("Democracy Mode");
+    JCheckBoxMenuItem monarchMode = new JCheckBoxMenuItem("Monarch Mode");
     JMenuItem helpMenu = new JMenuItem("How-To Guide");
 
     //Number of Players Question
@@ -72,21 +73,25 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         helpMenu.setToolTipText("Click here to learn how to perform certain actions in-game and what the short-cut keys are for performing special operations.");
         previewMenu.setToolTipText("Click to enable frame depicting what your current action is (i.e. an image of road construction appears when you build a road).");
         previewMenu.addActionListener(this);
-        optionMenu.add(specialClassMenu);
-        optionMenu.add(devCardTransparency);
+
         devCardTransparency.setToolTipText("Click to allow players to know the exact number of development cards of a type that are available, hidden or not. Otherwise, you will be given an estimation of how many remain.");
         optionMenu.add(motionMenu);
         devCardTransparency.addActionListener(this);
         optionMenu.add(previewMenu);
+        optionMenu.add(specialClassMenu);
+        optionMenu.add(devCardTransparency);
         motionMenu.addActionListener(this);
         motionMenu.setToolTipText("Click to enable a frame showing what award a player has should they hover over the checkbox in their player status screen.");
         specialClassMenu.addActionListener(this);
         modes.add(democracyMode);
+        modes.add(monarchMode);
         modes.add(randomizer);
         randomizer.addActionListener(this);
         randomizer.setToolTipText("Every turn, tiles will change types. The tiles will then be given a new roll value that may or may not be consistent with probabilities.");
         democracyMode.addActionListener(this);
         democracyMode.setToolTipText("Every turn cycle, players vote for a ruler. That player can then decide what they roll on the dice when it's their turn.");
+        monarchMode.addActionListener(this);
+        monarchMode.setToolTipText("Every turn cycle, a random player is selected as leader.");
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
         wildfires.addActionListener(this);
@@ -97,7 +102,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         this.add(borderPanel);
         borderPanel.setBorder(compound);
         borderPanel.add(options,BorderLayout.CENTER);
-            options.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Options"));
+            options.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Special Features"));
             options.add(base);
             options.add(activePorts);
             options.add(cataclysms);
@@ -156,14 +161,23 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires || e.getSource()==devCardTransparency)
             optionMenu.doClick();
 
-        if(e.getSource()==randomizer || e.getSource()==democracyMode)
+        if(e.getSource()==randomizer || e.getSource()==democracyMode || e.getSource()==monarchMode)
             modes.doClick();
 
-        if(e.getSource()==democracyMode && randomizer.isSelected())
+        if(e.getSource()==democracyMode) {
             randomizer.setSelected(false);
+            monarchMode.setSelected(false);
+        }
 
-        if(e.getSource()==randomizer && democracyMode.isSelected())
+        if(e.getSource()==monarchMode){
+            randomizer.setSelected(false);
             democracyMode.setSelected(false);
+        }
+
+        if(e.getSource()==randomizer) {
+            democracyMode.setSelected(false);
+            monarchMode.setSelected(false);
+        }
 
         else if(e.getSource()==generateChars){
             while(appropriateNumSelected(playerNumOptions)) {
@@ -206,6 +220,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.randomize = randomizer.isSelected();
             cbMain.democracy = democracyMode.isSelected();
             cbMain.devCardTransparency = devCardTransparency.isSelected();
+            cbMain.monarchy=monarchMode.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
