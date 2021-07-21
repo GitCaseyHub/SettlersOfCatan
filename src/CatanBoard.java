@@ -106,6 +106,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean specialActions=false;
     boolean randomize=false;
     boolean democracy=false;
+    boolean monarchy=false;
 
     //Building Variables
     int roadCondition = 0;
@@ -140,6 +141,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     int leaderIndex;
     boolean singleShowDemocracy=false;
 
+    //Monarchy
+    boolean singleShowMonarchy=false;
+
     //Cultivator
     String cultivateResource;
 
@@ -149,6 +153,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     String[] devCards = new String[]{"Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Knight","Victory Points","Victory Points","Victory Points","Victory Points","Victory Points","Road Building","Road Building","Monopoly","Monopoly","Year of Plenty","Year of Plenty"};
     HashMap<String,Integer> properNum = new HashMap<>();
     int size = devCards.length;
+
+    //Razing
+    boolean completeDesertification=false;
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
@@ -612,6 +619,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void mousePressed(MouseEvent e) {
+        if(completeDesertification) {
+            JOptionPane.showMessageDialog(this, "Thanks for playing.", "Draw Game", 1, new ImageIcon("Resources/Catan_Icon.png"));
+            System.exit(1);
+        }
+
         int xLoc = e.getX();
         int yLoc = e.getY();
 
@@ -1844,7 +1856,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public void razeTiles() {
         long before = Arrays.stream(tiles).filter(tile->tile.getType().equals("Desert")).count();
-        Arrays.stream(tiles).filter(tile -> !tile.getType().equals("Desert") && new Random().nextInt(1000) < 1).forEach(tile -> {
+        Arrays.stream(tiles).filter(tile -> !tile.getType().equals("Desert") && new Random().nextInt(100) < 1).forEach(tile -> {
             tile.setType("Desert");
             tile.setNum(7);
         });
@@ -1855,6 +1867,46 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             showBuiltImage("Resources/Preview_Images/Desertification.png","Deserts Formed");
             JOptionPane.showMessageDialog(this, "New deserts have been formed. The resource production of Catan shrinks!", "Desert Formation", 1, new ImageIcon("Resources/Catan_Icon.png"));
         }
+
+        if(Arrays.stream(tiles).allMatch(tile -> tile.getType().equals("Desert")) && !randomize){
+            JOptionPane.showMessageDialog(this,"The entirety of Catan has become a desert. The game is a draw. Click the board to end the game.","Catan Has Been Forsaken",1, new ImageIcon("Resources/Catan_Icon.png"));
+            completeDesertification=true;
+        }
+    }
+
+    public void performMonarchSelection(){
+        leaderIndex = new Random().nextInt(catanPlayerList.size());
+
+        catanPlayerList.forEach(player -> {
+            player.setLeader(false);
+        });
+
+        if(!singleShowMonarchy) {
+            showBuiltImage("Resources/Preview_Images/Monarchy.jpg", "New Monarch Selected");
+            singleShowMonarchy = true;
+        }
+
+        JOptionPane.showMessageDialog(this,catanPlayerList.get(leaderIndex).getName()+" the "+catanPlayerList.get(leaderIndex).getClassTitle()+" has been selected as the leader for this round.","Monarch Chosen",1, new ImageIcon("Resources/Catan_Icon.png"));
+        catanPlayerList.get(leaderIndex).setLeader(true);
+        catanPlayerList.forEach(player ->{
+            if(player.isDrunk && player.isLeader()){
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Leader_Confounded_"+player.getColor()+".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Leader & Confounded");
+            }
+            else if(player.isDrunk){
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Confounded_"+player.getColor()+".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Confounded");
+            }
+            else if(player.isLeader()){
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Leader_"+player.getColor()+".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Leader");
+            }
+            else {
+                getPlayerStatusMenu(player).statusDisplayLabel.setIcon(new ImageIcon("Resources/Status/Normal_" + player.getColor() + ".png"));
+                getPlayerStatusMenu(player).statusDisplayLabel.setToolTipText("Status: Normal");
+            }
+            getPlayerStatusMenu(player).update();
+        });
     }
 
     public void performDemocracyVoting(){
