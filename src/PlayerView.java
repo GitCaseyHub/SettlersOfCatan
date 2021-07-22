@@ -173,15 +173,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         this.reference=reference;
         this.tf=tf;
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        build.addSeparator();
-        development.addSeparator();
-        options.addSeparator();
-        hwm.addSeparator();
-        assassin.addSeparator();
-        arsonist.addSeparator();
-        cultivator.addSeparator();
-        pirate.addSeparator();
-        brewer.addSeparator();
+        Arrays.stream(new JMenu[]{build,development,options,hwm,assassin,arsonist,cultivator,pirate,brewer,shepherd,woodsman}).forEach(JMenu::addSeparator);
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -366,15 +358,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         wheatNum.setBorder(reference.compound);
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
         woodNum.setBorder(reference.compound);
-        build.addSeparator();
-        development.addSeparator();
-        options.addSeparator();
-        hwm.addSeparator();
-        assassin.addSeparator();
-        arsonist.addSeparator();
-        cultivator.addSeparator();
-        brewer.addSeparator();
-        pirate.addSeparator();
+
+        Arrays.stream(new JMenu[]{build,development,options,hwm,assassin,arsonist,cultivator,brewer,pirate,shepherd,woodsman}).forEach(JMenu::addSeparator);
+        
         pluralInitialization();
         initializeCostFrame();
         initializeDevCardFrame();
@@ -388,12 +374,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void initializeDiceFrame(){
-        diceOne.setUndecorated(true);
-        diceTwo.setUndecorated(true);
+        Arrays.stream(new JFrame[]{diceOne,diceTwo}).forEach(frame->{
+            frame.setUndecorated(true);
+            frame.setSize(75,75);
+        });
+
         diceOne.add(diceOneLabel);
         diceTwo.add(diceTwoLabel);
-        diceOne.setSize(75,75);
-        diceTwo.setSize(75,75);
         diceOneLabel.setBorder(reference.compound);
         diceTwoLabel.setBorder(reference.compound);
     }
@@ -538,11 +525,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         playCard.setEnabled(!playedOneDevCard);
         Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,exchange,fourForOne,endTurn,remainingResources,devCardsRemaining}).forEach(item -> item.setEnabled(true));
         if(!loadedSpecialClasses){
-            steal.setEnabled(true);
-            assassinate.setEnabled(true);
-            setFire.setEnabled(true);
-            cultivate.setEnabled(true);
-            confound.setEnabled(true);
+            Arrays.stream(new JMenuItem[]{steal,assassinate,setFire,cultivate,confound}).forEach(item->item.setEnabled(true));
             pillage.setEnabled(!hasPillaged && reference.usablePorts);
             sheepify.setEnabled(!hasSheepified);
             forestExpansion.setEnabled(!hasForestified);
@@ -817,9 +800,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==endTurn){
-            singleRandomize=false;
-            singleDemocracy=false;
-            singleMonarchy=false;
+            Arrays.stream(new Boolean[]{singleRandomize,singleDemocracy,singleMonarchy}).forEach(bool->bool=false);
             int cataclysmOccurrence = 69;
             if(reference.cataclysmsActive){
                 cataclysmOccurrence = new Random().nextInt(20);
@@ -850,9 +831,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                         name=turnOrder.get(0).getName();
                     }
 
-            costFrame.setVisible(false);
-            playFrame.setVisible(false);
-            devFrame.setVisible(false);
+            Arrays.stream(new JFrame[]{costFrame,playFrame,devFrame}).forEach(frame->frame.setVisible(false));
 
             if((cataclysmOccurrence!=0 && reference.cataclysmsActive) || cataclysmOccurrence==69)
                 JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1363,14 +1342,12 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void showDiceFrames(int diceOneVal, int diceTwoVal){
-        diceOne.setVisible(true);
-        diceTwo.setVisible(true);
+        Arrays.stream(new JFrame[]{diceOne,diceTwo}).forEach(frame -> frame.setVisible(true));
         diceOneLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceOneVal+".png"));
         diceTwoLabel.setIcon(new ImageIcon("Resources/Dice_Faces/"+diceTwoVal+".png"));
         diceTwo.setLocation((int)screen.getWidth()/2,(int)screen.getHeight()/2 + 45);
         diceOne.setLocation((int)screen.getWidth()/2 - 80, (int)screen.getHeight()/2 + 45);
-        diceOne.toFront();
-        diceTwo.toFront();
+        Arrays.stream(new JFrame[]{diceOne,diceTwo}).forEach(Window::toFront);
     }
 
     public void showResourceChanges(int bricks, int ores, int wheats, int sheeps, int woods){
@@ -1388,8 +1365,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     }
 
     public void hideDice() {
-        diceOne.setVisible(false);
-        diceTwo.setVisible(false);
+        Arrays.stream(new JFrame[]{diceOne,diceTwo}).forEach(frame -> frame.setVisible(false));
     }
 
     @Override
