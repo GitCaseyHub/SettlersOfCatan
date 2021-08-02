@@ -157,6 +157,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     //Razing
     boolean completeDesertification=false;
 
+    //Cheat menu
+    String cheat = "";
+
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
@@ -363,7 +366,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             for (JCheckBox possibleTarget : possibleTargets)
                                 possibleTarget.setSelected(false);
 
-                            JOptionPane.showMessageDialog(this, "You may only steal from one player.", "Try Again",3, new ImageIcon("Resources/Catan_Icon.png"));
+                            JOptionPane.showMessageDialog(this, "You can only choose a single player.", "Try Again",3, new ImageIcon("Resources/Catan_Icon.png"));
                         }
                     }
 
@@ -1769,6 +1772,37 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             getPlayerStatusMenu(getCurrentPlayer()).resetReference(true);
             updateAllStatusMenus();
             JOptionPane.showMessageDialog(this, "Your action has been cancelled and your resources have been refunded. Please continue with your turn.", "Cancellation Successful", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+        }
+
+        if(e.getKeyCode()==KeyEvent.VK_1) {
+            cheat = JOptionPane.showInputDialog(this, "Enter a cheat code: ", "Cheat Menu", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null).toString();
+
+            switch (cheat) {
+                case "Unlimited":
+                    getCurrentPlayer().monoAll(1000,1000,1000,1000,1000);
+                    break;
+                case "Decimate":
+                    getOtherPlayers().forEach(Player::empty);
+                    break;
+                case "Development":
+                    for (DevelopmentCard devCard : devCardDeck) {
+                        devCard.boughtThisTurn=false;
+                        getCurrentPlayer().addDevelopmentCardToUnplayed(devCard);
+                        devCard.setPlayer(getCurrentPlayer());
+                        devCard.setOtherPlayers(getOtherPlayers());
+                        getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem(devCard.getType());
+                        getPlayerStatusMenu(getCurrentPlayer()).readdDevCards(getPlayerStatusMenu(getCurrentPlayer()).unplayed);
+                    }
+                    break;
+            }
+
+            if(cheat.equals("Unlimited") || cheat.equals("Decimate") || cheat.equals("Development")){
+                JOptionPane.showMessageDialog(this, "Cheat code activated.", "Cheat Entered", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                updateAllStatusMenus();
+                return;
+            }
+
+            JOptionPane.showMessageDialog(this, "There is no such cheat code.", "Invalid Cheat", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         }
     }
 
