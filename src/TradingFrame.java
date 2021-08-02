@@ -140,7 +140,7 @@ public class TradingFrame extends JFrame implements ActionListener {
         else if(e.getSource()==confirmButton){
             TradingFrame firstFrame = cbRef.firstFrame;
             TradingFrame secondFrame = cbRef.secondFrame;
-            if(checkSubmissionVals(firstFrame)==0 || checkSubmissionVals(secondFrame)==0){
+            if(checkSubmissionValues(firstFrame)==0 || checkSubmissionValues(secondFrame)==0){
                 JOptionPane.showMessageDialog(this,"Both players must offer at least one resource in a trade.","Charity Not Allowed", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
@@ -164,7 +164,7 @@ public class TradingFrame extends JFrame implements ActionListener {
         }
     }
 
-    public int checkSubmissionVals(TradingFrame frame){
+    public int checkSubmissionValues(TradingFrame frame){
         return Math.max((int)frame.brickCheck.getSelectedItem(),0) + Math.max((int)frame.woodCheck.getSelectedItem(),0) + Math.max((int)frame.wheatCheck.getSelectedItem(),0) + Math.max((int)frame.oreCheck.getSelectedItem(),0) + Math.max((int)frame.sheepCheck.getSelectedItem(),0);
     }
 
