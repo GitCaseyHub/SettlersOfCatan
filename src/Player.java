@@ -71,6 +71,13 @@ public class Player {
         victoryLabel.setBorder(cb.compound);
         victory.setVisible(true);
     }
+    public void empty(){
+        brickNum=0;
+        woolNum=0;
+        oreNum=0;
+        grainNum=0;
+        lumberNum=0;
+    }
 
     public boolean isLeader() {
         return leader;
