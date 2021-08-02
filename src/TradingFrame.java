@@ -138,10 +138,12 @@ public class TradingFrame extends JFrame implements ActionListener {
             }
         }
         else if(e.getSource()==confirmButton){
-            JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             TradingFrame firstFrame = cbRef.firstFrame;
             TradingFrame secondFrame = cbRef.secondFrame;
-
+            if(checkSubmissionVals(firstFrame)==0 || checkSubmissionVals(secondFrame)==0){
+                JOptionPane.showMessageDialog(this,"Both players must offer at least one resource in a trade.","Charity Not Allowed", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
             //Changing resource totals
             firstFrame.player.monoBrick(Math.max((int)secondFrame.brickCheck.getSelectedItem(),0)- (Math.max((int) firstFrame.brickCheck.getSelectedItem(), 0)));
             firstFrame.player.monoLumber(Math.max((int)secondFrame.woodCheck.getSelectedItem(),0)- (Math.max((int) firstFrame.woodCheck.getSelectedItem(), 0)));
@@ -155,9 +157,15 @@ public class TradingFrame extends JFrame implements ActionListener {
             secondFrame.player.monoWheat(Math.max((int)firstFrame.wheatCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.wheatCheck.getSelectedItem(), 0)));
             secondFrame.player.monoWool(Math.max((int)firstFrame.sheepCheck.getSelectedItem(),0)- (Math.max((int) secondFrame.sheepCheck.getSelectedItem(), 0)));
 
+            JOptionPane.showMessageDialog(this,"The trade has been completed.","Complete Trade", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+
             Arrays.stream(new TradingFrame[]{firstFrame,secondFrame}).forEach(frame -> frame.setVisible(false));
             cbRef.updateAllStatusMenus();
         }
+    }
+
+    public int checkSubmissionVals(TradingFrame frame){
+        return Math.max((int)frame.brickCheck.getSelectedItem(),0) + Math.max((int)frame.woodCheck.getSelectedItem(),0) + Math.max((int)frame.wheatCheck.getSelectedItem(),0) + Math.max((int)frame.oreCheck.getSelectedItem(),0) + Math.max((int)frame.sheepCheck.getSelectedItem(),0);
     }
 
     public void updateComboBoxes(){
