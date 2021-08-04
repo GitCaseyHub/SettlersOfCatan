@@ -360,7 +360,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         woodNum.setBorder(reference.compound);
 
         Arrays.stream(new JMenu[]{build,development,options,hwm,assassin,arsonist,cultivator,brewer,pirate,shepherd,woodsman}).forEach(JMenu::addSeparator);
-        
+
         pluralInitialization();
         initializeCostFrame();
         initializeDevCardFrame();
@@ -667,7 +667,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this, "You no longer have cities available to upgrade with.", "City Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
+
             int cityInput = JOptionPane.showConfirmDialog(this,"Would you like to upgrade one of your settlements into a city?","Settlement Upgrade",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
+
+            if(Arrays.stream(reference.indexes).noneMatch(index -> index.isSettlement() && index.isTaken() && index.getOwner().equals(reference.getCurrentPlayer()))){
+                JOptionPane.showMessageDialog(this, "You don't have any settlements to upgrade.", "No Settlements Available to Upgrade", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
             if(cityInput==0){
                 if((player.getGrainNum()>=2 && player.getOreNum()>=3 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getGrainNum()>=4 && player.getOreNum()>=6 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     if(playerHasSettlements()) {
@@ -1306,11 +1312,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             costFrame.setVisible(false);
         }
 
-        if(e.getSource()==playImages[0] && playImages[0].isEnabled()){playAppropriateCard("Knight");}
-        if(e.getSource()==playImages[1] && playImages[1].isEnabled()){playAppropriateCard("Monopoly");}
-        if(e.getSource()==playImages[2] && playImages[2].isEnabled()){playAppropriateCard("Road Building");}
-        if(e.getSource()==playImages[3] && playImages[3].isEnabled()){playAppropriateCard("Year of Plenty");}
-        if(e.getSource()==playImages[4] && playImages[4].isEnabled()){playAppropriateCard("Victory Points");}
+        if(e.getSource()==playImages[0] && playImages[0].isEnabled())playAppropriateCard("Knight");
+        if(e.getSource()==playImages[1] && playImages[1].isEnabled())playAppropriateCard("Monopoly");
+        if(e.getSource()==playImages[2] && playImages[2].isEnabled())playAppropriateCard("Road Building");
+        if(e.getSource()==playImages[3] && playImages[3].isEnabled())playAppropriateCard("Year of Plenty");
+        if(e.getSource()==playImages[4] && playImages[4].isEnabled())playAppropriateCard("Victory Points");
     }
 
     public void playAppropriateCard(String devCard){
