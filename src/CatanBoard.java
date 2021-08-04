@@ -159,6 +159,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     //Cheat menu
     String cheat = "";
+    String[] cheatCodes = {"Unlimited","Decimate","Development","Builder","Activate Ports","Deactivate Ports"};
+    ArrayList<String> codes = new ArrayList<>();
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
@@ -231,6 +233,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         createDemocracyComponents();
         initializeDevelopmentDeck();
         initializeDevCardNonTransparencyHashMap();
+        initializeCheats();
+    }
+
+    public void initializeCheats(){
+        codes.addAll(Arrays.stream(cheatCodes).collect(Collectors.toCollection(ArrayList::new)));
     }
 
     public void initializeDevelopmentDeck(){
@@ -1794,9 +1801,32 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         getPlayerStatusMenu(getCurrentPlayer()).readdDevCards(getPlayerStatusMenu(getCurrentPlayer()).unplayed);
                     }
                     break;
+                case "Builder":
+                    getCurrentPlayer().updateBuildingMaterials(100,100,100);
+                    break;
+
+                case "Activate Ports":
+                    if(usablePorts){
+                        JOptionPane.showMessageDialog(this, "Ports are already active.", "Ports Active", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
+                    usablePorts=true;
+                    redrawEverything=true;
+                    repaint();
+                    break;
+
+                case "Deactivate Ports":
+                    if(!usablePorts){
+                        JOptionPane.showMessageDialog(this, "Ports are already disabled.", "Ports Active", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                        return;
+                    }
+                    usablePorts=false;
+                    redrawEverything=true;
+                    repaint();
+                    break;
             }
 
-            if(cheat.equals("Unlimited") || cheat.equals("Decimate") || cheat.equals("Development")){
+            if(codes.contains(cheat)){
                 JOptionPane.showMessageDialog(this, "Cheat code activated.", "Cheat Entered", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
                 updateAllStatusMenus();
                 return;
