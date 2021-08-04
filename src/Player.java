@@ -46,6 +46,16 @@ public class Player {
         this.costMultiplier = (classTitle.equals("Pirate") || classTitle.equals("Serf"));
     }
 
+    public void destroyVPs(){
+        this.victoryPointTotal=0;
+    }
+
+    public void updateBuildingMaterials(int roads, int settlements, int cities){
+        this.roads=roads;
+        this.settlements=settlements;
+        this.cities=cities;
+    }
+
     public void loadUpVictoryFrame(){
         victory.setUndecorated(true);
         victory.setSize(810,533);
@@ -63,7 +73,7 @@ public class Player {
                                 System.exit(1);
                             }
                         },
-                        500);
+                        2500);
             }
         });
 
