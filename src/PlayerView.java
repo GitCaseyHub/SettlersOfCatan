@@ -658,6 +658,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==city){
+            if(Arrays.stream(reference.indexes).noneMatch(index -> index.isSettlement() && index.isTaken() && index.getOwner().equals(reference.getCurrentPlayer()))){
+                JOptionPane.showMessageDialog(this, "You don't have any settlements to upgrade.", "No Settlements Available to Upgrade", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            
             if(isConfounded()){
                 JOptionPane.showMessageDialog(this,"You are confounded and have failed to upgrade a settlement into a city.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
                 city.setEnabled(false);
@@ -669,11 +674,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
 
             int cityInput = JOptionPane.showConfirmDialog(this,"Would you like to upgrade one of your settlements into a city?","Settlement Upgrade",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
-
-            if(Arrays.stream(reference.indexes).noneMatch(index -> index.isSettlement() && index.isTaken() && index.getOwner().equals(reference.getCurrentPlayer()))){
-                JOptionPane.showMessageDialog(this, "You don't have any settlements to upgrade.", "No Settlements Available to Upgrade", 1, new ImageIcon("Resources/Catan_Icon.png"));
-                return;
-            }
+            
             if(cityInput==0){
                 if((player.getGrainNum()>=2 && player.getOreNum()>=3 && (!player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf"))) || (player.getGrainNum()>=4 && player.getOreNum()>=6 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))){
                     if(playerHasSettlements()) {
