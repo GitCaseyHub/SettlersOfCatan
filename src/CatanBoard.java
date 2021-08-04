@@ -1782,57 +1782,63 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if(e.getKeyCode()==KeyEvent.VK_1) {
-            cheat = JOptionPane.showInputDialog(this, "Enter a cheat code: ", "Cheat Menu", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null).toString();
+            try {
+                cheat = JOptionPane.showInputDialog(this, "Enter a cheat code: ", "Cheat Menu", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null).toString();
 
-            switch (cheat) {
-                case "Unlimited":
-                    getCurrentPlayer().monoAll(1000,1000,1000,1000,1000);
-                    break;
-                case "Decimate":
-                    getOtherPlayers().forEach(Player::empty);
-                    break;
-                case "Development":
-                    for (DevelopmentCard devCard : devCardDeck) {
-                        devCard.boughtThisTurn=false;
-                        getCurrentPlayer().addDevelopmentCardToUnplayed(devCard);
-                        devCard.setPlayer(getCurrentPlayer());
-                        devCard.setOtherPlayers(getOtherPlayers());
-                        getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem(devCard.getType());
-                        getPlayerStatusMenu(getCurrentPlayer()).readdDevCards(getPlayerStatusMenu(getCurrentPlayer()).unplayed);
-                    }
-                    break;
-                case "Builder":
-                    getCurrentPlayer().updateBuildingMaterials(100,100,100);
-                    break;
+                switch (cheat) {
+                    case "Unlimited":
+                        getCurrentPlayer().monoAll(1000, 1000, 1000, 1000, 1000);
+                        break;
+                    case "Decimate":
+                        getOtherPlayers().forEach(Player::empty);
+                        getOtherPlayers().forEach(Player::destroyVPs);
+                        break;
+                    case "Development":
+                        for (DevelopmentCard devCard : devCardDeck) {
+                            devCard.boughtThisTurn = false;
+                            getCurrentPlayer().addDevelopmentCardToUnplayed(devCard);
+                            devCard.setPlayer(getCurrentPlayer());
+                            devCard.setOtherPlayers(getOtherPlayers());
+                            getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem(devCard.getType());
+                            getPlayerStatusMenu(getCurrentPlayer()).readdDevCards(getPlayerStatusMenu(getCurrentPlayer()).unplayed);
+                        }
+                        break;
 
-                case "Activate Ports":
-                    if(usablePorts){
-                        JOptionPane.showMessageDialog(this, "Ports are already active.", "Ports Active", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                        return;
-                    }
-                    usablePorts=true;
-                    redrawEverything=true;
-                    repaint();
-                    break;
+                    case "Builder":
+                        getCurrentPlayer().updateBuildingMaterials(100, 100, 100);
+                        break;
 
-                case "Deactivate Ports":
-                    if(!usablePorts){
-                        JOptionPane.showMessageDialog(this, "Ports are already disabled.", "Ports Active", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                        return;
-                    }
-                    usablePorts=false;
-                    redrawEverything=true;
-                    repaint();
-                    break;
+                    case "Activate Ports":
+                        if (usablePorts) {
+                            JOptionPane.showMessageDialog(this, "Ports are already active.", "Ports Active", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
+                        usablePorts = true;
+                        redrawEverything = true;
+                        repaint();
+                        break;
+
+                    case "Deactivate Ports":
+                        if (!usablePorts) {
+                            JOptionPane.showMessageDialog(this, "Ports are already disabled.", "Ports Active", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                            return;
+                        }
+                        usablePorts = false;
+                        redrawEverything = true;
+                        repaint();
+                        break;
+                }
+
+                if (codes.contains(cheat)) {
+                    JOptionPane.showMessageDialog(this, "Cheat code activated.", "Cheat Entered", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+                    updateAllStatusMenus();
+                    return;
+                }
+
+                JOptionPane.showMessageDialog(this, "There is no such cheat code.", "Invalid Cheat", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+
             }
-
-            if(codes.contains(cheat)){
-                JOptionPane.showMessageDialog(this, "Cheat code activated.", "Cheat Entered", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-                updateAllStatusMenus();
-                return;
-            }
-
-            JOptionPane.showMessageDialog(this, "There is no such cheat code.", "Invalid Cheat", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+            catch(Exception ignored){}
         }
     }
 
