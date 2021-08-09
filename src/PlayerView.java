@@ -109,7 +109,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     //Shepherd Menu
     JMenu shepherd = new JMenu("Shepherd");
-    JMenuItem sheepify = new JMenuItem("Expand Sheep");
+    JMenuItem sheepify = new JMenuItem("Expand Sheep Plains");
     boolean hasSheepified = false;
     ArrayList<Tile> compatibleTiles;
 
@@ -117,6 +117,16 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     JMenu woodsman = new JMenu("Woodsman");
     JMenuItem forestExpansion = new JMenuItem("Expand Forests");
     boolean hasForestified = false;
+
+    //Farmer Menu
+    JMenu farmer = new JMenu("Farmer");
+    JMenuItem farmExpansion = new JMenuItem("Expand Wheat Fields");
+    boolean hasFarmed = false;
+
+    //Mouontaineer Menu
+    JMenu mountaineer = new JMenu("Mountaineer");
+    JMenuItem mountainExpansion = new JMenuItem("Expand Mountains");
+    boolean hasMountainified = false;
 
     //Special Classes
     JCheckBox[] playerNames;
@@ -173,7 +183,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         this.reference=reference;
         this.tf=tf;
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        Arrays.stream(new JMenu[]{build,development,options,hwm,assassin,arsonist,cultivator,pirate,brewer,shepherd,woodsman}).forEach(JMenu::addSeparator);
+        Arrays.stream(new JMenu[]{build,development,options,hwm,assassin,arsonist,cultivator,pirate,brewer,shepherd,woodsman,mountaineer,farmer}).forEach(JMenu::addSeparator);
 
         //Menubar creation
         this.setJMenuBar(mb);
@@ -270,6 +280,20 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 forestExpansion.setEnabled(false);
                 woodsman.setEnabled(false);
             }
+            if(player.getClassTitle().equals("Mountaineer")){
+                mb.add(mountaineer);
+                mountaineer.add(mountainExpansion);
+                mountainExpansion.addActionListener(this);
+                mountainExpansion.setEnabled(false);
+                mountaineer.setEnabled(false);
+            }
+            if(player.getClassTitle().equals("Farmer")){
+                mb.add(farmer);
+                farmer.add(farmExpansion);
+                farmExpansion.addActionListener(this);
+                farmExpansion.setEnabled(false);
+                farmer.setEnabled(false);
+            }
         }
 
         fourForOne.setText((player.getClassTitle().equals("Pirate")?"One/One Resource Trade [Pirate]":"Four/One Resource Trade"));
@@ -359,7 +383,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         graphicPanels[4].add(woodNum, BorderLayout.SOUTH);
         woodNum.setBorder(reference.compound);
 
-        Arrays.stream(new JMenu[]{build,development,options,hwm,assassin,arsonist,cultivator,brewer,pirate,shepherd,woodsman}).forEach(JMenu::addSeparator);
+        Arrays.stream(new JMenu[]{build,development,options,hwm,assassin,arsonist,cultivator,brewer,pirate,shepherd,woodsman,mountaineer,farmer}).forEach(JMenu::addSeparator);
 
         pluralInitialization();
         initializeCostFrame();
@@ -514,7 +538,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         resetReference(true);
         rollDice.setEnabled(true);
         playedOneDevCard=false;
-        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,devCardsRemaining,setFire,cultivate,confound}).forEach(item -> item.setEnabled(false));
+        Arrays.stream(new JMenuItem[]{settlement,city,road,buildingCard,buyCard,playCard,exchange,fourForOne,endTurn,steal,assassinate,remainingResources,devCardsRemaining,setFire,cultivate,confound,sheepify,mountainExpansion,farmExpansion,forestExpansion}).forEach(item -> item.setEnabled(false));
         Arrays.stream(new Boolean[]{hasStolen,hasKilled,didSteal,hasSetFire,hasCultivated,hasConfounded}).forEach(bool -> bool=false);
 
         if(player.isDrunk)
@@ -529,6 +553,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             pillage.setEnabled(!hasPillaged && reference.usablePorts);
             sheepify.setEnabled(!hasSheepified);
             forestExpansion.setEnabled(!hasForestified);
+            mountainExpansion.setEnabled(!hasMountainified);
+            farmExpansion.setEnabled(!hasFarmed);
             loadedSpecialClasses=true;
         }
         rollDice.setEnabled(false);
@@ -701,13 +727,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this, "You no longer have roads available to build with.", "Road Limit Reached", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
-            
+
             if(isConfounded()){
                 JOptionPane.showMessageDialog(this,"You are confounded and have failed to build a road.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
                 road.setEnabled(false);
                 return;
             }
-            
+
             int roadInput = JOptionPane.showConfirmDialog(this,"Would you like to create a road?","Road Building",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"));
             if(roadInput==0){
                 if((player.getBrickNum()>=1 && player.getLumberNum()>=1 && !player.getClassTitle().equals("Pirate") && !player.getClassTitle().equals("Serf")) || (player.getBrickNum()>=2 && player.getLumberNum()>=2 && (player.getClassTitle().equals("Pirate") || player.getClassTitle().equals("Serf")))) {
@@ -1047,7 +1073,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 setFire.setEnabled(false);
                 return;
             }
-            
+
             int confirmFire = JOptionPane.showConfirmDialog(this,"Would you like to set fire to a tile?","Arson Special Ability", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"));
             if(confirmFire==JOptionPane.YES_OPTION){
                 resetReference(false);
@@ -1064,7 +1090,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 JOptionPane.showMessageDialog(this,"You have no resources. You cannot use the 'cultivator' special ability.","No Resources",1,new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
-            
+
             if(isConfounded()){
                 JOptionPane.showMessageDialog(this,"You are confounded and have failed to cultivate.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
                 cultivate.setEnabled(false);
@@ -1169,7 +1195,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.redrawEverything=true;
                 reference.repaint();
                 update();
-                reference.showBuiltImage("Resources/Preview_Images/Sheepify.png", "Resource Exchange");
+                reference.showBuiltImage("Resources/Preview_Images/Sheepify.png", "Tile Conversion");
                 JOptionPane.showMessageDialog(this,"A tile has converted. More sheep abound on Catan.","Sheepification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                 sheepify.setEnabled(false);
                 return;
@@ -1195,10 +1221,62 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                 reference.redrawEverything=true;
                 reference.repaint();
                 update();
-                reference.showBuiltImage("Resources/Preview_Images/Forestify.png", "Resource Exchange");
+                reference.showBuiltImage("Resources/Preview_Images/Forestify.png", "Tile Conversion");
                 JOptionPane.showMessageDialog(this,"A tile has converted. A forest has grown overnight in Catan.","Forestification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
                 forestExpansion.setEnabled(false);
                 return;
+            }
+
+            else if(e.getSource()==mountainExpansion){
+                if(player.getOreNum()==0){
+                    JOptionPane.showMessageDialog(this,"You don't have the ore necessary to perform this action.","Insufficient Ore",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    return;
+                }
+                if(isConfounded()){
+                    JOptionPane.showMessageDialog(this,"You are confounded and have failed to expand the mountains.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    mountainExpansion.setEnabled(false);
+                    return;
+                }
+
+                if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce ore?","Mountainify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+                    compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Mountain") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
+                    compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Mountain");
+                    hasMountainified=true;
+                    player.monoOre(-1);
+                    reference.redrawEverything=true;
+                    reference.repaint();
+                    update();
+                    reference.showBuiltImage("Resources/Preview_Images/Mountainified.png", "Tile Conversion");
+                    JOptionPane.showMessageDialog(this,"A tile has converted. A mountain has been created in Catan.","Mountainification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    mountainExpansion.setEnabled(false);
+                    return;
+                }
+            }
+
+            else if(e.getSource()==farmExpansion){
+                if(player.getGrainNum()==0){
+                    JOptionPane.showMessageDialog(this,"You don't have the wheat necessary to perform this action.","Insufficient Wheat",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    return;
+                }
+                if(isConfounded()){
+                    JOptionPane.showMessageDialog(this,"You are confounded and have failed to expand the wheat fields.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    farmExpansion.setEnabled(false);
+                    return;
+                }
+
+                if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce wheat?","Wheatify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+                    compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Grain") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
+                    compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Grain");
+                    hasFarmed=true;
+                    player.monoWheat(-1);
+                    reference.redrawEverything=true;
+                    reference.repaint();
+                    update();
+                    reference.showBuiltImage("Resources/Preview_Images/Wheatify.png", "Tile Conversion");
+                    JOptionPane.showMessageDialog(this,"A tile has converted. Vast wheat fields have grown overnight in Catan.","Wheatification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                    farmExpansion.setEnabled(false);
+                    return;
+                }
             }
         }
 
@@ -1298,7 +1376,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void resetReference(boolean state){
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
-        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer,menuRef.shepherd, menuRef.woodsman}).forEach(menu -> menu.setEnabled(state));
+        Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer,menuRef.shepherd, menuRef.woodsman,menuRef.farmer,menuRef.mountaineer}).forEach(menu -> menu.setEnabled(state));
     }
 
     public void enableAppropriateDevCardImages(){
@@ -1337,7 +1415,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void playAppropriateCard(String devCard){
         DevelopmentCard playedCard = player.getUnPlayedCards().stream().filter(card -> card.getType().equals(devCard) && !card.isBoughtThisTurn()).findFirst().orElse(new DevelopmentCard());
         playFrame.setVisible(false);
-        JOptionPane.showMessageDialog(this, "You are playing a '"+devCard+" Card'. Its effects are now being activated.", "Development Card Played", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
+        //JOptionPane.showMessageDialog(this, "You are playing a '"+devCard+" Card'. Its effects are now being activated.", "Development Card Played", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         playedCard.playCard();
         reference.managedCards.add(playedCard.getType());
         player.addDevelopmentCardToPlayed(playedCard);
