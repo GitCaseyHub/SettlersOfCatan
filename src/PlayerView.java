@@ -1202,83 +1202,84 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             }
         }
 
-        else if(e.getSource()==forestExpansion){
-            if(player.getLumberNum()==0){
-                JOptionPane.showMessageDialog(this,"You don't have the wood necessary to perform this action.","Insufficient Wood",1, new ImageIcon("Resources/Catan_Icon.png"));
+        else if(e.getSource()==forestExpansion) {
+            if (player.getLumberNum() == 0) {
+                JOptionPane.showMessageDialog(this, "You don't have the wood necessary to perform this action.", "Insufficient Wood", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 return;
             }
-            if(isConfounded()){
-                JOptionPane.showMessageDialog(this,"You are confounded and have failed to expand the forests.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+            if (isConfounded()) {
+                JOptionPane.showMessageDialog(this, "You are confounded and have failed to expand the forests.", "Action Failed", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 forestExpansion.setEnabled(false);
                 return;
             }
 
-            if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce wood?","Forestify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+            if (JOptionPane.showConfirmDialog(this, "Would you like to force a tile to now produce wood?", "Forestify Tile", JOptionPane.YES_NO_OPTION, 1, new ImageIcon("Resources/Catan_Icon.png")) == 0) {
                 compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Forest") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
                 compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Forest");
-                hasForestified=true;
+                hasForestified = true;
                 player.monoLumber(-1);
-                reference.redrawEverything=true;
+                reference.redrawEverything = true;
                 reference.repaint();
                 update();
                 reference.showBuiltImage("Resources/Preview_Images/Forestify.png", "Tile Conversion");
-                JOptionPane.showMessageDialog(this,"A tile has converted. A forest has grown overnight in Catan.","Forestification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this, "A tile has converted. A forest has grown overnight in Catan.", "Forestification Successful", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 forestExpansion.setEnabled(false);
                 return;
             }
+        }
 
-            else if(e.getSource()==mountainExpansion){
-                if(player.getOreNum()==0){
-                    JOptionPane.showMessageDialog(this,"You don't have the ore necessary to perform this action.","Insufficient Ore",1, new ImageIcon("Resources/Catan_Icon.png"));
-                    return;
-                }
-                if(isConfounded()){
-                    JOptionPane.showMessageDialog(this,"You are confounded and have failed to expand the mountains.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
-                    mountainExpansion.setEnabled(false);
-                    return;
-                }
-
-                if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce ore?","Mountainify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
-                    compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Mountain") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
-                    compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Mountain");
-                    hasMountainified=true;
-                    player.monoOre(-1);
-                    reference.redrawEverything=true;
-                    reference.repaint();
-                    update();
-                    reference.showBuiltImage("Resources/Preview_Images/Mountainified.png", "Tile Conversion");
-                    JOptionPane.showMessageDialog(this,"A tile has converted. A mountain has been created in Catan.","Mountainification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
-                    mountainExpansion.setEnabled(false);
-                    return;
-                }
+        else if(e.getSource()==mountainExpansion){
+            if(player.getOreNum()==0){
+                JOptionPane.showMessageDialog(this,"You don't have the ore necessary to perform this action.","Insufficient Ore",1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to expand the mountains.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                mountainExpansion.setEnabled(false);
+                return;
             }
 
-            else if(e.getSource()==farmExpansion){
-                if(player.getGrainNum()==0){
-                    JOptionPane.showMessageDialog(this,"You don't have the wheat necessary to perform this action.","Insufficient Wheat",1, new ImageIcon("Resources/Catan_Icon.png"));
-                    return;
-                }
-                if(isConfounded()){
-                    JOptionPane.showMessageDialog(this,"You are confounded and have failed to expand the wheat fields.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
-                    farmExpansion.setEnabled(false);
-                    return;
-                }
-
-                if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce wheat?","Wheatify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
-                    compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Grain") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
-                    compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Grain");
-                    hasFarmed=true;
-                    player.monoWheat(-1);
-                    reference.redrawEverything=true;
-                    reference.repaint();
-                    update();
-                    reference.showBuiltImage("Resources/Preview_Images/Wheatify.png", "Tile Conversion");
-                    JOptionPane.showMessageDialog(this,"A tile has converted. Vast wheat fields have grown overnight in Catan.","Wheatification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
-                    farmExpansion.setEnabled(false);
-                    return;
-                }
+            if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce ore?","Mountainify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+                compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Mountain") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
+                compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Mountain");
+                hasMountainified=true;
+                player.monoOre(-1);
+                reference.redrawEverything=true;
+                reference.repaint();
+                update();
+                reference.showBuiltImage("Resources/Preview_Images/Mountainified.png", "Tile Conversion");
+                JOptionPane.showMessageDialog(this,"A tile has converted. A mountain has been created in Catan.","Mountainification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                mountainExpansion.setEnabled(false);
+                return;
             }
         }
+
+        else if(e.getSource()==farmExpansion){
+            if(player.getGrainNum()==0){
+                JOptionPane.showMessageDialog(this,"You don't have the wheat necessary to perform this action.","Insufficient Wheat",1, new ImageIcon("Resources/Catan_Icon.png"));
+                return;
+            }
+            if(isConfounded()){
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to expand the wheat fields.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                farmExpansion.setEnabled(false);
+                return;
+            }
+
+            if(JOptionPane.showConfirmDialog(this,"Would you like to force a tile to now produce wheat?","Wheatify Tile",JOptionPane.YES_NO_OPTION,1,new ImageIcon("Resources/Catan_Icon.png"))==0){
+                compatibleTiles = Arrays.stream(reference.tiles).filter(tile -> !tile.getType().equals("Grain") && !tile.getType().equals("Desert")).collect(Collectors.toCollection(ArrayList::new));
+                compatibleTiles.get(new Random().nextInt(compatibleTiles.size())).setType("Grain");
+                hasFarmed=true;
+                player.monoWheat(-1);
+                reference.redrawEverything=true;
+                reference.repaint();
+                update();
+                reference.showBuiltImage("Resources/Preview_Images/Wheatify.png", "Tile Conversion");
+                JOptionPane.showMessageDialog(this,"A tile has converted. Vast wheat fields have grown overnight in Catan.","Wheatification Successful",1, new ImageIcon("Resources/Catan_Icon.png"));
+                farmExpansion.setEnabled(false);
+                return;
+            }
+        }
+
 
         else if(e.getSource()==remainingResources)
             JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
