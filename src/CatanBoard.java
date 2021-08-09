@@ -1802,6 +1802,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             getPlayerStatusMenu(getCurrentPlayer()).unplayed.addItem(devCard.getType());
                             getPlayerStatusMenu(getCurrentPlayer()).readdDevCards(getPlayerStatusMenu(getCurrentPlayer()).unplayed);
                         }
+                        devCardDeck.clear();
                         break;
 
                     case "Builder":
@@ -1834,9 +1835,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     updateAllStatusMenus();
                     return;
                 }
-
                 JOptionPane.showMessageDialog(this, "There is no such cheat code.", "Invalid Cheat", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-
             }
             catch(Exception ignored){}
         }
