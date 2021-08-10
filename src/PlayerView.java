@@ -955,7 +955,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
                     reference.showBuiltImage("Resources/Preview_Images/Steal.jpg","Stealing from Opponents");
                     playerNames = new JCheckBox[possiblePlayers.size()];
                     for(int x=0; x<playerNames.length; x++)
-                        playerNames[x] = new JCheckBox(possiblePlayers.get(x).getName());
+                        playerNames[x] = new JCheckBox(possiblePlayers.get(x).getName()+" the "+possiblePlayers.get(x).getClassTitle());
 
                     while(findNumSelected(playerNames)){
                         JOptionPane.showMessageDialog(this,new Object[]{"Select the player you would like to steal from: ",playerNames},"Highwayman Special Action",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
@@ -1020,7 +1020,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
         else if(e.getSource()==assassinate) {
             if(isConfounded()){
-                JOptionPane.showMessageDialog(this,"You are confounded and have failed to assassinate.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this,"You are confounded and have failed to assassinate a knight.","Action Failed",1, new ImageIcon("Resources/Catan_Icon.png"));
                 assassinate.setEnabled(false);
                 return;
             }
