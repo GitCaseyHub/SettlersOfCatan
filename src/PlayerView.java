@@ -1416,7 +1416,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
     public void playAppropriateCard(String devCard){
         DevelopmentCard playedCard = player.getUnPlayedCards().stream().filter(card -> card.getType().equals(devCard) && !card.isBoughtThisTurn()).findFirst().orElse(new DevelopmentCard());
         playFrame.setVisible(false);
-        //JOptionPane.showMessageDialog(this, "You are playing a '"+devCard+" Card'. Its effects are now being activated.", "Development Card Played", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
         playedCard.playCard();
         reference.managedCards.add(playedCard.getType());
         player.addDevelopmentCardToPlayed(playedCard);
