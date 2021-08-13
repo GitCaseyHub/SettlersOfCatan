@@ -388,13 +388,13 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                     Arrays.stream(possibleTargets).forEach(box -> box.setSelected(false));
 
-                    Player playerToStealFrom = getPlayerViaName(playerName);
+                    Player playerToStealFrom = getPlayerViaNameWithClassTitle(playerName);
                     String stolenResource = giveRandomResource(playerToStealFrom);
                     ArrayList<Player> highwaymen = catanPlayerList.stream().filter(player -> player.getClassTitle().equals("Highwayman")).collect(Collectors.toCollection(ArrayList::new));
                     highwaymen.removeIf(player -> player.equals(getCurrentPlayer()) || player.equals(playerToStealFrom));
 
                     if (stolenResource.equals(""))
-                        JOptionPane.showMessageDialog(this, "Unfortunately, " + playerToStealFrom.getName() + " has no resources. So, you've stolen nothing.", "Robber Failure",3, new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this, "Unfortunately, " + playerToStealFrom.getName() + " has no resources to steal.", "Robber Failure",3, new ImageIcon("Resources/Catan_Icon.png"));
 
                     else {
                         if (stolenResource.equals("Sheep")) {
@@ -1051,6 +1051,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     public Player getPlayerViaName(String name) {
         return catanPlayerList.stream().filter(player -> player.getName().equals(name)).findFirst().orElse(new Player());
+    }
+
+    public Player getPlayerViaNameWithClassTitle(String totalTitle) {
+        return catanPlayerList.stream().filter(player -> player.getName().equals(totalTitle.split(" ")[0])).findFirst().orElse(new Player());
     }
 
     public boolean playerExists(String name){
