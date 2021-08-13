@@ -422,7 +422,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             playerToStealFrom.monoWheat(-1);
                             highwaymen.forEach(player-> player.monoWheat(1));
                         }
-                        JOptionPane.showMessageDialog(this, "You've stolen " + stolenResource + " from " + playerToStealFrom.getName() + "." + ((highwaymen.size()>0)?" All highwaymen will also receive  "+stolenResource+".":""), "Robber Success", 1,new ImageIcon("Resources/Catan_Icon.png"));
+                        JOptionPane.showMessageDialog(this, "You've stolen " + (stolenResource.equalsIgnoreCase("Ore")?"an ":"a ")+stolenResource.toLowerCase() + " resource from " + playerToStealFrom.getName() + "." + ((highwaymen.size()>0)?" All highwaymen will also receive  "+stolenResource+".":""), "Robber Success", 1,new ImageIcon("Resources/Catan_Icon.png"));
                         updateAllStatusMenus();
                     }
                 }
