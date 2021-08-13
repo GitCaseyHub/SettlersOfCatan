@@ -521,6 +521,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             if(reference.randomize && !reference.doingStartup) {
                 singleRandomize = true;
                 reference.randomize();
+                reference.redrawEverything=true;
+                reference.repaint();
             }
 
         if(!singleDemocracy && !reference.doingStartup)
