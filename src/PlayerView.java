@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
-public class PlayerView extends JFrame implements ActionListener, MouseMotionListener, MouseListener {
+public class PlayerView extends JFrame implements ActionListener, MouseListener {
     //GUI Assets
     JPanel[] graphicPanels = new JPanel[5];
     JPanel graphicHolder = new JPanel(new GridLayout(1, 5));
@@ -351,8 +351,8 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         awardPanel.add(largestArmyBox);
         largestArmyBox.setBorderPainted(true);
         largestArmyBox.setEnabled(false);
-        largestArmyBox.addMouseMotionListener(this);
-        longestRoadBox.addMouseMotionListener(this);
+        largestArmyBox.addMouseListener(this);
+        longestRoadBox.addMouseListener(this);
         longestRoadBox.setToolTipText("Awarded to the player who has the longest continuous road that exceeds 4 separate segments");
         largestArmyBox.setToolTipText("Awarded to the player who has played the most 'Knight' DCs that exceeds 2 separate cards");
         victoryPointLabel.setToolTipText("Your victory point total; get to 10 and you win");
@@ -1372,18 +1372,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         return false;
     }
 
-    public void mouseDragged(MouseEvent e) {}
-
-    public void mouseMoved(MouseEvent e) {
-        if (reference.isUsingMotionFrame) {
-            if (e.getSource() == largestArmyBox && largestArmyBox.isSelected())
-                JOptionPane.showMessageDialog(reference, new Object[]{reference.largestArmyLabel}, "Largest Army Award", JOptionPane.PLAIN_MESSAGE);
-
-            else if (e.getSource() == longestRoadBox && longestRoadBox.isSelected())
-                JOptionPane.showMessageDialog(reference, new Object[]{reference.longestRoadLabel}, "Longest Road Award", JOptionPane.PLAIN_MESSAGE);
-        }
-    }
-
     public void resetReference(boolean state){
         PlayerView menuRef = reference.getPlayerStatusMenu(player);
         Arrays.stream(new JMenu[]{menuRef.options,menuRef.build,menuRef.development,menuRef.assassin,menuRef.hwm,menuRef.arsonist,menuRef.cultivator, menuRef.pirate,menuRef.brewer,menuRef.shepherd, menuRef.woodsman,menuRef.farmer,menuRef.mountaineer}).forEach(menu -> menu.setEnabled(state));
@@ -1413,6 +1401,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             try {Thread.sleep(200);}
             catch (InterruptedException ignored) {}
             costFrame.setVisible(false);
+        }
+
+        if (reference.isUsingMotionFrame) {
+            if (e.getSource() == largestArmyBox && largestArmyBox.isSelected())
+                JOptionPane.showMessageDialog(reference, new Object[]{reference.largestArmyLabel}, "Largest Army Award", JOptionPane.PLAIN_MESSAGE);
+
+            else if (e.getSource() == longestRoadBox && longestRoadBox.isSelected())
+                JOptionPane.showMessageDialog(reference, new Object[]{reference.longestRoadLabel}, "Longest Road Award", JOptionPane.PLAIN_MESSAGE);
         }
 
         if(e.getSource()==playImages[0] && playImages[0].isEnabled())playAppropriateCard("Knight");
