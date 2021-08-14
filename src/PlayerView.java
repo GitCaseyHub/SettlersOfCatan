@@ -474,6 +474,10 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
     public void startTurn() {
         loadedSpecialClasses=false;
+
+        if(!reference.doingStartup)
+            reference.aggregateTurn++;
+
         if(reference.wildfire){
             before = Arrays.stream(reference.tiles).filter(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player)).collect(Collectors.toCollection(ArrayList::new));
             for(Tile tile:before){
@@ -517,13 +521,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
             JOptionPane.showMessageDialog(this,"The cultivated tile has returned to normal.","Normal Cultivation",1,new ImageIcon("Resources/Catan_Icon.png"));
         }
 
-        if(!singleRandomize)
-            if(reference.randomize && !reference.doingStartup) {
-                singleRandomize = true;
-                reference.randomize();
-                reference.redrawEverything=true;
-                reference.repaint();
+        if(!singleRandomize && !reference.doingStartup) {
+            if (reference.turnNameList.get(0).equals(this.player.getName()) && reference.randomize) {
+                if (reference.aggregateTurn != 1) {
+                    singleRandomize = true;
+                    reference.randomize();
+                }
             }
+        }
 
         if(!singleDemocracy && !reference.doingStartup)
             if (reference.turnNameList.get(0).equals(this.player.getName()) && reference.democracy) {
@@ -837,7 +842,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         }
 
         else if(e.getSource()==endTurn){
-            Arrays.stream(new Boolean[]{singleRandomize,singleDemocracy,singleMonarchy}).forEach(bool->bool=false);
+            singleRandomize=false;
+            singleDemocracy=false;
+            singleMonarchy=false;
             int cataclysmOccurrence = 69;
             if(reference.cataclysmsActive){
                 cataclysmOccurrence = new Random().nextInt(20);
