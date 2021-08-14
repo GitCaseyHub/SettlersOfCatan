@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BeginGame extends JFrame implements ActionListener, MouseListener {
-    //Temp JFrame for instructions used with pre-made image instead of JOptionPane; not sure if will be permanent
-
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
     JPanel borderPanel = new JPanel(new BorderLayout());
     JButton generateChars = new JButton("Create Characters");
@@ -26,6 +24,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Point[] statusGenerationPoints = new Point[]{new Point(990,100),new Point(1440,100),new Point(990,455), new Point(1440,455)};
     PlayerSelect[] playerCreation;
     ArrayList<Player> catanPlayerList = new ArrayList<>();
+    boolean playerRegistration=false;
 
     //Opening Frame
     JFrame openingFrame = new JFrame();
@@ -58,7 +57,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     String[] boxString = new String[]{"     ⇒     2 Players","     ⇒     3 Players","     ⇒     4 Players"};
     String[] imageTitles = new String[]{"Two_Players.png","Three_Players.png","Four_Players.png"};
 
-
     //Instructions Frame
     JFrame instructions = new JFrame();
     JLabel instructionsImage = new JLabel("",SwingConstants.CENTER);
@@ -88,7 +86,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         optionMenu.add(specialClassMenu);
         optionMenu.add(devCardTransparency);
         motionMenu.addActionListener(this);
-        motionMenu.setToolTipText("Click to enable a frame showing what award a player has should they hover over the checkbox in their player status screen.");
+        motionMenu.setToolTipText("Click to enable a frame showing what award a player has should they click on the corresponding checkbox in their player status screen.");
         specialClassMenu.addActionListener(this);
         modes.add(democracyMode);
         modes.add(monarchMode);
@@ -284,10 +282,10 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
                     playerCreation[y].colorBox.removeItem(referenceView.colorBox.getSelectedItem());
         }
         else{
-            boolean playerRegistration=false;
+            playerRegistration=false;
             for (Player player : catanPlayerList)
                 if (player.getName().equals(addedPlayer.getName())) {
-                    JOptionPane.showMessageDialog(findPlayerSelectFrame(player), "That name has already been registered. Choose another name.", "Name Error", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
+                    JOptionPane.showMessageDialog(findPlayerSelectFrame(player), "Another player has already registered. Choose another name.", "Name Error", JOptionPane.QUESTION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
                     playerRegistration = true;
                     break;
                 }
@@ -311,6 +309,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             startGame.setEnabled(true);
         }
     }
+
     public void mousePressed(MouseEvent e) {
         if(e.getSource()==openingLabel){
             JOptionPane.showMessageDialog(this,"Let's Play Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
