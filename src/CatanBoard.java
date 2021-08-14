@@ -1800,10 +1800,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     case "Unlimited":
                         getCurrentPlayer().monoAll(1000, 1000, 1000, 1000, 1000);
                         break;
+                        
                     case "Decimate":
                         getOtherPlayers().forEach(Player::empty);
                         getOtherPlayers().forEach(Player::destroyVPs);
                         break;
+                        
                     case "Development":
                         for (DevelopmentCard devCard : devCardDeck) {
                             devCard.boughtThisTurn = false;
