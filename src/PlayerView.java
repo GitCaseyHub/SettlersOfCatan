@@ -899,6 +899,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
         else if(e.getSource()==rollDice){
             diceRoll=0;
             revealDiceAsNeeded=false;
+            hasRolled=true;
             if(this.player.isLeader() || this.player.getClassTitle().equals("Deity")){
                 while(diceRoll==0) {
                     try {
@@ -938,7 +939,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseMotionLis
 
             else
                 reference.giveOutResources(diceRoll);
-            hasRolled=true;
             update();
         }
 
