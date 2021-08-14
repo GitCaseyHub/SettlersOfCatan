@@ -146,6 +146,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     //Monarchy
     boolean singleShowMonarchy=false;
+    int aggregateTurn=0;
 
     //Cultivator
     String cultivateResource;
@@ -162,7 +163,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
     //Cheat menu
     String cheat = "";
-    String[] cheatCodes = {"Unlimited","Decimate","Development","Builder","Activate Ports","Deactivate Ports"};
+    String[] cheatCodes = {"Unlimited","Decimate","Development","Builder","Activate Ports","Deactivate Ports","VP Manipulation"};
+    int vpCheat = 0;
     ArrayList<String> codes = new ArrayList<>();
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
@@ -1837,6 +1839,21 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         redrawEverything = true;
                         repaint();
                         break;
+
+                    case "VP Manipulation":
+                        while(vpCheat==0) {
+                            try {
+                                vpCheat = Integer.parseInt((String) JOptionPane.showInputDialog(this, "What is your victory point total?", "Victory Point Change", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null));
+
+                                if (vpCheat < 1 || vpCheat > 11)
+                                    throw new Exception();
+                            } catch (Exception repeat) {
+                                JOptionPane.showMessageDialog(this, "You must select an integer between 1 and 10.", "Improper Number Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                                vpCheat = 0;
+                            }
+                        }
+                        getCurrentPlayer().changeVictoryPoints(vpCheat);
+                        break;
                 }
 
                 if (codes.contains(cheat)) {
@@ -1929,7 +1946,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         });
         Arrays.stream(tiles).filter(tile -> tile.getNum()==7 && !tile.getType().equalsIgnoreCase("Desert")).forEach(tile -> tile.setNum(tile.getNum()+(new Random().nextInt(5)+1)*(new Random().nextInt(2)==0?-1:1)));
         redrawEverything=true;
-        repaint();
+        this.repaint();
     }
 
     public void razeTiles() {
