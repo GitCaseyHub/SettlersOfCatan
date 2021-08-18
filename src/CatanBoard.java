@@ -165,6 +165,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     String cheat = "";
     String[] cheatCodes = {"Unlimited","Decimate","Development","Builder","Activate Ports","Deactivate Ports","VP Manipulation"};
     int vpCheat = 0;
+    boolean activateCheats=true;
     ArrayList<String> codes = new ArrayList<>();
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
@@ -1794,6 +1795,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if(e.getKeyCode()==KeyEvent.VK_1) {
+            if(!activateCheats)
+                return;
+
             try {
                 cheat = JOptionPane.showInputDialog(this, "Enter a cheat code: ", "Cheat Menu", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null).toString();
 
