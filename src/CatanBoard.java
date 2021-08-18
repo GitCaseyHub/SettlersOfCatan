@@ -242,7 +242,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     }
 
     public void initializeCheats(){
-        codes.addAll(Arrays.stream(cheatCodes).collect(Collectors.toCollection(ArrayList::new)));
+        Collections.addAll(codes,cheatCodes);
     }
 
     public void initializeDevelopmentDeck(){
@@ -479,7 +479,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                         if (duplicates.size() > 0) {
                             duplicates.get(0).setTurn(true);
-                            JOptionPane.showMessageDialog(this, duplicates.get(0).getName() + ": Place a settlement, then build a road from that settlement.", "Road and Settlement Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                            JOptionPane.showMessageDialog(this, "Place a settlement. Build road from that settlement.", "Road and Settlement Building - "+duplicates.get(0).getName()+(duplicates.get(0).getName().substring(duplicates.get(0).getName().length()-1).equalsIgnoreCase("s")?"'":"'s")+" Building Phase", 1, new ImageIcon("Resources/Catan_Icon.png"));
                             isSettlementBuilding = true;
                         }
                     }
@@ -621,9 +621,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
             ie.printStackTrace();
         }
 
-        if (!doingStartup) {
+        if (!doingStartup)
             performStaleReferenceReset(true);
-        }
+
         updateAllStatusMenus();
     }
 
@@ -733,7 +733,8 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         indexConnections.add(new Road(checkedIndexes.get(0).getIndexID(), checkedIndexes.get(1).getIndexID(), getCurrentPlayer(), new Point((int) ((Point) roadInfo[0]).getX(), (int) ((Point) roadInfo[0]).getY()), roadInfo[1].toString()));
                         repaint();
                     }
-                } else {
+                }
+                else {
                     for (Road indexConnection : indexConnections) {
                         if ((indexConnection.getIndexA() == checkedIndexes.get(0).getIndexID() && indexConnection.getIndexB() == checkedIndexes.get(1).getIndexID()) || (indexConnection.getIndexA() == checkedIndexes.get(1).getIndexID() && indexConnection.getIndexB() == checkedIndexes.get(0).getIndexID())) {
                             JOptionPane.showMessageDialog(this, "There is already a road here. Choose two different indexes that do not contain a road between them.", "Road Error",3, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1218,7 +1219,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 if (s.equals(player.getName()))
                     duplicates.add(player);
 
-        JOptionPane.showMessageDialog(this, duplicates.get(0).getName() + ": Place a settlement, then build a road from that settlement.", "Road and Settlement Building", 1, new ImageIcon("Resources/Catan_Icon.png"));
+        JOptionPane.showMessageDialog(this, "Place a settlement. Build road from that settlement.", "Road and Settlement Building - "+duplicates.get(0).getName()+(duplicates.get(0).getName().substring(duplicates.get(0).getName().length()-1).equalsIgnoreCase("s")?"'":"'s")+" Building Phase", 1, new ImageIcon("Resources/Catan_Icon.png"));
         this.isSettlementBuilding = true;
         duplicates.get(0).setTurn(true);
     }
@@ -1800,12 +1801,12 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     case "Unlimited":
                         getCurrentPlayer().monoAll(1000, 1000, 1000, 1000, 1000);
                         break;
-                        
+
                     case "Decimate":
                         getOtherPlayers().forEach(Player::empty);
                         getOtherPlayers().forEach(Player::destroyVPs);
                         break;
-                        
+
                     case "Development":
                         for (DevelopmentCard devCard : devCardDeck) {
                             devCard.boughtThisTurn = false;
@@ -1849,7 +1850,9 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
 
                                 if (vpCheat < 1 || vpCheat > 11)
                                     throw new Exception();
-                            } catch (Exception repeat) {
+
+                            } 
+                            catch (Exception repeat) {
                                 JOptionPane.showMessageDialog(this, "You must select an integer between 1 and 10.", "Improper Number Choice", 1, new ImageIcon("Resources/Catan_Icon.png"));
                                 vpCheat = 0;
                             }
