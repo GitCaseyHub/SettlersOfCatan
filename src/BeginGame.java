@@ -247,6 +247,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
 
         else if(e.getSource()==helpMenu){
             /*
+            //Former Operation Guide as a JOptionPane
             JOptionPane.showMessageDialog(imageFrame, "====================================================================================================\n"+
                                                                "                                                                                           Building & Operation Guide\n"+
                                                                "====================================================================================================\n"+
