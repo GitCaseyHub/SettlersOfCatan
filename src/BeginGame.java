@@ -46,7 +46,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem specialClassMenu = new JCheckBoxMenuItem("Enable Class Special Actions");
     JCheckBoxMenuItem wildfires = new JCheckBoxMenuItem("Enable Wildfires");
     JCheckBoxMenuItem devCardTransparency = new JCheckBoxMenuItem("Enable Card Transparency");
-    JCheckBoxMenuItem cheatMenuEnabled = new JCheckBoxMenuItem("Enable Secret Cheat Menu");
     JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
     JCheckBoxMenuItem democracyMode = new JCheckBoxMenuItem("Democracy Mode");
     JCheckBoxMenuItem monarchMode = new JCheckBoxMenuItem("Monarch Mode");
@@ -63,6 +62,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JLabel instructionsImage = new JLabel("",SwingConstants.CENTER);
 
     public BeginGame() {
+        openingLabel.setToolTipText("Click To Start Playing");
         this.setUndecorated(true);
         this.setJMenuBar(mb);
         mb.setBorder(compound);
@@ -86,7 +86,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         optionMenu.add(previewMenu);
         optionMenu.add(devCardTransparency);
         optionMenu.add(specialClassMenu);
-        cheatMenuEnabled.setToolTipText("Click to enable the secret cheat code menu. You still have to find the command to enter it, but that command is now active.");
         motionMenu.addActionListener(this);
         motionMenu.setToolTipText("Click to enable a frame showing what award a player has should they click on the corresponding checkbox in their player status screen.");
         specialClassMenu.addActionListener(this);
@@ -100,7 +99,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         monarchMode.addActionListener(this);
         monarchMode.setToolTipText("Every turn cycle, a random player is selected as leader.");
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
-        optionMenu.add(cheatMenuEnabled);
         optionMenu.add(wildfires);
 
         wildfires.addActionListener(this);
@@ -111,25 +109,25 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         this.add(borderPanel);
         borderPanel.setBorder(compound);
         borderPanel.add(options,BorderLayout.CENTER);
-            options.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Special Features"));
-            options.add(base);
-            options.add(activePorts);
-            options.add(cataclysms);
-            options.add(razing);
-                activePorts.setToolTipText("Select the 'YES' option if you want ports to be usable. On the board, ports will be marked with hollow green circles.");
-                cataclysms.setToolTipText("Select the 'YES' option to activate weather events that inflict damages upon the players at random intervals.");
-                base.setToolTipText("Select the 'YES' option to force all players to be the same class.");
-                razing.setToolTipText("Select the 'YES' option to have a 0.1% chance that a single tile will turn into a desert every end of turn.");
+        options.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Special Features"));
+        options.add(base);
+        options.add(activePorts);
+        options.add(cataclysms);
+        options.add(razing);
+        activePorts.setToolTipText("Select the 'YES' option if you want ports to be usable. On the board, ports will be marked with hollow green circles.");
+        cataclysms.setToolTipText("Select the 'YES' option to activate weather events that inflict damages upon the players at random intervals.");
+        base.setToolTipText("Select the 'YES' option to force all players to be the same class.");
+        razing.setToolTipText("Select the 'YES' option to have a 0.1% chance that a single tile will turn into a desert every end of turn.");
         borderPanel.add(charGenerate,BorderLayout.SOUTH);
-            charGenerate.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Setup & Startup"));
-            charGenerate.add(generateChars);
-                generateChars.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-                generateChars.setToolTipText("Click this button to create screens for players to choose their characters.");
-            charGenerate.add(startGame);
-                startGame.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-                startGame.setEnabled(false);
-                generateChars.addActionListener(this);
-                startGame.addActionListener(this);
+        charGenerate.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),"Setup & Startup"));
+        charGenerate.add(generateChars);
+        generateChars.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        generateChars.setToolTipText("Click this button to create screens for players to choose their characters.");
+        charGenerate.add(startGame);
+        startGame.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        startGame.setEnabled(false);
+        generateChars.addActionListener(this);
+        startGame.addActionListener(this);
 
         commencementFrameInitiation();
         initializeCheckBoxes();
@@ -241,7 +239,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.democracy = democracyMode.isSelected();
             cbMain.devCardTransparency = devCardTransparency.isSelected();
             cbMain.monarchy=monarchMode.isSelected();
-            cbMain.activateCheats=cheatMenuEnabled.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
