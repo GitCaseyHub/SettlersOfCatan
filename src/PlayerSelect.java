@@ -163,9 +163,6 @@ public class PlayerSelect extends JFrame implements ActionListener, FocusListene
                     JOptionPane.showMessageDialog(this, "You must select your character's color and class.", "Color & Class Error", 1, new ImageIcon("Resources/Catan_Icon.png"));
 
                 else {
-                    //Testing Player
-                    //Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), -100, 100, 100, 100, 100, 10, false, false, false,referenceNumber,99,99,99,false,0,false);
-
                     int before = bgReference.catanPlayerList.size();
                     Player newPlayer = new Player(Objects.requireNonNull(colorBox.getSelectedItem()).toString(), nameField.getText(), Objects.requireNonNull(classBox.getSelectedItem()).toString(), new ArrayList<Index>(), new ArrayList<DevelopmentCard>(), new ArrayList<DevelopmentCard>(), 0, 0, 0, 0, 0, 0, false, false, false,referenceNumber,4,5,15,false,0,false);
                     bgReference.addPlayer(newPlayer,referenceNumber);
