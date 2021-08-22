@@ -139,6 +139,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
     boolean singleRandomize=false;
     boolean singleDemocracy=false;
     boolean singleMonarchy=false;
+    boolean singleCommunity=false;
     int diceRoll=0;
 
     //DevCard Frame
@@ -474,6 +475,13 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
 
     public void startTurn() {
         loadedSpecialClasses=false;
+
+        if(!reference.doingStartup && !singleCommunity){
+            if(reference.community) {
+                singleCommunity = true;
+                performCommunityAction(0);
+            }
+        }
 
         if(!reference.doingStartup)
             reference.aggregateTurn++;
@@ -845,6 +853,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
             singleRandomize=false;
             singleDemocracy=false;
             singleMonarchy=false;
+            singleCommunity=false;
             int cataclysmOccurrence = 69;
             if(reference.cataclysmsActive){
                 cataclysmOccurrence = new Random().nextInt(20);
@@ -876,6 +885,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
                     }
 
             Arrays.stream(new JFrame[]{costFrame,playFrame,devFrame}).forEach(frame->frame.setVisible(false));
+
+            if(reference.community && !reference.doingStartup)
+                performCommunityAction(1);
 
             if((cataclysmOccurrence!=0 && reference.cataclysmsActive) || cataclysmOccurrence==69)
                 JOptionPane.showMessageDialog(this,"You have passed the turn. "+name+", it is now your turn.","Ending the Turn", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
@@ -1470,6 +1482,57 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
 
     public void hideDice() {
         Arrays.stream(new JFrame[]{diceOne,diceTwo}).forEach(frame -> frame.setVisible(false));
+    }
+
+    public void performCommunityAction(int val){
+        reference.takenResource="";
+        if(val==0) {
+            if (new Random().nextInt(100) < 99) {
+                reference.takenResource = reference.giveRandomResource(player);
+                if (reference.takenResource.equals("Sheep")) {
+                    player.monoWool(-1);
+                    reference.zealot.monoWool(1);
+                }
+
+                if (reference.takenResource.equals("Ore")) {
+                    player.monoOre(-1);
+                    reference.zealot.monoOre(1);
+                }
+
+                if (reference.takenResource.equals("Brick")) {
+                    player.monoBrick(-1);
+                    reference.zealot.monoBrick(1);
+                }
+
+                if (reference.takenResource.equals("Lumber")) {
+                    player.monoLumber(-1);
+                    reference.zealot.monoLumber(1);
+                }
+
+                if (reference.takenResource.equals("Wheat")) {
+                    player.monoWheat(-1);
+                    reference.zealot.monoWheat(1);
+                }
+                if(reference.takenResource.equals(""))
+                    return;
+
+                JOptionPane.showMessageDialog(this, "The religious zealots have taken " + reference.takenResource.toLowerCase() + " from you. Their stores grow larger.", "Religious Tithe", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                update();
+            }
+        }
+
+        else{
+            if(new Random().nextInt(100)<99) {
+                if(reference.zealot.returnTotalResources()==0)
+                    return;
+
+                player.monoAll(reference.zealot.getLumberNum(),reference.zealot.getWoolNum(),reference.zealot.getBrickNum(),reference.zealot.getOreNum(),reference.zealot.getGrainNum());
+                showResourceChanges(reference.zealot.getBrickNum(),reference.zealot.getOreNum(),reference.zealot.getGrainNum(),reference.zealot.getWoolNum(),reference.zealot.getLumberNum());
+                reference.zealot.empty();
+                JOptionPane.showMessageDialog(this, "The religious zealots have received a message from their God: You will be given all the resources they've collected.", "Religious Tithe", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                update();
+            }
+        }
     }
 
     @Override
