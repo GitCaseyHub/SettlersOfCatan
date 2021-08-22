@@ -110,6 +110,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     boolean randomize=false;
     boolean democracy=false;
     boolean monarchy=false;
+    boolean community=false;
 
     //Building Variables
     int roadCondition = 0;
@@ -165,8 +166,11 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
     String cheat = "";
     String[] cheatCodes = {"Unlimited","Decimate","Development","Builder","Activate Ports","Deactivate Ports","VP Manipulation"};
     int vpCheat = 0;
-    boolean activateCheats=true;
     ArrayList<String> codes = new ArrayList<>();
+
+    //Religious Group
+    Player zealot = new Player("Black","Paul","Proselytizer",new ArrayList<Index>(),new ArrayList<DevelopmentCard>(),new ArrayList<DevelopmentCard>(),0,0,0,0,0,0,false,false,false,666,0,0,0,false,0,false);
+    String takenResource="";
 
     public CatanBoard(ArrayList<Player> catanPlayerList, Point[] statusGenerationalPoints, PlayerSelect[] playerCreation, BeginGame bgReference) {
         this.addComponentListener(new ComponentAdapter() {
@@ -405,22 +409,22 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                             playerToStealFrom.monoWool(-1);
                             highwaymen.forEach(player-> player.monoWool(1));
                         }
-                        if (stolenResource.equals("Ore")) {
+                        else if (stolenResource.equals("Ore")) {
                             getCurrentPlayer().monoOre(1);
                             playerToStealFrom.monoOre(-1);
                             highwaymen.forEach(player-> player.monoOre(1));
                         }
-                        if (stolenResource.equals("Brick")) {
+                        else if (stolenResource.equals("Brick")) {
                             getCurrentPlayer().monoBrick(1);
                             playerToStealFrom.monoBrick(-1);
                             highwaymen.forEach(player-> player.monoBrick(1));
                         }
-                        if (stolenResource.equals("Lumber")) {
+                        else if (stolenResource.equals("Lumber")) {
                             getCurrentPlayer().monoLumber(1);
                             playerToStealFrom.monoLumber(-1);
                             highwaymen.forEach(player-> player.monoLumber(1));
                         }
-                        if (stolenResource.equals("Wheat")) {
+                        else if (stolenResource.equals("Wheat")) {
                             getCurrentPlayer().monoWheat(1);
                             playerToStealFrom.monoWheat(-1);
                             highwaymen.forEach(player-> player.monoWheat(1));
@@ -1795,9 +1799,6 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if(e.getKeyCode()==KeyEvent.VK_1) {
-            if(!activateCheats)
-                return;
-
             try {
                 cheat = JOptionPane.showInputDialog(this, "Enter a cheat code: ", "Cheat Menu", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null).toString();
 
