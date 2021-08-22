@@ -49,6 +49,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
     JCheckBoxMenuItem democracyMode = new JCheckBoxMenuItem("Democracy Mode");
     JCheckBoxMenuItem monarchMode = new JCheckBoxMenuItem("Monarch Mode");
+    JCheckBoxMenuItem communityMode = new JCheckBoxMenuItem("Proselytizer Mode");
     JMenuItem helpMenu = new JMenuItem("How-To Guide");
 
     //Number of Players Question
@@ -91,6 +92,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         specialClassMenu.addActionListener(this);
         modes.add(democracyMode);
         modes.add(monarchMode);
+        modes.add(communityMode);
         modes.add(randomizer);
         randomizer.addActionListener(this);
         randomizer.setToolTipText("Every turn, tiles will change types. The tiles will then be given a new roll value that may or may not be consistent with probabilities.");
@@ -98,6 +100,8 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         democracyMode.setToolTipText("Every turn cycle, players vote for a ruler. That player can then decide what they roll on the dice when it's their turn.");
         monarchMode.addActionListener(this);
         monarchMode.setToolTipText("Every turn cycle, a random player is selected as leader.");
+        communityMode.addActionListener(this);
+        communityMode.setToolTipText("Every turn, a group of religious zealots might come and take a resource from you. Then, at the end of the turn, the zealots might gift you every resource they've collected.");
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
 
@@ -179,21 +183,30 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires || e.getSource()==devCardTransparency)
             optionMenu.doClick();
 
-        if(e.getSource()==randomizer || e.getSource()==democracyMode || e.getSource()==monarchMode)
+        if(e.getSource()==randomizer || e.getSource()==democracyMode || e.getSource()==monarchMode || e.getSource()==communityMode)
             modes.doClick();
 
         if(e.getSource()==democracyMode) {
             randomizer.setSelected(false);
             monarchMode.setSelected(false);
+            communityMode.setSelected(false);
         }
 
         if(e.getSource()==monarchMode){
             randomizer.setSelected(false);
             democracyMode.setSelected(false);
+            communityMode.setSelected(false);
         }
 
         if(e.getSource()==randomizer) {
             democracyMode.setSelected(false);
+            monarchMode.setSelected(false);
+            communityMode.setSelected(false);
+        }
+
+        if(e.getSource()==communityMode){
+            democracyMode.setSelected(false);
+            randomizer.setSelected(false);
             monarchMode.setSelected(false);
         }
 
@@ -239,6 +252,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
             cbMain.democracy = democracyMode.isSelected();
             cbMain.devCardTransparency = devCardTransparency.isSelected();
             cbMain.monarchy=monarchMode.isSelected();
+            cbMain.community=communityMode.isSelected();
             cbMain.setBounds(60, 45, 930, 1000);
             cbMain.dispose();
             cbMain.setUndecorated(true);
