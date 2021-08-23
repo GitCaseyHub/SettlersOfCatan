@@ -49,7 +49,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem randomizer = new JCheckBoxMenuItem("Random Mode");
     JCheckBoxMenuItem democracyMode = new JCheckBoxMenuItem("Democracy Mode");
     JCheckBoxMenuItem monarchMode = new JCheckBoxMenuItem("Monarch Mode");
-    JCheckBoxMenuItem communityMode = new JCheckBoxMenuItem("Proselytizer Mode");
+    JCheckBoxMenuItem communityMode = new JCheckBoxMenuItem("Cult Mode");
     JMenuItem helpMenu = new JMenuItem("How-To Guide");
 
     //Number of Players Question
@@ -90,9 +90,9 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         motionMenu.addActionListener(this);
         motionMenu.setToolTipText("Click to enable a frame showing what award a player has should they click on the corresponding checkbox in their player status screen.");
         specialClassMenu.addActionListener(this);
+        modes.add(communityMode);
         modes.add(democracyMode);
         modes.add(monarchMode);
-        modes.add(communityMode);
         modes.add(randomizer);
         randomizer.addActionListener(this);
         randomizer.setToolTipText("Every turn, tiles will change types. The tiles will then be given a new roll value that may or may not be consistent with probabilities.");
@@ -101,7 +101,7 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         monarchMode.addActionListener(this);
         monarchMode.setToolTipText("Every turn cycle, a random player is selected as leader.");
         communityMode.addActionListener(this);
-        communityMode.setToolTipText("Every turn, a group of religious zealots might come and take a resource from you. Then, at the end of the turn, the zealots might gift you every resource they've collected.");
+        communityMode.setToolTipText("A group of religious zealots take up residence on Catan, and they will take and give resources out as their God dictates.");
         specialClassMenu.setToolTipText("Class-unique actions are usable in game. For example, stealing using the Highwayman's special action can be done.");
         optionMenu.add(wildfires);
 
