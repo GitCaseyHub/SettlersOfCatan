@@ -5,14 +5,15 @@ public class Tile {
     int[] position;
     String type;
     int num;
-    boolean hasRobber,onFire,isCultivated;
+    boolean hasRobber,onFire,isCultivated, hasChurch;
     Point upper_left;
     Point center;
     Player firePlayer,cultivatingPlayer;
     Shape robberRect;
     ArrayList<Point> vertices = new ArrayList<>();
 
-    public Tile(int[] position, String type, int num, boolean hasRobber, boolean onFire, Player firePlayer, boolean isCultivated, Player cultivatingPlayer){
+    public Tile(int[] position, String type, int num, boolean hasRobber, boolean onFire, Player firePlayer, boolean isCultivated, Player cultivatingPlayer, boolean hasChurch){
+        this.hasChurch=hasChurch;
         this.position=position;
         this.type=type;
         this.num=num;
@@ -34,8 +35,18 @@ public class Tile {
         center = new Point(x+72, y+78);
     }
 
+    public Tile(){}
+
     public Player getCultivatingPlayer() {
         return cultivatingPlayer;
+    }
+
+    public boolean hasChurch(){
+        return hasChurch;
+    }
+
+    public void setChurch(boolean churchState){
+        this.hasChurch=churchState;
     }
 
     public void setCultivatingPlayer(Player cultivatingPlayer) {
