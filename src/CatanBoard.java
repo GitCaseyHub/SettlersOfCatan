@@ -213,7 +213,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         for (int x = 0; x < types.length; x++) {
             int typeIndex = new Random().nextInt(typeList.size());
             int coordIndex = new Random().nextInt(coordList.size());
-            tiles[x] = new Tile(coordList.get(coordIndex), typeList.get(typeIndex), 0, false,false, new Player(),false,new Player());
+            tiles[x] = new Tile(coordList.get(coordIndex), typeList.get(typeIndex), 0, false,false, new Player(),false,new Player(),false);
             typeList.remove(typeIndex);
             coordList.remove(coordIndex);
 
@@ -324,7 +324,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for (Tile tile : tiles)
                     if (tile.isHasRobber()) {
                         BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
-                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 88, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 45, tile.getPosition()[1] + 82, null);
                     }
 
                 //Draws Ports
@@ -336,6 +336,14 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         g.drawImage(circle, (int) portPoint[1].getX(), (int) portPoint[1].getY(), null);
                     }
                 }
+
+                if (community){
+                    BufferedImage church = ImageIO.read(new File("Pieces/Church.png"));
+                    Tile chosenTile = Arrays.stream(tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).get(Arrays.stream(tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).size()-1);
+                    chosenTile.setChurch(true);
+                    g.drawImage(church,chosenTile.getPosition()[0]+52,chosenTile.getPosition()[1]+78,null);
+                }
+
                 loaded = true;
                 this.setVisible(true);
             }
@@ -345,7 +353,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 repaint();
                 for (Tile tile : tiles)
                     if (tile.isHasRobber()) {
-                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 88, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 45, tile.getPosition()[1] + 82, null);
                         isDoneMovingRobber = false;
                         break;
                     }
@@ -573,7 +581,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 for (Tile tile : tiles)
                     if (tile.isHasRobber()) {
                         BufferedImage robber = ImageIO.read(new File("Pieces/Robber.png"));
-                        g.drawImage(robber, tile.getPosition()[0] + 57, tile.getPosition()[1] + 88, null);
+                        g.drawImage(robber, tile.getPosition()[0] + 45, tile.getPosition()[1] + 82, null);
                     }
 
                 //Redraws Ports
@@ -616,6 +624,13 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                         BufferedImage aura = ImageIO.read(new File("Tiles/Sun_Aura.png"));
                         g.drawImage(aura, tile.getPosition()[0]+29, tile.getPosition()[1]+12, null);
                     }
+                }
+
+                //Draws church for Proselytizer mode
+                if (community){
+                    BufferedImage church = ImageIO.read(new File("Pieces/Church.png"));
+                    Tile chosenTile = Arrays.stream(tiles).filter(Tile::hasChurch).findFirst().orElse(new Tile());
+                    g.drawImage(church,chosenTile.getPosition()[0]+52,chosenTile.getPosition()[1]+78,null);
                 }
 
                 redrawEverything = false;
@@ -841,11 +856,24 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
         }
 
         if (isMovingRobber) {
+            Tile before = Arrays.stream(tiles).filter(Tile::isHasRobber).findFirst().orElse(new Tile());
             Arrays.stream(tiles).forEach(tile -> tile.setHasRobber(false));
 
             checkCounter = 0;
             for (Tile tile : tiles)
                 if (tile.getRobberRect().intersects(new Rectangle(xLoc, yLoc, 5, 5))) {
+                    if(tile.hasChurch()){
+                        JOptionPane.showMessageDialog(this, "That tile has the church established on it. You cannot move the robber here.", "Robber Already Here",3, new ImageIcon("Resources/Catan_Icon.png"));
+                        before.setHasRobber(true);
+                        return;
+                    }
+
+                    if(tile.equals(before)){
+                        JOptionPane.showMessageDialog(this, "That tile already has the robber.", "Robber Already Here",3, new ImageIcon("Resources/Catan_Icon.png"));
+                        before.setHasRobber(true);
+                        return;
+                    }
+
                     tile.setHasRobber(true);
                     isDoneMovingRobber = true;
                     isMovingRobber = false;
@@ -857,8 +885,10 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     break;
                 }
 
-            if (checkCounter == 0)
-                JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning",3, new ImageIcon("Resources/Catan_Icon.png"));
+            if (checkCounter == 0) {
+                JOptionPane.showMessageDialog(this, "Click in the center of the tile you'd like to move the robber to.", "Incorrect Robber Positioning", 3, new ImageIcon("Resources/Catan_Icon.png"));
+                before.setHasRobber(true);
+            }
         }
 
         if (isCityUpgrading) {
