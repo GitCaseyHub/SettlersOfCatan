@@ -128,6 +128,11 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
     JMenuItem mountainExpansion = new JMenuItem("Expand Mountains");
     boolean hasMountainified = false;
 
+    //Cult Objects
+    Tile churchMovementTile;
+    Tile churchTile;
+    String resourceType;
+
     //Special Classes
     JCheckBox[] playerNames;
     Player chosenPlayer;
@@ -476,15 +481,18 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
     public void startTurn() {
         loadedSpecialClasses=false;
 
-        if(!reference.doingStartup && !singleCommunity){
-            if(reference.community) {
-                singleCommunity = true;
-                performCommunityAction(0);
-            }
-        }
-
         if(!reference.doingStartup)
             reference.aggregateTurn++;
+
+        if(!reference.doingStartup && !singleCommunity){
+            if(reference.community) {
+                if (reference.aggregateTurn != 1) {
+                    singleCommunity = true;
+                    performCommunityAction(0);
+                    churchMovement();
+                }
+            }
+        }
 
         if(reference.wildfire){
             before = Arrays.stream(reference.tiles).filter(tile -> tile.isOnFire() && tile.getFirePlayer().equals(player)).collect(Collectors.toCollection(ArrayList::new));
@@ -944,6 +952,9 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
             intermediaryCheck=reference.resourceValsGiven(diceRoll);
             JOptionPane.showMessageDialog(null,((diceRoll!=7)?((intermediaryCheck)?"No players receive resources this turn.":"Resources are being distributed now."):"A 7 has been rolled. Click a tile the robber will be moved to."),this.player.getName()+" rolls a "+diceRoll, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
             hideDice();
+            if(reference.community)
+                giveChurchResources(diceRoll);
+
             if(diceRoll==7) {
                 resetReference(false);
                 reference.isMovingRobber = true;
@@ -1484,10 +1495,52 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
         Arrays.stream(new JFrame[]{diceOne,diceTwo}).forEach(frame -> frame.setVisible(false));
     }
 
+    public void churchMovement(){
+        if(new Random().nextInt(10)<9)
+            return;
+
+        churchMovementTile = Arrays.stream(reference.tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).get(Arrays.stream(reference.tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).size()-1);
+        Arrays.stream(reference.tiles).forEach(tile-> tile.setChurch(false));
+        churchMovementTile.setChurch(true);
+        JOptionPane.showMessageDialog(reference,"Catan's Deity has decreed the church must move positions. It will now collect "+ churchMovementTile.getType().toLowerCase()+ " resources.","Church Movement",1, new ImageIcon("Resources/Catan_Icon.png"));
+    }
+
+    public void giveChurchResources(int roll){
+        churchTile = Arrays.stream(reference.tiles).filter(Tile::hasChurch).findFirst().orElse(new Tile());
+        resourceType = "";
+        if(churchTile.getNum()!=roll)
+            return;
+
+        if(churchTile.getType().equalsIgnoreCase("Mountain")){
+            reference.zealot.monoOre(churchTile.isCultivated()?2:1);
+            resourceType = "ore";
+        }
+        if(churchTile.getType().equalsIgnoreCase("Brick")){
+            reference.zealot.monoBrick(churchTile.isCultivated()?2:1);
+            resourceType = "brick";
+        }
+        if(churchTile.getType().equalsIgnoreCase("Forest")){
+            reference.zealot.monoLumber(churchTile.isCultivated()?2:1);
+            resourceType = "lumber";
+        }
+        if(churchTile.getType().equalsIgnoreCase("Plains")){
+            reference.zealot.monoWool(churchTile.isCultivated()?2:1);
+            resourceType = "sheep";
+        }
+        if(churchTile.getType().equalsIgnoreCase("Grain")){
+            reference.zealot.monoWheat(churchTile.isCultivated()?2:1);
+            resourceType = "wheat";
+        }
+        JOptionPane.showMessageDialog(reference,"The church receives "+(churchTile.isCultivated()?"two ":"a ") + resourceType+" resource"+(churchTile.isCultivated()?"s":"")+" for their stores.","Church Stores Expand",1, new ImageIcon("Resources/Catan_Icon.png"));
+    }
+
     public void performCommunityAction(int val){
         reference.takenResource="";
         if(val==0) {
-            if (new Random().nextInt(100) < 99) {
+            if(player.getClassTitle().equalsIgnoreCase("Deity"))
+                return;
+
+            if (new Random().nextInt(100) < 11) {
                 reference.takenResource = reference.giveRandomResource(player);
                 if (reference.takenResource.equals("Sheep")) {
                     player.monoWool(-1);
@@ -1522,14 +1575,14 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
         }
 
         else{
-            if(new Random().nextInt(100)<99) {
+            if(new Random().nextInt(100)<2 || player.getClassTitle().equals("Deity")) {
                 if(reference.zealot.returnTotalResources()==0)
                     return;
 
                 player.monoAll(reference.zealot.getLumberNum(),reference.zealot.getWoolNum(),reference.zealot.getBrickNum(),reference.zealot.getOreNum(),reference.zealot.getGrainNum());
                 showResourceChanges(reference.zealot.getBrickNum(),reference.zealot.getOreNum(),reference.zealot.getGrainNum(),reference.zealot.getWoolNum(),reference.zealot.getLumberNum());
                 reference.zealot.empty();
-                JOptionPane.showMessageDialog(this, "The religious zealots have received a message from their God: You will be given all the resources they've collected.", "Religious Tithe", 1, new ImageIcon("Resources/Catan_Icon.png"));
+                JOptionPane.showMessageDialog(this, (player.getClassTitle().equalsIgnoreCase("Deity")?"The religious zealots offer you their tithes in honor of your godhood.":"The religious zealots have received a message from their God: You will be given all the resources they've collected."), "Religious Tithe", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 update();
             }
         }
