@@ -341,7 +341,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                     BufferedImage church = ImageIO.read(new File("Pieces/Church.png"));
                     Tile chosenTile = Arrays.stream(tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).get(Arrays.stream(tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).size()-1);
                     chosenTile.setChurch(true);
-                    g.drawImage(church,chosenTile.getPosition()[0]+52,chosenTile.getPosition()[1]+78,null);
+                    g.drawImage(church,chosenTile.getPosition()[0]+52,chosenTile.getPosition()[1]+75,null);
                 }
 
                 loaded = true;
@@ -630,7 +630,7 @@ public class CatanBoard extends JFrame implements KeyListener,MouseListener {
                 if (community){
                     BufferedImage church = ImageIO.read(new File("Pieces/Church.png"));
                     Tile chosenTile = Arrays.stream(tiles).filter(Tile::hasChurch).findFirst().orElse(new Tile());
-                    g.drawImage(church,chosenTile.getPosition()[0]+52,chosenTile.getPosition()[1]+78,null);
+                    g.drawImage(church,chosenTile.getPosition()[0]+52,chosenTile.getPosition()[1]+75,null);
                 }
 
                 redrawEverything = false;
