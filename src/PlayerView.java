@@ -1502,7 +1502,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
         churchMovementTile = Arrays.stream(reference.tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).get(Arrays.stream(reference.tiles).filter(tile -> !tile.hasRobber).collect(Collectors.toCollection(ArrayList::new)).size()-1);
         Arrays.stream(reference.tiles).forEach(tile-> tile.setChurch(false));
         churchMovementTile.setChurch(true);
-        JOptionPane.showMessageDialog(reference,"Catan's Deity has decreed the church must move positions. It will now collect "+ churchMovementTile.getType().toLowerCase()+ " resources.","Church Movement",1, new ImageIcon("Resources/Catan_Icon.png"));
+        JOptionPane.showMessageDialog(reference,"Catan's Deity has decreed the church must move locations. It will now collect "+ churchMovementTile.getType().toLowerCase()+ " resources.","Church Movement",1, new ImageIcon("Resources/Catan_Icon.png"));
     }
 
     public void giveChurchResources(int roll){
@@ -1582,6 +1582,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
                 player.monoAll(reference.zealot.getLumberNum(),reference.zealot.getWoolNum(),reference.zealot.getBrickNum(),reference.zealot.getOreNum(),reference.zealot.getGrainNum());
                 showResourceChanges(reference.zealot.getBrickNum(),reference.zealot.getOreNum(),reference.zealot.getGrainNum(),reference.zealot.getWoolNum(),reference.zealot.getLumberNum());
                 reference.zealot.empty();
+                reference.showBuiltImage("Collection.png","Church Tithe");
                 JOptionPane.showMessageDialog(this, (player.getClassTitle().equalsIgnoreCase("Deity")?"The religious zealots offer you their tithes in honor of your godhood.":"The religious zealots have received a message from their God: You will be given all the resources they've collected."), "Religious Tithe", 1, new ImageIcon("Resources/Catan_Icon.png"));
                 update();
             }
