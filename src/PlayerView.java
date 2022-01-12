@@ -923,7 +923,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
             if(this.player.isLeader() || this.player.getClassTitle().equals("Deity")){
                 while(diceRoll==0) {
                     try {
-                        diceRoll = Integer.parseInt((String) JOptionPane.showInputDialog(this, "Select the number you'd like to roll this turn: ", "Democracy Action", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null));
+                        diceRoll = Integer.parseInt((String) JOptionPane.showInputDialog(this, "Select the number you'd like to roll this turn: ", "Roll Arbiter", JOptionPane.QUESTION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"), null, null));
 
                         if (diceRoll < 2 || diceRoll > 12)
                             throw new Exception();
@@ -1312,7 +1312,6 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
             }
         }
 
-
         else if(e.getSource()==remainingResources)
             JOptionPane.showMessageDialog(this,"Remaining Building Materials: \nRoad                ⇒     "+player.getRoads()+"\nSettlement     ⇒     "+player.getSettlements()+"\nCity                   ⇒     "+player.getCities(),"Building Supplies",1, new ImageIcon("Resources/Catan_Icon.png"));
 
@@ -1365,7 +1364,7 @@ public class PlayerView extends JFrame implements ActionListener, MouseListener 
     }
 
     public boolean isConfounded(){
-        return player.isDrunk && new Random().nextInt(2)>0;
+        return player.isDrunk && new Random().nextInt(2)==1;
     }
 
     public boolean playerHasSettlements(){
