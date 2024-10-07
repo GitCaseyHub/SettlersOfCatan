@@ -1,6 +1,3 @@
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +5,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import jdk.dynalink.linker.support.CompositeTypeBasedGuardingDynamicLinker;
 
 public class BeginGame extends JFrame implements ActionListener, MouseListener {
     Border compound = BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory.createLoweredBevelBorder());
@@ -52,11 +55,13 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     JCheckBoxMenuItem communityMode = new JCheckBoxMenuItem("Cult Mode");
     JMenuItem helpMenu = new JMenuItem("How-To Guide");
 
-    //Number of Players Question
+    // New Player Number Select Method
     int numPlayers;
-    JCheckBox[] playerNumOptions = new JCheckBox[3];
-    String[] boxString = new String[]{"     ⇒     2 Players","     ⇒     3 Players","     ⇒     4 Players"};
-    String[] imageTitles = new String[]{"Two_Players.png","Three_Players.png","Four_Players.png"};
+    JFrame playerNumberFrame = new JFrame();
+    JLabel[] playerNumberLabels = new JLabel[]{new JLabel("2"),new JLabel("3"),new JLabel("4")};
+    JPanel[] playersPanel = new JPanel[]{new JPanel(new BorderLayout()),new JPanel(new BorderLayout()), new JPanel(new BorderLayout())};
+    JPanel numberPanel = new JPanel(new GridLayout(1,3));
+    Map<String, String> numMap = new HashMap<String, String>() {{put("2","Two"); put("3","Three"); put("4","Four");}};
 
     //Instructions Frame
     JFrame instructions = new JFrame();
@@ -132,10 +137,31 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         startGame.setEnabled(false);
         generateChars.addActionListener(this);
         startGame.addActionListener(this);
-
+        
+        createPlayerNumberSelectFrame();
         commencementFrameInitiation();
-        initializeCheckBoxes();
         initializeInstructions();
+    }
+
+    public void createPlayerNumberSelectFrame(){
+        playerNumberFrame.add(numberPanel);
+        Arrays.stream(playersPanel).forEach(panel -> {numberPanel.add(panel);});
+
+        for (int i=0; i<playersPanel.length; i++){
+            playersPanel[i].add(new JLabel(numMap.get(playerNumberLabels[i].getText())+" Players",SwingConstants.CENTER){{setBorder(compound);}},BorderLayout.NORTH);
+            playersPanel[i].add(playerNumberLabels[i],BorderLayout.CENTER);
+        }
+
+        Arrays.stream(playerNumberLabels).forEach(label->{
+            label.addMouseListener(this);
+            label.setIcon(new ImageIcon("Resources/PlayerNumber/"+label.getText()+"_Players.png"));
+            label.setBorder(compound);
+        });
+
+        playerNumberFrame.setSize(630,210);
+        playerNumberFrame.isAlwaysOnTop();
+        playerNumberFrame.setUndecorated(true);
+        playerNumberFrame.setLocation(5+dim.width/2-playerNumberFrame.getSize().width/2, dim.height/2-playerNumberFrame.getSize().height/2);
     }
 
     public void initializeInstructions(){
@@ -146,13 +172,6 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         instructionsImage.setBorder(compound);
         instructions.setSize(618,394);
         instructions.setLocation(dim.width/2-instructions.getSize().width/2, dim.height/2-instructions.getSize().height/2);
-    }
-
-    public void initializeCheckBoxes() {
-        for (int x = 0; x < playerNumOptions.length; x++) {
-            playerNumOptions[x] = new JCheckBox(boxString[x],new ImageIcon("Resources/People/"+imageTitles[x]));
-            playerNumOptions[x].addActionListener(this);
-        }
     }
 
     public void commencementFrameInitiation(){
@@ -174,64 +193,28 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        for(JCheckBox box: playerNumOptions)
-            if(e.getSource()==box) {
-                Arrays.stream(playerNumOptions).filter(boxCheck -> !boxCheck.equals(box)).forEach(oldBox -> oldBox.setSelected(false));
-                return;
-            }
-
         if (e.getSource() == specialClassMenu || e.getSource() == motionMenu || e.getSource() == previewMenu || e.getSource()==wildfires || e.getSource()==devCardTransparency)
             optionMenu.doClick();
 
         if(e.getSource()==randomizer || e.getSource()==democracyMode || e.getSource()==monarchMode || e.getSource()==communityMode)
             modes.doClick();
 
-        if(e.getSource()==democracyMode) {
-            randomizer.setSelected(false);
-            monarchMode.setSelected(false);
-            communityMode.setSelected(false);
-        }
+        if(e.getSource()==democracyMode) 
+            Arrays.stream(new JMenuItem[]{randomizer,monarchMode,communityMode}).forEach(box->{box.setSelected(false);});
 
-        if(e.getSource()==monarchMode){
-            randomizer.setSelected(false);
-            democracyMode.setSelected(false);
-            communityMode.setSelected(false);
-        }
+        if(e.getSource()==monarchMode)
+            Arrays.stream(new JMenuItem[]{randomizer,communityMode,democracyMode}).forEach(box->{box.setSelected(false);});
 
-        if(e.getSource()==randomizer) {
-            democracyMode.setSelected(false);
-            monarchMode.setSelected(false);
-            communityMode.setSelected(false);
-        }
+        if(e.getSource()==randomizer)
+            Arrays.stream(new JMenuItem[]{monarchMode,communityMode,democracyMode}).forEach(box->{box.setSelected(false);});
 
-        if(e.getSource()==communityMode){
-            democracyMode.setSelected(false);
-            randomizer.setSelected(false);
-            monarchMode.setSelected(false);
-        }
+        if(e.getSource()==communityMode)
+            Arrays.stream(new JMenuItem[]{randomizer,monarchMode,democracyMode}).forEach(box->{box.setSelected(false);});
 
         else if(e.getSource()==generateChars){
-            while(appropriateNumSelected(playerNumOptions)) {
-                JOptionPane.showMessageDialog(imageFrame, new Object[]{"=======================\n   Number of People Playing\n=======================", playerNumOptions,"======================="}, "Number of Players", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("Resources/Catan_Icon.png"));
-
-                if(appropriateNumSelected(playerNumOptions)) {
-                    JOptionPane.showMessageDialog(imageFrame, "You must select one of the options.", "Failed Registration", 1, new ImageIcon("Resources/Catan_Icon.png"));
-                    Arrays.stream(playerNumOptions).forEach(box -> box.setSelected(false));
-                }
-            }
             generateChars.setEnabled(false);
-            base.fixState();
-            numPlayers = (playerNumOptions[0].isSelected()?2:(playerNumOptions[1].isSelected()?3:4));
-            playerCreation = new PlayerSelect[numPlayers];
-
-            for(int x=0; x<numPlayers; x++) {
-                playerCreation[x] = new PlayerSelect(this, x,false);
-                playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
-                playerCreation[x].setVisible(true);
-                playerCreation[x].setTitle("Player "+(playerCreation[x].referenceNumber+1)+" Select Screen");
-            }
-            Arrays.stream(playerCreation).forEach(player -> player.loadedIn=true);
-            playerCreation[0].nameField.requestFocus();
+            playerNumberFrame.setVisible(true);
+            JOptionPane.showMessageDialog(playerNumberFrame,"Select the number of players who will be participating in the game","Player Registration",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
         }
 
         else if(e.getSource()==startGame) {
@@ -328,6 +311,32 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
     }
 
     public void mousePressed(MouseEvent e) {
+        for (JLabel label : playerNumberLabels) {
+            if (e.getSource() == label) {
+                playerNumberFrame.setVisible(false);
+                if(JOptionPane.showConfirmDialog(imageFrame,"Are you sure you want a "+label.getText()+" player game?","Number of Players Check", JOptionPane.YES_NO_OPTION,1, new ImageIcon("Resources/Catan_Icon.png"))==JOptionPane.YES_OPTION){
+                    playerNumberFrame.setVisible(false);
+                    base.fixState();
+                    numPlayers = Integer.parseInt(label.getText());
+                    playerCreation = new PlayerSelect[numPlayers];
+
+                    for(int x=0; x<numPlayers; x++) {
+                        playerCreation[x] = new PlayerSelect(this, x,false);
+                        playerCreation[x].setBounds((int) generationPoints[x].getX(), (int) generationPoints[x].getY(), 435, 305);
+                        playerCreation[x].setVisible(true);
+                        playerCreation[x].setTitle("Player "+(playerCreation[x].referenceNumber+1)+" Select Screen");
+                    }
+                    Arrays.stream(playerCreation).forEach(player -> player.loadedIn=true);
+                    playerCreation[0].nameField.requestFocus();
+                }
+                else{
+                    playerNumberFrame.setVisible(true);
+                    return;
+                }
+                break;
+            }
+        }
+        
         if(e.getSource()==openingLabel){
             JOptionPane.showMessageDialog(this,"Let's Play Settlers of Catan","Settlers of Catan",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("Resources/Catan_Icon.png"));
             openingFrame.setVisible(false);
@@ -341,6 +350,16 @@ public class BeginGame extends JFrame implements ActionListener, MouseListener {
         }
         if(e.getSource()==instructionsImage)
             instructions.setVisible(false);
+
+        if(e.getSource() == playerNumberLabels[0]){
+
+        }
+        if(e.getSource() == playerNumberLabels[1]){
+            
+        }
+        if(e.getSource() == playerNumberLabels[1]){
+            
+        }
     }
 
     @Override
